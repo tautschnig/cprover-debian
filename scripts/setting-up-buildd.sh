@@ -101,7 +101,7 @@ cat > $cow_base/tmp/gcc-wrapper <<"EOF"
 #!/bin/bash
 
 set -e
-ulimit -S -v 16000000
+ulimit -S -v 16000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
@@ -364,7 +364,7 @@ cat > $cow_base/tmp/ld-wrapper <<"EOF"
 #!/bin/bash
 
 set -e
-ulimit -S -v 16000000
+ulimit -S -v 16000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$

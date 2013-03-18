@@ -75,7 +75,8 @@ IFS="
             elif [ $i -eq 7 ] ; then
               echo "No convergence after $i iterations" >> $logf
               mkdir -p $DUMPDIR/$pkg/failed-converge/
-              diff "$ff.$ib.c" "$ff.$i.c" > "$DUMPDIR/$pkg/failed-converge/$ff.diff"
+              diff -u "$ff.$ib.c" "$ff.$i.c" > "$DUMPDIR/$pkg/failed-converge/$ff.diff" || true
+              cp "$ff.$ib.c" $DUMPDIR/$pkg/failed-converge/
               ec=1
             fi
           fi

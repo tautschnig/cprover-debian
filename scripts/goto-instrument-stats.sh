@@ -1,5 +1,10 @@
 #!/bin/bash
 
+# echo "Total packages to dump: `ls build/*/goto-binaries.tar.bz2 | wc -l`"
+echo "Packages successfully dumped: `ls dump-logs/*-succeeded | wc -l`"
+echo "Packages failing to dump: `ls dump-logs/*-failed | wc -l`"
+echo
+
 failed_dump=0
 failed_comp=0
 failed_conv=0
