@@ -1,0 +1,26 @@
+To inspect, use
+d=`date  +%Y%m%d%H%M.%S` ; vim `ls -rt logs/ | perl -n -e 'chomp; defined($seen) and (! -l "logs/$_") and /^failed/ and print "logs/$_ "; /INSPECT-LATER-THAN-THIS/ and $seen=1;'` ; touch -t $d logs/INSPECT-LATER-THAN-THIS
+
+
+du output sorted by size:
+du -sk build/* | sort -n | while read size fname; do for unit in k M G T P E Z Y; do if [ $size -lt 1024 ]; then echo -e "${size}${unit}\t${fname}"; break; fi; size=$((size/1024)); done; done
+better:
+du -sk build/* | sort -n | while read size fname; do bn=`basename $fname` ; res="succeeded" ; if [ -s logs/failed-$bn ] ; then res="failed" ; fi ; for unit in k M G T P E Z Y; do if [ $size -lt 1024 ]; then echo -e "${size}${unit}\t${fname} [$res]"; break; fi; size=$((size/1024)); done; done
+
+
+rebuild package
+DEB_VENDOR=Debian dpkg-source -x cairo*.dsc
+pdebuild --pbuilder cowbuilder --use-pdebuild-internal -- --basepath $HOME/wheezy-base.cow/ --hookdir $HOME/pbuilder-debug-hooks
+
+
+cleanup useless goto binaries:
+base=$PWD ; for f in `find . -name "*.linked"` ; do cd $base ; cd "`dirname "$f"`" ; ff=`basename "$f"` ; cat $ff | cut -f2- -d: | tr ' ' '\n' | sed '/^[[:space:]]*$/d' | sort | uniq | xargs rm ; done
+
+
+make sure notes does not list bugfixed packages:
+for f in succeeded-* ; do p=`echo $f | sed 's/^succeeded-//'` ; grep -q "^- $p:" ~/notes || continue ; echo $p ; done
+
+
+check that all packages in notes still exist in distribution:
+for p in `cat notes | grep "^- " | cut -f1 -d: | cut -f2 -d" "` ; do grep -q "^$p$" list.wheezy.amd64 || echo $p ; done
+

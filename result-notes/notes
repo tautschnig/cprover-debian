@@ -1,0 +1,707 @@
+TO BE IGNORED
+- cmucl: i386 only
+- efi-reader: debian-installer only
+- elki: javac 6 not found
+- fuse4bsd: BSD only
+- gjs: function without return type
+- gnumach: i386 only
+- libdbd-oracle-perl: reported #689915, rejected (contrib)
+- mig: i386 only
+- mit-scheme: i386 only
+- mozart: not supported on amd64
+- mozart-stdlib: not supported on amd64
+- nyquist: no packages to build (on amd64)
+- oaklisp: i386 only
+- openbios-ppc: PowerPC only
+- openbios-sparc: Sparc only
+- openhackware: PowerPC only
+- pixbros: build-dep not avail on amd64
+- pixfrogger: build-dep not avail on amd64
+- proll: can only be built on sparc
+- scsh-0.6: not for amd64
+- scsh-install-lib: build dep not avail on amd64
+- wine-gecko-1.4: build-dependencies only available on i386
+- wireless-regdb: cannot auto-build
+- xserver-xorg-video-geode: not for amd64
+
+- acl2: test suite error (version 4.3-3, maybe works in unstable)
+- cups: test suite fails to start -- requires network, maybe fixable using DEVFS
+- eglibc: test suite failures, even without eatmydata
+- libaqbanking: /dev/urandom missing
+- libdbd-firebird-perl: test suite time out
+- libio-socket-ip-perl: test suite errors (network required?)
+- lighttpd: test suite errors (network required?)
+- maxima: test suite errors (maybe works in unstable)
+- ruby-httpclient: test suite error (network required?)
+- ruby-spreadsheet: fails to load file, works in virtualbox
+- ruby-svg-graph: test suite error, works in virtualbox
+- systemd: date fails to set timestamp, may be cowbuilder problem
+- xbmc: /dev/urandom -> try USEDEVFS
+
+- emboss: out of disk space
+- evolution: out of disk space
+- gromacs: out of disk space
+- gtk+2.0: out of disk space
+- gtk+3.0: out of disk space
+- heimdal: out of disk space
+- libunistring: out of disk space
+
+WORKS IN PRACTICE
+- barnowl: void* vs. struct* members in struct
+- clisp: conflicting types -- but proper and intended prefix
+- curlftpfs: conflicting types, but proper prefix
+- dovecot-antispam: conflicting types -- weird code, but might work
+- freesci: conflicting types with same type (one type is subtype of other)
+- gimp: conversion from `double' to `enum': implicit conversion not permitted [only proper values stored in var]
+- gnome-python-desktop: conflicting types with same type (one type is subtype of other)
+- ioquake3: conversion from `float' to `enum': implicit conversion not permitted
+- libav: conversion from `double' to `enum': implicit conversion not permitted [only proper values stored in var]
+- openjdk-6: argc has wrong type in built file, unclear where file comes from, doesn't matter
+- quakespasm: conversion from `float' to `enum': implicit conversion not permitted
+- rgtk2: conversion from `double' to `enum': implicit conversion not permitted
+
+
+
+TO REPORT TO DANIEL OR FIX IN SOME WAY
+- audit: duplicate function -- visibility attribute "hidden"
+
+- gdc-4.4: conflicting initializers -- gcc a.o b.o differs from gcc.ao b.a!
+- gcc-avr: conflicting initializers -- same as gdc-4.4
+- gcc-msp430: conflicting initializers -- same as gc-4.4
+- hdf5: conflicting initializers
+- gcc-4.4: conflicting initializers -- get linker command line
+- libguestfs: conflicting initializers -- get linker command line
+- gst-buzztard: conflicting initializers
+- mingw32: conflicting initializers
+- proj: conflicting initializers
+- quagga: conflicting initializers
+
+- drc: C++ code
+
+- empire: defines function assert
+- klibc: defines function __assert_fail
+
+- glbsp: archive file not properly understood because it is .o
+
+- kbuild: main takes 4 arguments
+
+- iaxmodem: __builtin_classify_type (__real__ ((double) 0))==8
+- spandsp: complex-typed operand from tgmath.h, pow()
+
+- gcc-4.6: `signed char * [4]' not found in union
+- gcc-4.7: `signed char * [4]' not found in union
+- gcj-4.6: `signed char * [4]' not found in union
+- gcj-4.7: `signed char * [4]' not found in union
+- gdc-4.6: `signed char * [4]' not found in union
+- ldm: signed char[5] not in union (but char* is)
+
+- linux-tools: __builtin_types_compatible_p(typeof(&help_format), unsigned int *) with help_format an enum help_format help_format, enum help_format { HELP_FORMAT_MAN, ... };
+
+- babel: function has attribute weak
+- mii-diag: function has attribute weak
+- nictools-pci: function has attribute weak
+- ocl-icd: attribute weak
+
+- njplot: main in libncbi
+- readseq: main not in context (-lncbi)
+- ucspi-unix: main in /usr/lib/bglibs/lib/libinstaller.a
+
+- scotch: function occurs twice, ignore (no ambiguity possible)
+
+- user-mode-linux: __builtin_constant_p requires inlining
+
+- unicon: variable definition without type
+
+- xenomai: fpflags both enum name and label
+
+- virtualbox: #pragma pack(1) [https://github.com/tautschnig/cprover/issues/1]
+
+- tightvnc: changes of r2208 need to extend to array of function pointers
+
+
+RESTART AFTER chroot+goto-cc update
+
+RESTARTED
+
+DEBUG
+- oce: out of memory
+- scilab: out of memory
+- vtk: out of memory
+
+UPSTREAM BUGS
+- racket: reported #702859
+- juju: reported #702791
+- siproxd: reported #702772
+- skyeye: reported https://sourceforge.net/p/skyeye/bugs/100/
+- gnats: reported #702784 
+- service-wrapper-java: reported #702790
+- bup: reported #702769
+- python-psutil: reported #702665
+- libsys-gamin-perl: reported #702663
+- autogen: reported, fixed #702644
+- cil: reported #702646
+- glance: reported #702647
+- bb: reported #702467 
+- xmpi: reported #702438 
+- wmcoincoin: reported #702439
+- graphviz: reported #702436
+- xview: reported #702437
+- zapping: reported https://sourceforge.net/tracker/?func=detail&aid=3607056&group_id=2599&atid=102599
+- zbar: reported https://sourceforge.net/p/zbar/bugs/74/
+- gnutls28: reported #702367 
+- getfem++: reported #702370
+- r-base: reported #702354
+- basic256: reported #702361 
+- pidgin: reported, fixed #701671
+- ncurses-hexedit: reported #701670
+- lincity: reported #701658
+- rarian: reported #701601
+- noweb: reported, fixed #701056 
+- alsa-tools: reported #700964
+- alliance: reported #700965
+- adolc: reported #700937
+- dbacl: reported to developer
+- drbd8: reported #700930
+- clutter-1.0: reported #70093
+- fontforge: reported #700933
+- buddy: reported https://sourceforge.net/tracker/?func=detail&aid=3605234&group_id=112658&atid=662728
+- gst-plugins-bad0.10: reported #700901 
+- libcgroup: reported https://sourceforge.net/tracker/?func=detail&aid=3605228&group_id=218421&atid=1043649
+- fxt: reported https://savannah.nongnu.org/bugs/index.php?38293
+- tpb: reported #689751
+- tomoe: reported #689750
+- sjeng: reported #689699
+- purple-plugin-pack: reported #689574
+- openarena: reported #689569
+- open-vm-tools: reported https://sourceforge.net/tracker/?func=detail&aid=3574402&group_id=204462&atid=989708
+- poker-eval: reported #689550
+- mz: reported to developer
+- libdessert0.87: reported to developer
+- libprelude: reported #689434
+- libxfont: reported #689439
+- lsh-utils: reported #689441
+- mysql-proxy: reported #688588
+- midori: reported https://bugs.launchpad.net/midori/+bug/1060341
+- ns2: reported #689424
+- ggobi: reported http://code.google.com/p/ggobi-documentation/issues/detail?id=48
+- jamin: reported https://sourceforge.net/tracker/?func=detail&aid=3573791&group_id=78441&atid=553290
+- notify-python: reported #689402
+- moon-lander: reported #688585
+- ctn: reported #689367
+- denemo: reported http://savannah.gnu.org/bugs/index.php?37483
+- #burn: reported #689356
+- #gnuradio: reported, fixed #689357
+- #lire: reported #689359
+- aconnectgui: reported #684508
+- afterstep: reported https://sourceforge.net/tracker/?func=detail&atid=100030&aid=3571004&group_id=30
+- #amanda: reported #688466
+- am-utils: reported #684509
+- ant-phone: reported #688469
+- ap-utils: reported to developer
+- #arc: reported https://sourceforge.net/tracker/?func=detail&atid=605144&aid=3570848&group_id=93691
+- ascd: reported #688475
+- asciijump: reported #688476
+- asclock: reported #688477
+- atftp: reported #688471
+- #ats-lang-anairiats: reported #688479
+- bird: reported #688385
+- bvi: reported to developer
+- bygfoot: reported https://sourceforge.net/tracker/?func=detail&atid=445176&aid=3570998&group_id=46139
+- #cluster-glue: reported #688514
+- coriander: reported #684541
+- courier: reported #688515
+- crasm: reported https://sourceforge.net/tracker/?func=detail&atid=675772&aid=3571000&group_id=116718
+- dieharder: reported to developer
+- dsniff: reported to developer
+- dump: reported https://sourceforge.net/tracker/?func=detail&atid=101306&aid=3570260&group_id=1306
+- dvdauthor: reported #688393
+- dwb: reported #688568
+- ettercap: reported https://sourceforge.net/tracker/?func=detail&atid=117435&aid=3570262&group_id=17435
+- etw: reported https://sourceforge.net/tracker/?func=detail&atid=577838&aid=3570424&group_id=84846
+- expect: reported https://sourceforge.net/tracker/?func=detail&atid=113179&aid=3570431&group_id=13179
+- fcode-utils: reported #688461
+- ffproxy: reported #688462
+- #filezilla: reported #688398
+- findutils: reported http://savannah.gnu.org/bugs/?37423
+- freecraft: reported #688399
+- fsvs: reported #688554
+- #fteqcc: reported https://sourceforge.net/tracker/?func=detail&atid=677452&aid=3570480&group_id=116842
+- #fweb: reported #688464
+- #g15daemon: reported #688465
+- g2: reported https://sourceforge.net/tracker/?func=detail&atid=102180&aid=3570508&group_id=2180
+- #gforth: reported #688591
+- gkrellm-gkrellmpc: reported to developer
+- gngb: reported to developer
+- gnugo: reported to developer
+- goattracker: reported #688403
+- gpac: reported to developer
+- gprolog: reported https://sourceforge.net/tracker/?func=detail&atid=109715&aid=3570846&group_id=9715
+- gpsim: reported https://sourceforge.net/tracker/?func=detail&atid=102341&aid=3570700&group_id=2341
+- gpstrans: reported #688452
+- gramophone2: reported https://sourceforge.net/tracker/?func=detail&atid=957891&aid=3570576&group_id=196547
+- grisbi: reported #688453
+- #gtkboard: reported #688454
+- gtkglext: reported #688569
+- hatari: reported #688594
+- heartbeat: reported #688455
+- hping3: reported #688458
+- hylafax: reported #688560
+- icon: reported #688636
+- id-utils: reported #688589
+- jss: reported #688472
+- kannel: reported #688656 
+- #koules: reported #688658
+- lcgdm: reported #688579
+- libgdiplus: reported #688361
+- libglade2: reported #688641
+- #libsieve: reported https://github.com/sodabrew/libsieve/issues/2
+- libterm-readline-gnu-perl: reported #688386
+- libuninameslist: reported ##688387
+- lie: reported #688389
+- cdecl: reported #689326
+- radare2: reported, fixed https://github.com/radare/radare2/issues/52, but also OOM
+- mcl: reported, fixed #688655
+- #sanlock: reported, fixed #689696
+- #quilt: reported, fixed #689554 
+- deng: reported, fixed http://sourceforge.net/p/deng/bugs/1083/
+- a56: reported, fixed #689364
+- isdnutils: reported, fixed #689421 
+- moodbar: reported, fixed #689373
+- pavuk: reported, fixed #689570
+- dmtcp: reported, fixed http://sourceforge.net/tracker/?func=detail&aid=3571006&group_id=194616&atid=950143
+- #mango-lassi: reported, fixed #689443
+- #ppl: reported, fixed #689583
+- neartree: reported to developer, fixed
+- r-cran-xml: reported, fixed #689693
+- sim4: reported to developer, fixed
+- #sepia: reported, fixed #689701
+- #pcp: reported, fixed #689552
+- pmw: reported to developer, fixed
+- lua-rexlib: reported, fixed https://github.com/rrthomas/lrexlib/issues/1
+- html-xml-utils: reported to developer, fixed
+- fastlink: reported to developer, fixed
+- cairo-dock-plug-ins: reported, fixed https://bugs.launchpad.net/cairo-dock-plug-ins/+bug/1054985/
+- cairo-dock: reported, fixed https://bugs.launchpad.net/cairo-dock-core/+bug/1055136/
+- claws-mail: reported, fixed #688478
+- crossfire: reported, fixed https://sourceforge.net/tracker/?func=detail&atid=113833&aid=3571001&group_id=13833
+- duff: reported to developer, fixed
+- fluidsynth: reported, fixed http://sourceforge.net/apps/trac/fluidsynth/ticket/108
+- golang: reported, fixed http://code.google.com/p/go/issues/detail?id=4143
+- icinga: reported, fixed #688459
+- igraph: reported, fixed https://bugs.launchpad.net/igraph/+bug/1054397
+- instead: reported, fixed http://code.google.com/p/instead/issues/detail?id=21
+- intercal: reported, fixed #688460
+- lua-lgi: reported, fixed https://github.com/pavouk/lgi/issues/26
+- #memdump: reported, fixed #688510
+- ax25-tools: reported, fixed #689322
+
+
+
+- tdb: nested functions in configure check
+- tevent: nested functions in configure check
+- busybox: nested functions
+- ruby-god: known #697079
+- libpam-unix2: known #701308, invalid GCC option
+- gorm.app: known http://lists.gnu.org/archive/html/discuss-gnustep/2012-02/msg00078.html
+- grace: conflicting types signed vs. unsigned int, fixed in 5.1.23
+- tinyscheme: index 53 out of bounds (incompatible use of scheme_interface) -> likely fixed in 1.40.svn.2012.12.14-1
+- w-scan: nested functions
+- zvbi: nested functions
+- xdotool: known #680824
+- yade: known #621054
+- win32-loader: nested functions
+- med-fichier: nested functions
+- libvirt: known #667965
+- lxc: nested functions
+- grub: nested functions
+- gnome-contacts: index 2 out of bounds (same as GCC)
+- gnome-settings-daemon: index 4 out of bounds (same as GCC)
+- adios: known #699262
+- altos: same error as CLANG
+- aqualung: same error as CLANG
+- auto-multiple-choice: same error as CLANG
+- ball: known #674226
+- #beast: known #687397
+- bogl: same error as CLANG
+- cadabra: nested functions
+- calcurse: same as CLANG
+- clutter-gesture: nested functions
+- debian-installer-netboot-images: known #620506
+- dhelp: known #699261
+- ecl: syntax error, fixed upstream
+- elfutils: known #684825
+- ffindex: same as CLANG
+- filters: same as CLANG
+- freedroidrpg: same as CLANG
+- gambas3: same as CLANG
+- gimp-plugin-registry: same as CLANG
+- git-annex: known #682351
+- gmysqlcc: same as CLANG
+- gpe-calendar: same as CLANG
+- gpm: nested functions
+- gwc: nested functions
+- icheck: same as CLANG (restrict)
+- idjc: nested functions
+- kraptor: same as CLANG
+- lasso: same as CLANG
+- libdevel-bt-perl: known #602668
+- libeventdb: same as CLANG
+- libgpevtype: same as CLANG
+- libhandoff: same as CLANG
+- libhdate: same as CLANG
+- libnet-dns-perl: known #682602
+- libsx: same as CLANG
+- luvcview: same as CLANG
+- mandos: same as CLANG
+- matchbox-panel: same as CLANG
+- mcdp: same as CLANG
+- ncpfs: same as CLANG
+- netcdf: fixed in upstream 4.2.1.1
+- netplug: same as CLANG
+- newlib: fixed in upstream 1.2.0
+- ocaml-cry: known #677666
+- ocaml-dtools: known #677666
+- ocaml-duppy: known #677666
+- ocaml-flac: known #677666
+- ocaml-gstreamer: known #677666
+- ocaml-ladspa: known #677666
+- ocaml-lame: known #677666
+- ocaml-mad: known #677666
+- ocaml-mm: known #677666
+- ocaml-ogg: known #677666
+- ocaml-soundtouch: known #677666
+- ocaml-vorbis: known #677666
+- p3scan: same as CLANG
+- partconf: same as CLANG
+- pdp: same as CLANG
+- postgresql-9.1: maybe fixed in 9.1.6-1, configure missing -lpthread
+- qxw: nested functions
+- rainbow: same as CLANG
+- rawstudio: same as CLANG
+- reprepro: nested functions
+- rsh-redone: same as CLANG
+- scim-canna: known #558631
+- scim-m17n: known #558633
+- scim-tables: known #558636
+- smbc: nested functions
+- spatialite: known #684813
+- spl: nested functions
+- systemtap: nested functions
+
+
+REPORTED TO DANIEL
+- libgdal-grass: warnings printed on stdout
+
+- xserver-xorg-video-intel: padding with multiple bit-field structs
+
+- chimera2: foo() and foo(void) of different type -> fixed in my cprover branch
+- covered: conflicting types  void (*)() [] vs.  void (*)(...) []
+- libast: foo(void)
+- iverilog: conflicting types  void (*)() vs.  void (*)(...)
+- upse: conflicting types  void (*)(...) [256] vs.  void (*)() [256]
+
+- xz-utils: syntax error: transform(uint32_t state[static 8], const uint32_t data[static 16])
+- yash: static inline bool test_single(void *args[static 1]);
+
+- swftools: initialisation of variable length array
+
+- python3.2: tentative definition (link-debug/static.c)
+- sane-backends: tentative definition
+- webcit: conflicting types  signed char * [4096] vs.  signed char * [4]
+- wmii: conflicting types  void (*)(union _XEvent *) [2] vs.  void (*)(union _XEvent *) [1]
+
+- snort: type2name
+- binutils: conflicting types, do vimdiff
+- brltty: conflicting types, possibly non-type symbol
+- db: conflicting types, do vimdiff
+- ekg2: conflicting types looking similar
+- dia: conflicting types possibly ok (if pointers to structs)
+- eurephia: conflicting types with same type
+- erlang: conflicting types with same type
+- gammu: conflicting types, possibly non-type symbol
+- gettext: conflicting types with same type
+- ghostscript: conflicting types with same type
+- extsmail: conflicting types with same type
+- funtools: conflicting types with same type
+- gcc-h8300-hms: conflicting types with same type
+- ifmail: conflicting types with same type
+- iptables: conflicting types with same type
+- ksh: conflicting types with same type
+- lam: conflicting types with same type
+- libsdl1.2: conflicting types with same type
+- libtool: conflicting types with same type
+- libvpx: conflicting types with same type
+- lilo: conflicting types with same type
+- m4: conflicting types with same type
+- magic: conflicting types with same type
+- gccxml: conflicting types
+- mcrypt: conflicting types with same type
+- memtest86: conflicting types with same type
+- memtest86+: conflicting types with same type
+- mg: conflicting types with same type
+- mgetty: conflicting types with same type
+- micropolis-activity: conflicting types with same type
+- minc: conflicting types with same type
+- mkelfimage: conflicting types with same type
+- mplayer: conflicting types with same type
+- mplayer2: conflicting types with same type
+- msort: conflicting types with same type
+- nagios-plugins: conflicting types with same type
+- navit: conflicting types with same type
+- ncftp: conflicting types with same type
+- ncurses: conflicting types with same type
+- net-snmp: conflicting types with same type
+- newt: conflicting types with same type
+- nvclock: conflicting types with same type
+- onak: conflicting types with same type
+- openafs: conflicting types with same type
+- opencryptoki: conflicting types with same type
+- openldap: conflicting types with same type
+- openmpi: conflicting types with same type
+- oss4: conflicting types with same type
+- pcb: conflicting types with same type
+- pcsxr: conflicting types with same type
+- owl: conflicting types with same type
+- perl-tk: conflicting types with same type
+- php-memcache: conflicting types with same type
+- playmidi: conflicting types with same type
+- prboom: conflicting types with same type
+- proftpd-dfsg: conflicting types with same type
+- rbldnsd: conflicting types with same type
+- rdesktop: conflicting types with same type
+- rdup: conflicting types with same type
+- reiser4progs: conflicting types with same type
+- pork: conflicting types with same type
+- rsync: conflicting types with same type
+- rush: conflicting types with same type
+- samba: conflicting types with same type
+- samba4: conflicting types with same type
+- scheme48: conflicting types with same type
+- seabios: conflicting types with same type
+- siggen: conflicting types with same type
+- simgrid: conflicting types with same type
+- simh: conflicting types with same type
+- snack: conflicting types with same type
+- socks4-server: conflicting types with same type
+- suricata: conflicting types with same type
+- thrust: conflicting types with same type
+- tiemu: conflicting types with same type
+- tcpreplay: conflicting types with same type
+- torque: conflicting types with same type
+- up-imapproxy: conflicting types with same type
+- virtuoso-opensource: conflicting types with same type
+- wcalc: conflicting types with same type
+- wdm: conflicting types with same type
+- wireshark: conflicting types with same type
+- wmdrawer: conflicting types with same type
+- xboing: conflicting types with same type
+- xchat-xsys: conflicting types with same type
+- xinetd: conflicting types with same type
+- xjdic: conflicting types with same type
+- xorg-server: conflicting types with same type
+- xppaut: conflicting types with same type
+- xrdp: conflicting types with same type
+- xtux: conflicting types with same type
+- yp-svipc: conflicting types with same type
+- xboard: conflicting types with same type
+- z88dk: conflicting types with same type
+- ziproxy: conflicting types with same type
+- zoem: conflicting types with same type
+- zile: conflicting types with same type
+- dosemu: conflicting types with same type
+- alien-arena: conflicting types with same type
+- rott: conflicting types with same type
+- uqm: conflicting types with same type
+- vice: conflicting types with same type
+- sdcc: conflicting types
+- sgt-puzzles: conflicting types
+
+- 9base: find_library bug
+- axiom: find_library bug
+- bcron: find_library bug
+- sra-sdk: find_libraries
+
+- avahi: duplicate definition of function
+- cdw: load each file only once
+- cernlib: duplicate object in linking phase
+- cogl: duplicate definition of function
+- dctrl-tools: load each file only once
+- directfb: duplicate definition of function
+- drawterm: load each file only once
+- gedit: duplicate definition of function
+- gnome-keyring: duplicate definition of function
+- graphicsmagick: duplicate definition of function
+- glib2.0: duplicate definition of function
+- gstreamer0.10: duplicate definition of function
+- grass: duplicate definition of function
+- gnunet: duplicate definition of function
+- hercules: duplicate definition of function
+- imagemagick: duplicate definition of function
+- ion: duplicate definition of function
+- libidn: duplicate definition of function
+- libinfinity: duplicate definition of function
+- libiscsi: duplicate definition of function
+- libopenobex: duplicate definition of function
+- libsocialweb: duplicate definition of function
+- libunwind: duplicate definition of function
+- libxslt: duplicate definition of function
+- linphone: duplicate definition of function
+- mesa: duplicate definition of function
+- ming: duplicate definition of function
+- packagekit: duplicate definition of function
+- pilot-link: duplicate definition of function
+- pulseaudio: duplicate definition of function
+- qutecom: duplicate definition of function
+- schroedinger: duplicate definition of function
+- subversion: duplicate definition of function
+- upower: duplicate definition of function
+- vlc: duplicate definition of function
+- xine-lib-1.2: duplicate definition of function
+
+- blender: duplicate definition of function (possibly actual bug)
+- elmerfem: duplicate definition of function (redundant file 4node_quad_save.c, possibly actual bug)
+- gsasl: duplicate definition of function (possibly actual bug)
+- gnucash: duplicate definition of function (possibly actual bug)
+- argyll: conflicting function declarations (possibly actual bug)
+- gnutls26: duplicate definition of function (possibly actual bug)
+- open-cobol: maybe duplicate function issue?
+
+- cairo: conversion from `double' to `enum': implicit conversion not permitted
+
+- ircii: function pointer as KnR return type
+- pvm: function pointer return in KnR
+- scrollz: function pointer in KnR
+
+- cccd: dependent function arguments
+- darktable: dependent function arguments
+- hyantesite: depending arguments
+- lv2file: dependant arguments
+- pymvpa: dependant arguments
+- rcs: dependant arguments
+- ripperx: dependant arguments
+- ssss: dependant arguments
+
+- argus-client: register struct in KnR
+- argus: register struct in KnR
+- bash: register const in KnR
+- basilisk2: register struct in KnR
+- bing: register struct in KnR
+- biosquid: register struct in KnR
+- boinc: register const in KnR
+- bzflag: register struct in KnR
+- canna: register struct in KnR
+- cc1111: register struct in KnR
+- cctools: const register in KnR
+- cdrkit: register const in KnR
+- ckermit: register const in KnR
+- clustalo: register struct in KnR
+- crash: register const in KnR
+- cxref: register struct in KnR
+- cyrus-imapd-2.4: register const in KnR
+- cyrus-imspd: register const in KnR
+- dante: register const in KnR
+- daq: register const in KnR
+- dietlibc: register const in KnR
+- dot-forward: register struct in KnR
+- elvis-tiny: register struct in KnR
+- emacs23: register const in KnR
+- fastforward: register struct in KnR
+- flex-old: register const in KnR
+- flex: register const in KnR
+- freewnn: register struct in KnR
+- ganglia: register const in KnR
+- gdb-avr: register const in KnR
+- gdb-mingw-w64: register const in KnR
+- gdb-msp430: register const in KnR
+- gdb: register const in KnR
+- glhack: register struct in KnR
+- globus-common: register const in KnR
+- gnu-smalltalk: register const in KnR
+- gperf: register const in KnR
+- grib-api: register const in KnR
+- gridengine: register struct in KnR
+- gtkwave: register const in KnR
+- indent: register const in KnR
+- inn: register struct in KnR
+- iputils: register struct in KnR
+- irsim: register struct in KnR
+- ispell: register struct in KnR
+- jless: register struct in KnR
+- jove: register const in KnR
+- jvim: register struct in KnR
+- krb5-appl: register const in KnR
+- krb5: register const in KnR
+- less: register struct in KnR
+- libaudio-scan-perl: register const in KnR
+- libbind: register const in KnR
+- libfile-mmagic-xs-perl: register const in KnR
+- libid3tag: register const in KnR
+- libonig: register const in KnR
+- libpar-packer-perl: register const in KnR
+- libpcap: register const in KnR
+- libreoffice: register struct in KnR
+- librpcsecgss: register struct in KnR
+- linux86: register struct in KnR
+- mapserver: register const in KnR
+- mgp: register struct in KnR
+- mysql-5.5: register struct in KnR
+- netdiag: register const in KnR
+- nethack: register struct in KnR
+- netqmail: register struct in KnR
+- nmh: register struct in KnR
+- nvi: register struct in KnR
+- omniorb-dfsg: register struct in KnR
+- opendkim: register const in KnR
+- opensm: register const in KnR
+- php5: register struct in KnR
+- pmacct: register struct in KnR
+- posh: register struct in KnR
+- procmail: register const in KnR
+- radiance: register struct in KnR
+- readline5: register const in KnR
+- readline6: register const in KnR
+- remem: register struct in KnR
+- root-system: register struct in KnR
+- ruby1.9.1: register const in KnR
+- ruby-escape-utils: register const in KnR
+- ruby-redcarpet: register const in KnR
+- scm: register const in KnR
+- screader: register struct in KnR
+- screen: register struct in KnR
+- sendmail: register const in KnR
+- shapetools: register struct in KnR
+- slashem: register struct in KnR
+- slirp: register struct in KnR
+- spamprobe: register const in KnR
+- stalin: register struct in KnR
+- strongswan: register const in KnR
+- sunclock: register struct in KnR
+- symmetrica: register struct in KnR
+- t1lib: register struct in KnR
+- tcl8.4: register const in KnR
+- tcpdump: register const in KnR
+- tf: register const in KnR
+- tgif: register struct in KnR
+- tk8.4: register const in KnR
+- unzip: register const in KnR
+- uucp: register const in KnR
+- vigor: register struct in KnR
+- wnn6-sdk: register struct in KnR
+- xcb-util: register const in KnR
+- xdelta: register struct in KnR
+- xdvik-ja: register struct in KnR
+- xloadimage: register struct in KnR
+- xtel: register struct in KnR
+- yap: register struct in KnR
+- zeroc-icee-translators: register struct in KnR
+- zip: register const in KnR
+- zoo: register struct in KnR
+- inetutils: register struct in KnR
+- linux-atm: register struct in KnR
+- netpbm-free: register const in KnR
+- texlive-bin: register struct in KnR
+- vnc4: register struct in KnR
+- zorp: register const in KnR
+- mono: register struct in KnR
+- swi-prolog: register const in KnR
+

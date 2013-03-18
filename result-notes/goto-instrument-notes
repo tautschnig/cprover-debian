@@ -1,0 +1,13 @@
+- a2ps: 2 YYSTYPEs, second exists in multiple modules and each renamed separately
+- abraca: huge array of constants (with typecasts), exceeds memory when re-compiling
+- aeskeyfind: reported #692293
+- accountsservice: gir_dummy_function
+- aweather: make_static_symbol does not set location, reported to Daniel
+- anjuta: gir_dummy_function
+
+DEBUG:
+- alpine: integer exception
+- amanda: address_of argument invalid
+- alsa-utils: check names of types, why is struct re-introduced
+- for non-converging ones: check when if is introduced
+
