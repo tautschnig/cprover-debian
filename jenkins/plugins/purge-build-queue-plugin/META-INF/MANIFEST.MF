@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jesse
+Build-Jdk: 1.6.0_22
+Extension-Name: purge-build-queue-plugin
+Specification-Title: Provides an easy mechanism to purge the build que
+ ue.
+Implementation-Title: purge-build-queue-plugin
+Implementation-Version: 1.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: purge-build-queue-plugin
+Long-Name: Purge Build Queue Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Purge+Build+Queue+Plugin
+Plugin-Version: 1.0
+Hudson-Version: 1.425
+Jenkins-Version: 1.425
+Plugin-Developers: Jesse Farinacci:jieryn:jieryn@gmail.com
+

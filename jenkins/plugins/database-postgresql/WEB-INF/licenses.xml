@@ -1,0 +1,9 @@
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='database-postgresql' version='1.0'>
+  <l:dependency name='database-postgresql' groupId='org.jenkins-ci.plugins' artifactId='database-postgresql' version='1.0' url='https://wiki.jenkins-ci.org/display/JENKINS/PostgreSQL+Database+Plugin'>
+    <l:description />
+  </l:dependency>
+  <l:dependency name='PostgreSQL JDBC Driver' groupId='postgresql' artifactId='postgresql' version='9.1-901-1.jdbc4' url='http://jdbc.postgresql.org'>
+    <l:description>The PostgreSQL Driver JDBC4</l:description>
+    <l:license name='BSD License' url='http://jdbc.postgresql.org/license.html' />
+  </l:dependency>
+</l:dependencies>

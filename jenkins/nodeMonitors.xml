@@ -15,7 +15,7 @@
   </hudson.node__monitors.SwapSpaceMonitor>
   <hudson.node__monitors.TemporarySpaceMonitor>
     <ignored>false</ignored>
-    <freeSpaceThreshold>1GB</freeSpaceThreshold>
+    <freeSpaceThreshold>0.1GB</freeSpaceThreshold>
   </hudson.node__monitors.TemporarySpaceMonitor>
   <hudson.node__monitors.ResponseTimeMonitor>
     <ignored>false</ignored>

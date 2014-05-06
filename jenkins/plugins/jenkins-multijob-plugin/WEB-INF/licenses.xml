@@ -1,0 +1,12 @@
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='jenkins-multijob-plugin' version='1.13'>
+  <l:dependency name='Jenkins Multijob plugin' groupId='org.jenkins-ci.plugins' artifactId='jenkins-multijob-plugin' version='1.13' url='http://wiki.jenkins-ci.org/display/JENKINS/Multijob+Plugin'>
+    <l:description>Enabling full hierarchy of Jenkins jobs</l:description>
+  </l:dependency>
+  <l:dependency name='Xerces2 Java Parser' groupId='xerces' artifactId='xercesImpl' version='2.9.1' url='http://xerces.apache.org/xerces2-j'>
+    <l:description>Xerces2 is the next generation of high performance, fully compliant XML parsers in the
+    Apache Xerces family. This new version of Xerces introduces the Xerces Native Interface (XNI),
+    a complete framework for building parser components and configurations that is extremely
+    modular and easy to program.</l:description>
+    <l:license name='The Apache Software License, Version 2.0' url='http://www.apache.org/licenses/LICENSE-2.0.txt' />
+  </l:dependency>
+</l:dependencies>

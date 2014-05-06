@@ -58,6 +58,7 @@ translation.createDialog = function() {
 
         translation.dialog = new YAHOO.widget.Dialog(d, {
             width : "40em",
+            zIndex: 1000,
             visible : false,
             draggable: true,
             constraintoviewport: true,

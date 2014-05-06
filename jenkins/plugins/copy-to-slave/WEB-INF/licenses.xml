@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='copy-to-slave' version='1.4.3'><l:dependency name='Copy To Slave Plugin' groupId='org.jenkins-ci.plugins' artifactId='copy-to-slave' version='1.4.3' url='http://wiki.jenkins-ci.org/display/JENKINS/Copy+To+Slave+Plugin'><l:description/></l:dependency></l:dependencies>

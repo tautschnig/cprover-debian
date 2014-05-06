@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='nested-view' version='1.14'><l:dependency name='Nested View Plugin' groupId='org.jenkins-ci.plugins' artifactId='nested-view' version='1.14' url='http://wiki.jenkins-ci.org/display/JENKINS/Nested+View+Plugin'><l:description/></l:dependency></l:dependencies>

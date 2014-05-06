@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jet
+Build-Jdk: 1.7.0_17
+Extension-Name: build-blocker-plugin
+Implementation-Title: build-blocker-plugin
+Implementation-Version: 1.4.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: build-blocker-plugin
+Long-Name: Build Blocker Plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Build+Blocker+Plugin
+Plugin-Version: 1.4.1
+Hudson-Version: 1.466
+Jenkins-Version: 1.466
+Plugin-Developers: Frederik Fromm:ffromm:frederik.fromm@gmail.com
+

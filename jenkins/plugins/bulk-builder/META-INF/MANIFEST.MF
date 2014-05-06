@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: westcos
+Build-Jdk: 1.6.0_29
+Extension-Name: bulk-builder
+Specification-Title: Trigger multiple builds with ease. Designed for u
+ sers with many jobs.
+Implementation-Title: bulk-builder
+Implementation-Version: 1.5
+Plugin-Class: org.jvnet.hudson.plugins.bulkbuilder.model.BuildHistory
+Group-Id: org.jvnet.hudson.plugins
+Short-Name: bulk-builder
+Long-Name: Bulk Builder
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Bulk+Builder+Plugin
+Plugin-Version: 1.5
+Hudson-Version: 1.388
+Plugin-Developers: Simon Westcott:swestcott:swestcott@gmail.com,Jesse 
+ farinacci:jieryn:jieryn@gmail.com
+

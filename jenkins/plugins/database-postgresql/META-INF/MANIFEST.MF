@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: kohsuke
+Build-Jdk: 1.7.0_07
+Extension-Name: database-postgresql
+Implementation-Title: database-postgresql
+Implementation-Version: 1.0
+Group-Id: org.jenkins-ci.plugins
+Short-Name: database-postgresql
+Long-Name: database-postgresql
+Url: https://wiki.jenkins-ci.org/display/JENKINS/PostgreSQL+Database+P
+ lugin
+Plugin-Version: 1.0
+Hudson-Version: 1.466
+Jenkins-Version: 1.466
+Plugin-Dependencies: database:1.1
+Plugin-Developers: 
+

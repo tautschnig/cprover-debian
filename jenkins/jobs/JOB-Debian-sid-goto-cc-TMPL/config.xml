@@ -1,0 +1,163 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>3</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.4.1">
+      <useBuildBlocker>false</useBuildBlocker>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+# copied/modified from /usr/share/doc/pbuilder/examples/rebuild/buildall
+
+DIST=sid
+MIRROR=ftp://ftp.uk.debian.org
+if [ x$NODE_NAME = &quot;x&quot; ] ; then
+  NODE_NAME=master
+fi
+
+BUILDDIR=$WORKSPACE
+BASEPATH=&quot;/srv/sid-base.cow&quot;
+Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-$NODE_NAME/JOB-Debian-sid/workspace/Sources
+
+function print_bugreport_template {
+  local pkg=&quot;$1&quot;
+  local ver=&quot;$2&quot;
+
+cat &lt;&lt;EOF
+To: bugs@debian.org
+
+Package: $pkg
+Version: $ver
+Usertags: goto-cc
+
+During a rebuild of all packages in a clean sid chroot (and cowbuilder+pbuilder)
+the build failed with the following error. Please note that we use our research
+compiler tool-chain (using tools from the cbmc package), which permits extended
+reporting on type inconsistencies at link time.
+
+http://sources.debian.net/src/$pkg/$ver/
+EOF
+
+}
+
+function build {
+    PACKAGE=$1
+
+    rm -rf $BUILDDIR/* $BUILDDIR/.[a-zA-Z]*
+
+    G=$(grep-dctrl -S -n -s Directory,Version -r ^$PACKAGE$ $Sources | tail -n 3)
+    set -- $G
+    DIR=$1
+    export FULLVER=$2
+    VER=`echo $FULLVER | sed s/^.*://`
+    umask 0022; export DEB_VENDOR=Debian; dget -u -x ${MIRROR}/debian/${DIR}/${PACKAGE}_${VER}.dsc
+    cd $(find . -type d ! -name .)
+    mkdir -p $BUILDDIR/result
+    export -n DISPLAY; pdebuild --pbuilder cowbuilder --use-pdebuild-internal --buildresult $BUILDDIR/result/ -- --basepath $BASEPATH
+
+    if [ $? -eq 0 ]; then
+        retval=0
+    else
+        retval=1
+    fi
+
+    #sloccount --duplicates --wide --details . &gt; $BUILDDIR/../JOB-Debian-sloccount/$PACKAGE-sloccount.sc
+
+    cd $BUILDDIR
+    if [ $retval -eq 0 ] ; then
+      rm -rf $PACKAGE-* result *.deb
+      if [ -d goto-binaries ] ; then tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; fi
+    else
+      print_bugreport_template &quot;$PACKAGE&quot; &quot;$FULLVER&quot;
+    fi
+
+    return $retval
+}
+
+build $PKG</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier plugin="copy-to-slave@1.4.3">
+      <includes>goto-binaries.tar.bz2</includes>
+      <excludes></excludes>
+      <overrideDestinationFolder>false</overrideDestinationFolder>
+      <destinationFolder></destinationFolder>
+      <runAfterResultFinalised>false</runAfterResultFinalised>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier>
+    <hudson.plugins.warnings.WarningsPublisher plugin="warnings@4.40">
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <thresholdLimit>low</thresholdLimit>
+      <pluginName>[WARNINGS] </pluginName>
+      <defaultEncoding></defaultEncoding>
+      <canRunOnFailed>true</canRunOnFailed>
+      <useStableBuildAsReference>false</useStableBuildAsReference>
+      <useDeltaValues>false</useDeltaValues>
+      <thresholds plugin="analysis-core@1.56">
+        <unstableTotalAll></unstableTotalAll>
+        <unstableTotalHigh></unstableTotalHigh>
+        <unstableTotalNormal></unstableTotalNormal>
+        <unstableTotalLow></unstableTotalLow>
+        <failedTotalAll></failedTotalAll>
+        <failedTotalHigh></failedTotalHigh>
+        <failedTotalNormal></failedTotalNormal>
+        <failedTotalLow></failedTotalLow>
+      </thresholds>
+      <shouldDetectModules>false</shouldDetectModules>
+      <dontComputeNew>true</dontComputeNew>
+      <doNotResolveRelativePaths>true</doNotResolveRelativePaths>
+      <parserConfigurations/>
+      <consoleParsers>
+        <hudson.plugins.warnings.ConsoleParser>
+          <parserName>GNU C Compiler 4 (gcc)</parserName>
+        </hudson.plugins.warnings.ConsoleParser>
+        <hudson.plugins.warnings.ConsoleParser>
+          <parserName>goto-cc errors</parserName>
+        </hudson.plugins.warnings.ConsoleParser>
+      </consoleParsers>
+    </hudson.plugins.warnings.WarningsPublisher>
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.20">
+      <deleteDirs>false</deleteDirs>
+      <skipWhenFailed>false</skipWhenFailed>
+      <cleanWhenSuccess>true</cleanWhenSuccess>
+      <cleanWhenUnstable>true</cleanWhenUnstable>
+      <cleanWhenFailure>true</cleanWhenFailure>
+      <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
+      <cleanWhenAborted>true</cleanWhenAborted>
+      <notFailBuild>false</notFailBuild>
+      <cleanupMatrixParent>false</cleanupMatrixParent>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.WsCleanup>
+    <hudson.plugins.claim.ClaimPublisher plugin="claim@2.3"/>
+  </publishers>
+  <buildWrappers>
+    <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.4">
+      <before>true</before>
+      <behind>false</behind>
+    </de.jamba.hudson.plugin.wsclean.PrePostClean>
+    <EnvInjectBuildWrapper plugin="envinject@1.89">
+      <info>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+  </buildWrappers>
+</project>

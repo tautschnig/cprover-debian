@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jlf
+Build-Jdk: 1.6.0_24
+Extension-Name: dropdown-viewstabbar-plugin
+Specification-Title: Provides a drop down menu for selecting views.
+Implementation-Title: dropdown-viewstabbar-plugin
+Implementation-Version: 1.6
+Group-Id: org.jenkins-ci.plugins
+Short-Name: dropdown-viewstabbar-plugin
+Long-Name: Drop Down ViewsTabBar Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/DropDown+ViewsTabBar+P
+ lugin
+Plugin-Version: 1.6
+Hudson-Version: 1.455
+Jenkins-Version: 1.455
+Plugin-Developers: Jesse Farinacci:jieryn:jieryn@gmail.com
+
