@@ -32,24 +32,34 @@
 
 set -evx
 
+SUDO=""
 # requires proper sudoers setup:
 #Cmnd_Alias  COWBUILDER=/usr/sbin/cowbuilder
 #mictau  ALL=NOPASSWD:  COWBUILDER
 #Defaults!COWBUILDER  setenv
 
-#cow_base=/var/cache/pbuilder/wheezy-base-mt.cow
-cow_base=$HOME/wheezy-base.cow
+#cow_base=/var/cache/pbuilder/sid-base-mt.cow
+export BUILDPLACE=/srv/jenkins-slave/cow
+export APTCACHE=/srv/jenkins-slave/aptcache
+mkdir -p $APTCACHE
+
+if [ `ls $BUILDPLACE/ | wc -l` -ne 0 ] ; then
+  echo "$BUILDPLACE is non-empty, builds may be running"
+  exit 1
+fi
+
+cow_base=/srv/sid-base.cow
 if [ -d $cow_base ] ; then
   echo " \
 umount /dev/pts ; \
 umount /var/cache/pbuilder/ccache ; \
 umount /proc ; \
 chown -R $UID . ; \
-exit" | sudo cowbuilder --login --save-after-login --basepath $cow_base
+exit" | $SUDO cowbuilder --login --save-after-login --basepath $cow_base
 fi
 rm -rf $cow_base
 
-cat > $HOME/.pbuilderrc.tmp <<"EOF"
+cat > /srv/jenkins-slave/.pbuilderrc.tmp <<"EOF"
 EXTRAPACKAGES="eatmydata"
 
 use_eatmydata=1
@@ -76,21 +86,25 @@ fi
 #PBUILDERSATISFYDEPENDSOPT="--control ../*.dsc"
 PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
 BINDMOUNTS="$BINDMOUNTS /run/shm"
+BUILDPLACE=/srv/jenkins-slave/cow
+APTCACHE=/srv/jenkins-slave/aptcache
 EOF
-if [ -e $HOME/.pbuilderrc ] ; then
+if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
-  diff $HOME/.pbuilderrc $HOME/.pbuilderrc.tmp
+  diff /srv/jenkins-slave/.pbuilderrc /srv/jenkins-slave/.pbuilderrc.tmp
 fi
-mv $HOME/.pbuilderrc.tmp $HOME/.pbuilderrc
+mv /srv/jenkins-slave/.pbuilderrc.tmp /srv/jenkins-slave/.pbuilderrc
 
 # from http://www.hermann-uwe.de/blog/rebuilding-the-whole-debian-archive-using-the-open64-compiler
-sudo apt-get install cowbuilder grep-dctrl wget devscripts gcc \
-	debian-keyring debian-archive-keyring screen eatmydata
-sudo cowbuilder --create --distribution wheezy --mirror ftp://ftp.uk.debian.org/debian \
-  --basepath $cow_base  \
+# $SUDO apt-get install cowbuilder grep-dctrl wget devscripts gcc \
+# 	debian-keyring debian-archive-keyring screen eatmydata
+$SUDO cowbuilder --create --distribution sid --mirror ftp://ftp.uk.debian.org/debian \
+  --aptcache $APTCACHE --basepath $cow_base  \
   --debootstrapopts "--keyring=/usr/share/keyrings/debian-archive-keyring.gpg"
 # cowbuilder or debootstrap bug: these umount /run/shm for some reason
-sudo mount -t tmpfs -o nosuid,nodev none /run/shm
+if ! mount | grep -q /run/shm ; then
+  $SUDO mount -t tmpfs -o rw,nosuid,nodev,noexec,relatime,size=52931280k tmpfs /run/shm
+fi
 
 real_gcc=`readlink -f $cow_base/usr/bin/gcc`
 if [ ! -f "$real_gcc" ] ; then
@@ -139,6 +153,7 @@ has_lf2c=""
 use_ld=0
 include_next=0
 fpch_preproc=""
+f_opts=""
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
     skip_next=0
@@ -183,6 +198,7 @@ for o in "$@" ; do
     -Wl,-Ttext) exit 0 ;; # we don't really deal with sections starting at special addresses
     -Wl,-Ttext=*) exit 0 ;; # we don't really deal with sections starting at special addresses
     -include) include_next=1 ;;
+    -f*) f_opts="$f_opts $o" ;;
     -*) true ;;
     *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
     *.c) source_args+=" $o" ;;
@@ -192,7 +208,12 @@ done
 if [ -z "$source_args" -a -z "$objfiles" ] ; then
   exit 0
 fi
-  
+
+# gir_dummy_function workaround
+if echo $ofiles | grep -q "\.typelib\.so$" ; then
+  exit 0
+fi
+
 if [ -z "$ofiles" ] ; then
   if [ $compile_only -eq 0 ] ; then
     ofiles="a.out"
@@ -244,6 +265,12 @@ if [ -n "$has_lfl$has_lf2c" ] && [ "$ofiles" = "conftest" ] && \
   hs_lf2c=""
 fi
 
+# make configure test for global_symbol_pipeline work
+if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] && \
+      egrep -q '^extern int nm_test_func\(\);$' $source_args ; then
+  sed -i 's/extern int nm_test_func/extern void nm_test_func/' $source_args
+fi
+
 for f in $objfiles ; do
   if echo "$f" | egrep -q '^(/usr|/lib)' ; then
     continue
@@ -256,11 +283,10 @@ for f in $objfiles ; do
       echo "WARNING: GOTO-CC had not created $f, building empty binary"
       touch /tmp/empty-$$.c
     fi
-    opt_m=""
     if file "$f" | grep -q 32-bit ; then
-      opt_m="-m32"
+      f_opts="$f_opts -m32"
     fi
-    goto-cc $opt_m -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
       mv "$f" "$f.gcc-binary"
@@ -312,7 +338,7 @@ fi
 if [ $use_ld -eq 0 ] ; then
   goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc
 else
-  goto-ld "$@"
+  goto-cc "$@" -r
 fi
 
 for f in $ofiles ; do
@@ -324,7 +350,7 @@ for f in $ofiles ; do
   fi
   if [ "`basename "$f"`" != "conftest" ] ; then
     gbfile="`readlink -f "$f"`"
-    gbfile="`echo "$gbfile" | sed 's#/build/[^/]*#&/goto-binaries#'`"
+    gbfile="`echo "$gbfile" | sed 's#/sid-goto-cc-[^/]*#&/goto-binaries#'`"
     gbfile="`echo "$gbfile" | sed 's#^/tmp/#&goto-binaries/#'`"
     gbfile="`echo "$gbfile" | sed 's#^/var/tmp/#&goto-binaries/#'`"
     mkdir -p "`dirname "$gbfile"`"
@@ -394,6 +420,7 @@ ofiles=""
 objfiles=""
 ofile_next=0
 skip_next=0
+f_opts=""
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
     skip_next=0
@@ -453,11 +480,10 @@ for f in $objfiles ; do
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
     echo "WARNING: GOTO-CC had not created $f, building empty binary"
     touch /tmp/empty-$$.c
-    opt_m=""
     if file "$f" | grep -q 32-bit ; then
-      opt_m="-m32"
+      f_opts="$f_opts -m32"
     fi
-    goto-cc $opt_m -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
       mv "$f" "$f.gcc-binary"
@@ -477,7 +503,7 @@ for f in $ofiles ; do
   fi
   if [ "`basename "$f"`" != "conftest" ] ; then
     gbfile="`readlink -f "$f"`"
-    gbfile="`echo "$gbfile" | sed 's#/build/[^/]*#&/goto-binaries#'`"
+    gbfile="`echo "$gbfile" | sed 's#/sid-goto-cc-[^/]*#&/goto-binaries#'`"
     gbfile="`echo "$gbfile" | sed 's#^/tmp/#&goto-binaries/#'`"
     gbfile="`echo "$gbfile" | sed 's#^/var/tmp/#&goto-binaries/#'`"
     mkdir -p "`dirname "$gbfile"`"
@@ -514,7 +540,7 @@ chmod a+rx $cow_base/tmp/goto-cc
 real_gcc_chroot="`echo $real_gcc | sed "s#^$cow_base##"`"
 real_ld_chroot="`echo $real_ld | sed "s#^$cow_base##"`"
 echo " \
-sed -i 's/wheezy main/wheezy main contrib non-free/' /etc/apt/sources.list ; \
+sed -i 's/sid main/sid main contrib non-free/' /etc/apt/sources.list ; \
 apt-get update ; \
 apt-get install eatmydata adduser ; \
 addgroup --system --gid 1234 pbuilder ; \
@@ -529,31 +555,33 @@ mv /tmp/pbuilder-deps-wrapper.sh /usr/bin ; \
 chmod a+rx /usr/bin/pbuilder-deps-wrapper.sh ; \
 mv /tmp/goto-cc /usr/bin/goto-cc ; \
 cp /usr/bin/goto-cc /usr/bin/goto-ld ; \
-exit" | sudo cowbuilder --login --save-after-login --basepath $cow_base
+exit" | $SUDO cowbuilder --login --save-after-login --aptcache $APTCACHE --basepath $cow_base
+$SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
 
-cp /usr/share/doc/pbuilder/examples/rebuild/{buildall,getlist} .
-sed -i 's#any#linux-any| any#' getlist
-sed -i 's#^MIRROR=.*$#MIRROR=ftp://ftp.uk.debian.org#' buildall getlist
-sed -i "s#^BASEPATH=.*\$#BASEPATH=\"$cow_base\"#" buildall
-sed -i 's#mkdir -p \$BUILDDIR/\$PACKAGE$#rm -rf $BUILDDIR/$PACKAGE ; mkdir -p $BUILDDIR/$PACKAGE#' buildall
-sed -i 's/dget/umask 0022; export DEB_VENDOR=Debian; dget -u/' buildall
-sed -i 's#pdebuild#export -n DISPLAY; pdebuild#' buildall
-sed -i 's#rm -rf \$PACKAGE#if [ ! -e $LOGDIR/failed-$PACKAGE ] ; then rm -rf $PACKAGE/$PACKAGE-* $PACKAGE/result $PACKAGE/*.deb ; if [ -d $PACKAGE/goto-binaries ] ; then cd $PACKAGE ; tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; cd .. ; fi ; fi#' buildall
-sed -i "s#^while read package.*#while read package; do if [ \$\(\(\`df /home | tail -1 | awk '{ print \$4 }'\`/1024\)\) -lt 2000 ] ; then break ; fi#" buildall
+#cp /usr/share/doc/pbuilder/examples/rebuild/{buildall,getlist} .
+#sed -i 's#any#linux-any| any#' getlist
+#sed -i 's#^MIRROR=.*$#MIRROR=ftp://ftp.uk.debian.org#' buildall getlist
+#sed -i "s#^BASEPATH=.*\$#BASEPATH=\"$cow_base\"#" buildall
+#sed -i 's#mkdir -p \$BUILDDIR/\$PACKAGE$#rm -rf $BUILDDIR/$PACKAGE ; mkdir -p $BUILDDIR/$PACKAGE#' buildall
+#sed -i 's/dget/umask 0022; export DEB_VENDOR=Debian; dget -u/' buildall
+#sed -i 's#pdebuild#export -n DISPLAY; pdebuild#' buildall
+#sed -i 's#rm -rf \$PACKAGE#if [ ! -e $LOGDIR/failed-$PACKAGE ] ; then rm -rf $PACKAGE/$PACKAGE-* $PACKAGE/result $PACKAGE/*.deb ; if [ -d $PACKAGE/goto-binaries ] ; then cd $PACKAGE ; tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; cd .. ; fi ; fi#' buildall
+#sed -i "s#^while read package.*#while read package; do if [ \$\(\(\`df /home | tail -1 | awk '{ print \$4 }'\`/1024\)\) -lt 2000 ] ; then break ; fi#" buildall
 
-mkdir -p $HOME/.gnupg
+mkdir -p /srv/jenkins-slave/.gnupg
+chown -R jenkins-slave /srv/jenkins-slave/.gnupg
 
-./getlist wheezy
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#./getlist sid
+#screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
-#screen -d -m ./buildall list.wheezy.amd64 wheezy
+#screen -d -m ./buildall list.sid.amd64 sid
 
 
