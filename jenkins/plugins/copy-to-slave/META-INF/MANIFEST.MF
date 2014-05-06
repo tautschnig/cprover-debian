@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: vivekanand-1412
+Build-Jdk: 1.6.0_51
+Extension-Name: copy-to-slave
+Implementation-Title: copy-to-slave
+Implementation-Version: 1.4.3
+Group-Id: org.jenkins-ci.plugins
+Short-Name: copy-to-slave
+Long-Name: Copy To Slave Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Copy+To+Slave+Plugin
+Plugin-Version: 1.4.3
+Hudson-Version: 1.424
+Jenkins-Version: 1.424
+Plugin-Developers: Vivekanand S V:svvivek:svvivekanand@gmail.com
+

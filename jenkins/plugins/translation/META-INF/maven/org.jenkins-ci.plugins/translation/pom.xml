@@ -7,7 +7,7 @@
   </parent>
   
   <artifactId>translation</artifactId>
-  <version>1.10</version>
+  <version>1.11</version>
   <packaging>hpi</packaging>
   <name>Jenkins Translation Assistance plugin</name>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Translation+Assistance+Plugin</url>

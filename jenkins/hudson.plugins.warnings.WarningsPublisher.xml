@@ -1,0 +1,50 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.warnings.WarningsDescriptor plugin="warnings@4.40">
+  <groovyParsers>
+    <hudson.plugins.warnings.GroovyParser>
+      <name>goto-instrument --dump-c</name>
+      <regexp>^To dump: (goto-binaries/[^/]+/(.*/)?)[^/]+\n(\S+) (\S+) MISSING PROTOTYPE: (.*): file (.*) line (.*) function (.*)$</regexp>
+      <script>import hudson.plugins.warnings.parser.Warning
+
+String what = matcher.group(5)
+String fileName = matcher.group(2)+matcher.group(6)
+String lineNumber = matcher.group(7)
+String category = &quot;Missing prototype declaration&quot;
+String fn = matcher.group(8)
+String pkg = matcher.group(3)
+String version = matcher.group(4)
+String url = &quot;http://sources.debian.net/src/&quot;+pkg+&apos;/&apos;+version+&apos;/&apos;+fileName+&apos;?hl=&apos;+lineNumber+&apos;#L&apos;+lineNumber
+String msg = what+&quot; not declared when called from &quot;+fn+&quot; (&quot;+url+&quot;)&quot;
+
+return new Warning(fileName, Integer.parseInt(lineNumber), &quot;Dump C Parser&quot;, category, msg);
+</script>
+      <example>To dump: goto-binaries/pkg-vx/some/file/obj.o
+some-package 1.v MISSING PROTOTYPE: time: file init.c line 140 function Init3Dc</example>
+      <linkName>Dump C Warnings</linkName>
+      <trendName>Dump C Warnings</trendName>
+    </hudson.plugins.warnings.GroovyParser>
+    <hudson.plugins.warnings.GroovyParser>
+      <name>goto-cc errors</name>
+      <regexp>^file (.*) line (\d+): error: conflicting function declarations &quot;(\S+)&quot;\nold definition in module (.*) file (.*) line (\d+)\n.*\nnew definition in module (.*) file (.*) line (\d+)\n.*\n$</regexp>
+      <script>import hudson.plugins.warnings.parser.Warning
+
+String fn = matcher.group(3)
+String file1 = matcher.group(5)+&quot;#L&quot;+matcher.group(6)
+String file2 = matcher.group(8)+&quot;#L&quot;+matcher.group(9)
+String category = &quot;Conflicting function declarations&quot;
+if(fn==&quot;recvfrom&quot;) category = &quot;Inconsistent use of _GNU_SOURCE&quot;
+String msg = &quot;Conflict on &quot;+fn+&quot; in &quot;+file1+&quot; vs &quot;+file2
+
+return new Warning(matcher.group(1), Integer.parseInt(matcher.group(2)), &quot;GOTO-CC Parser&quot;, category, msg);
+</script>
+      <example>file async.c line 61: error: conflicting function declarations &quot;__redisAppendCommand&quot;
+old definition in module hiredis file hiredis.c line 1183
+signed int (struct redisContext *c, char *cmd, unsigned long int len)
+new definition in module async file async.c line 61
+void (struct redisContext *, char *, unsigned long int)
+</example>
+      <linkName>GOTO-CC Errors</linkName>
+      <trendName>GOTO-CC Errors</trendName>
+    </hudson.plugins.warnings.GroovyParser>
+  </groovyParsers>
+</hudson.plugins.warnings.WarningsDescriptor>

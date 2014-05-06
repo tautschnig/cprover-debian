@@ -1,0 +1,17 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jet
+Build-Jdk: 1.6.0_26
+Extension-Name: slave-setup
+Implementation-Title: slave-setup
+Implementation-Version: 1.6
+Group-Id: org.jenkins-ci.plugins
+Short-Name: slave-setup
+Long-Name: Jenkins Slave SetupPlugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Slave+Setup+Plugin
+Plugin-Version: 1.6
+Hudson-Version: 1.442
+Jenkins-Version: 1.442
+Plugin-Developers: Kohsuke Kawaguchi:kohsuke:,Frederik Fromm:ffromm:
+

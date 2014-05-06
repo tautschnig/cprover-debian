@@ -1,0 +1,13 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<org.jenkinsci.plugins.slave__setup.SetupConfig plugin="slave-setup@1.6">
+  <setupConfigItems>
+    <org.jenkinsci.plugins.slave__setup.SetupConfigItem>
+      <prepareScript></prepareScript>
+      <filesDir>/srv/mt/jenkins/workspace/JOB-prepare-binaries</filesDir>
+      <commandLine></commandLine>
+      <deployNow>true</deployNow>
+      <assignedLabelString></assignedLabelString>
+      <prepareScriptExecuted>false</prepareScriptExecuted>
+    </org.jenkinsci.plugins.slave__setup.SetupConfigItem>
+  </setupConfigItems>
+</org.jenkinsci.plugins.slave__setup.SetupConfig>

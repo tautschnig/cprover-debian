@@ -1,0 +1,1516 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson>
+  <disabledAdministrativeMonitors/>
+  <version>1.532.3</version>
+  <numExecutors>2</numExecutors>
+  <mode>EXCLUSIVE</mode>
+  <useSecurity>true</useSecurity>
+  <authorizationStrategy class="hudson.security.GlobalMatrixAuthorizationStrategy">
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Create:mt</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Delete:mt</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.ManageDomains:mt</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.Update:mt</permission>
+    <permission>com.cloudbees.plugins.credentials.CredentialsProvider.View:mt</permission>
+    <permission>hudson.model.Computer.Build:mt</permission>
+    <permission>hudson.model.Computer.Configure:mt</permission>
+    <permission>hudson.model.Computer.Connect:mt</permission>
+    <permission>hudson.model.Computer.Create:mt</permission>
+    <permission>hudson.model.Computer.Delete:mt</permission>
+    <permission>hudson.model.Computer.Disconnect:mt</permission>
+    <permission>hudson.model.Hudson.Administer:mt</permission>
+    <permission>hudson.model.Hudson.ConfigureUpdateCenter:mt</permission>
+    <permission>hudson.model.Hudson.Read:anonymous</permission>
+    <permission>hudson.model.Hudson.Read:mt</permission>
+    <permission>hudson.model.Hudson.RunScripts:mt</permission>
+    <permission>hudson.model.Hudson.UploadPlugins:mt</permission>
+    <permission>hudson.model.Item.Build:mt</permission>
+    <permission>hudson.model.Item.Cancel:mt</permission>
+    <permission>hudson.model.Item.Configure:mt</permission>
+    <permission>hudson.model.Item.Create:mt</permission>
+    <permission>hudson.model.Item.Delete:mt</permission>
+    <permission>hudson.model.Item.Discover:mt</permission>
+    <permission>hudson.model.Item.Read:anonymous</permission>
+    <permission>hudson.model.Item.Read:mt</permission>
+    <permission>hudson.model.Item.Workspace:anonymous</permission>
+    <permission>hudson.model.Item.Workspace:mt</permission>
+    <permission>hudson.model.View.Configure:mt</permission>
+    <permission>hudson.model.View.Create:mt</permission>
+    <permission>hudson.model.View.Delete:mt</permission>
+    <permission>hudson.model.View.Read:anonymous</permission>
+    <permission>hudson.model.View.Read:mt</permission>
+  </authorizationStrategy>
+  <securityRealm class="hudson.security.HudsonPrivateSecurityRealm">
+    <disableSignup>true</disableSignup>
+    <enableCaptcha>false</enableCaptcha>
+  </securityRealm>
+  <disableRememberMe>false</disableRememberMe>
+  <projectNamingStrategy class="jenkins.model.ProjectNamingStrategy$DefaultProjectNamingStrategy"/>
+  <workspaceDir>${ITEM_ROOTDIR}/workspace</workspaceDir>
+  <buildsDir>${ITEM_ROOTDIR}/builds</buildsDir>
+  <markupFormatter class="hudson.markup.RawHtmlMarkupFormatter">
+    <disableSyntaxHighlighting>false</disableSyntaxHighlighting>
+  </markupFormatter>
+  <jdks/>
+  <viewsTabBar class="hudson.views.tabbar.DropDownViewsTabBar" plugin="dropdown-viewstabbar-plugin@1.6"/>
+  <myViewsTabBar class="hudson.views.DefaultMyViewsTabBar"/>
+  <clouds/>
+  <slaves>
+    <slave>
+      <name>mt-farm01</name>
+      <description>mt-farm01.eecs.qmul.ac.uk</description>
+      <remoteFS>/srv/jenkins-slave</remoteFS>
+      <numExecutors>32</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.6">
+        <host>mt-farm01.eecs.qmul.ac.uk</host>
+        <port>22</port>
+        <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+      </launcher>
+      <label>SID_CHROOT</label>
+      <nodeProperties/>
+      <userId>mt</userId>
+    </slave>
+    <slave>
+      <name>mt-farm02</name>
+      <description>mt-farm02.eecs.qmul.ac.uk</description>
+      <remoteFS>/srv/jenkins-slave</remoteFS>
+      <numExecutors>32</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.6">
+        <host>mt-farm02.eecs.qmul.ac.uk</host>
+        <port>22</port>
+        <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+      </launcher>
+      <label>SID_CHROOT</label>
+      <nodeProperties/>
+      <userId>mt</userId>
+    </slave>
+    <slave>
+      <name>mt-farm03</name>
+      <description>mt-farm03.eecs.qmul.ac.uk</description>
+      <remoteFS>/srv/jenkins-slave</remoteFS>
+      <numExecutors>32</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.6">
+        <host>mt-farm03.eecs.qmul.ac.uk</host>
+        <port>22</port>
+        <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+      </launcher>
+      <label>SID_CHROOT</label>
+      <nodeProperties/>
+      <userId>mt</userId>
+    </slave>
+    <slave>
+      <name>mt-farm04</name>
+      <description>mt-farm04.eecs.qmul.ac.uk</description>
+      <remoteFS>/srv/jenkins-slave</remoteFS>
+      <numExecutors>32</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.6">
+        <host>mt-farm04.eecs.qmul.ac.uk</host>
+        <port>22</port>
+        <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+      </launcher>
+      <label>SID_CHROOT</label>
+      <nodeProperties/>
+      <userId>mt</userId>
+    </slave>
+    <slave>
+      <name>mt-farm05</name>
+      <description>mt-farm05.eecs.qmul.ac.uk</description>
+      <remoteFS>/srv/jenkins-slave</remoteFS>
+      <numExecutors>32</numExecutors>
+      <mode>NORMAL</mode>
+      <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+      <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.6">
+        <host>mt-farm05.eecs.qmul.ac.uk</host>
+        <port>22</port>
+        <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+      </launcher>
+      <label>SID_CHROOT</label>
+      <nodeProperties/>
+      <userId>mt</userId>
+    </slave>
+  </slaves>
+  <quietPeriod>5</quietPeriod>
+  <scmCheckoutRetryCount>0</scmCheckoutRetryCount>
+  <views>
+    <hudson.model.AllView>
+      <owner class="hudson" reference="../../.."/>
+      <name>All</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+    </hudson.model.AllView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-0-9ab</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-0-9</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-[0-9].*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-a</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-a.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-b</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-b.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-0-9</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-[0-9].*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-a</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-a.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-b</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-b.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-cde</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-c</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-c.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-d</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-d.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-e</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-e.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-c</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-c.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-d</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-d.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-e</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-e.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-fgh</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-f</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-f.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-g</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-g.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-h</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-h.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-f</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-f.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-g</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-g.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-h</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-h.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-ijk</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-i</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-i.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-j</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-j.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-k</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-k.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-i</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-i.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-j</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-j.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-k</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-k.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-lmn</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-l</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-l.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-m</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-m.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-n</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-n.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-l</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-l.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-m</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-m.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-n</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-n.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-opq</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-o</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-o.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-p</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-p.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-q</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-q.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-o</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-o.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-p</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-p.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-q</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-q.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-rst</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-r</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-r.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-s</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-s.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-t</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-t.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-r</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-r.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-s</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-s.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-t</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-t.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-uvw</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-u</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-u.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-v</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-v.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-w</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-w.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-u</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-u.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-v</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-v.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-w</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-w.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <hudson.plugins.nested__view.NestedView plugin="nested-view@1.14">
+      <owner class="hudson" reference="../../.."/>
+      <name>sid-xyz</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <views>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-x</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-x.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-y</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-y.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-analysis-z</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-analysis-z.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-x</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-x.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-y</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-y.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+        <listView>
+          <owner class="hudson.plugins.nested_view.NestedView" reference="../../.."/>
+          <name>sid-goto-cc-z</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+          <jobNames>
+            <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../listView/jobNames/comparator"/>
+          </jobNames>
+          <jobFilters/>
+          <columns>
+            <hudson.views.StatusColumn/>
+            <hudson.views.WeatherColumn/>
+            <hudson.views.JobColumn/>
+            <hudson.views.LastSuccessColumn/>
+            <hudson.views.LastFailureColumn/>
+            <hudson.views.LastDurationColumn/>
+            <hudson.views.BuildButtonColumn/>
+          </columns>
+          <includeRegex>sid-goto-cc-z.*</includeRegex>
+          <recurse>false</recurse>
+        </listView>
+      </views>
+      <columns>
+        <columns/>
+      </columns>
+    </hudson.plugins.nested__view.NestedView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>Job builders</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator" reference="../../../hudson.plugins.nested__view.NestedView/views/listView/jobNames/comparator"/>
+        <string>JOB-Debian-sid-analysis</string>
+        <string>JOB-Debian-sid-analysis-TMPL</string>
+        <string>JOB-Debian-sid-goto-cc-TMPL</string>
+        <string>JOB-Debian-sloccount</string>
+        <string>JOB-prepare-binaries</string>
+        <string>JOB-prepare-binaries-master</string>
+        <string>JOB-prepare-binaries-mt-farm01</string>
+        <string>JOB-prepare-binaries-mt-farm02</string>
+        <string>JOB-prepare-binaries-mt-farm03</string>
+        <string>JOB-prepare-binaries-mt-farm04</string>
+        <string>JOB-prepare-binaries-mt-farm05</string>
+      </jobNames>
+      <jobFilters/>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <includeRegex>JOB-.*</includeRegex>
+      <recurse>false</recurse>
+      <statusFilter>true</statusFilter>
+    </listView>
+    <listView>
+      <owner class="hudson" reference="../../.."/>
+      <name>FAILED</name>
+      <filterExecutors>false</filterExecutors>
+      <filterQueue>false</filterQueue>
+      <properties class="hudson.model.View$PropertyList"/>
+      <jobNames>
+        <comparator class="hudson.util.CaseInsensitiveComparator"/>
+      </jobNames>
+      <jobFilters>
+        <hudson.views.JobStatusFilter plugin="view-job-filters@1.26">
+          <includeExcludeTypeString>includeMatched</includeExcludeTypeString>
+          <unstable>true</unstable>
+          <failed>true</failed>
+          <aborted>true</aborted>
+          <disabled>false</disabled>
+          <stable>false</stable>
+        </hudson.views.JobStatusFilter>
+      </jobFilters>
+      <columns>
+        <hudson.views.StatusColumn/>
+        <hudson.views.WeatherColumn/>
+        <hudson.views.JobColumn/>
+        <hudson.views.LastSuccessColumn/>
+        <hudson.views.LastFailureColumn/>
+        <hudson.plugins.claim.ClaimColumn plugin="claim@2.3"/>
+        <hudson.views.LastDurationColumn/>
+        <hudson.views.BuildButtonColumn/>
+      </columns>
+      <recurse>false</recurse>
+    </listView>
+  </views>
+  <primaryView>Job builders</primaryView>
+  <slaveAgentPort>0</slaveAgentPort>
+  <label></label>
+  <nodeProperties/>
+  <globalNodeProperties/>
+</hudson>

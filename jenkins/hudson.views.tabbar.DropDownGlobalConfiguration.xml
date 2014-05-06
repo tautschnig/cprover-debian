@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.views.tabbar.DropDownGlobalConfiguration plugin="dropdown-viewstabbar-plugin@1.6">
+  <showJobCount>true</showJobCount>
+</hudson.views.tabbar.DropDownGlobalConfiguration>

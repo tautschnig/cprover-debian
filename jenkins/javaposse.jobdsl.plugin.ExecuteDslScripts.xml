@@ -1,0 +1,25 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<javaposse.jobdsl.plugin.DescriptorImpl plugin="job-dsl@1.22">
+  <templateJobMap class="com.google.common.collect.HashMultimap" serialization="custom">
+    <unserializable-parents/>
+    <com.google.common.collect.HashMultimap>
+      <default/>
+      <int>2</int>
+      <int>2</int>
+      <string>JOB-Debian-sid-analysis-TMPL</string>
+      <int>1</int>
+      <javaposse.jobdsl.plugin.SeedReference>
+        <templateJobName>JOB-Debian-sid-analysis-TMPL</templateJobName>
+        <seedJobName>JOB-Debian-sid-analysis</seedJobName>
+        <digest>339c290348f072fc38bd19a1bb0c08b3</digest>
+      </javaposse.jobdsl.plugin.SeedReference>
+      <string>JOB-Debian-sid-goto-cc-TMPL</string>
+      <int>1</int>
+      <javaposse.jobdsl.plugin.SeedReference>
+        <templateJobName>JOB-Debian-sid-goto-cc-TMPL</templateJobName>
+        <seedJobName>JOB-Debian-sid-goto-cc</seedJobName>
+        <digest>2c3bccb37c2ba7f6148de51077733436</digest>
+      </javaposse.jobdsl.plugin.SeedReference>
+    </com.google.common.collect.HashMultimap>
+  </templateJobMap>
+</javaposse.jobdsl.plugin.DescriptorImpl>

@@ -1,0 +1,6 @@
+<l:dependencies xmlns:l='licenses'>
+  <l:dependency name='Purge Build Queue Plugin' groupId='org.jenkins-ci.plugins' artifactId='purge-build-queue-plugin' version='1.0' url='http://wiki.jenkins-ci.org/display/JENKINS/Purge+Build+Queue+Plugin'>
+    <l:description>Provides an easy mechanism to purge the build queue.</l:description>
+    <l:license name='The MIT license' url='https://github.com/jenkinsci/purge-build-queue-plugin/raw/master/LICENSE.txt' />
+  </l:dependency>
+</l:dependencies>

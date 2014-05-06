@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: mindless
+Build-Jdk: 1.6.0_12
+Extension-Name: hudson-wsclean-plugin
+Specification-Title: This plugin cleans all workspace directories for 
+ the same BuildProject within as same slave group
+Specification-Vendor: Fox Mobile Distribution GmbH
+Implementation-Vendor: Fox Mobile Distribution GmbH
+Implementation-Title: hudson-wsclean-plugin
+Implementation-Version: 1.0.4
+Short-Name: hudson-wsclean-plugin
+Long-Name: Hudson Distributed Workspace Cleaner
+Url: http://wiki.hudson-ci.org/display/HUDSON/Hudson+Distributed+Works
+ pace+Clean+plugin
+Plugin-Version: 1.0.4
+Hudson-Version: 1.328
+Plugin-Developers: Thomas Spengler:tspengler:
+

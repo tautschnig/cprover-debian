@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: anthony
+Build-Jdk: 1.7.0_25
+Extension-Name: accelerated-build-now-plugin
+Implementation-Title: accelerated-build-now-plugin
+Implementation-Version: 1.0.1
+Plugin-Class: org.terracotta.jenkins.plugins.acceleratedbuildnow.Accel
+ eratedBuildNowPlugin
+Group-Id: org.terracotta.jenkins.plugins
+Short-Name: accelerated-build-now-plugin
+Long-Name: accelerated-build-now-plugin
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Accelerated+Build+Now
+ +Plugin
+Plugin-Version: 1.0.1
+Hudson-Version: 1.523
+Jenkins-Version: 1.523
+Plugin-Dependencies: maven-plugin:1.523
+Plugin-Developers: Anthony Dahanne:anthonydahanne:anthony.dahanne@gmai
+ l.com
+

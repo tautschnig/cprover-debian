@@ -1,0 +1,6 @@
+<l:dependencies xmlns:l='licenses'>
+  <l:dependency name='Green Balls' groupId='org.jenkins-ci.plugins' artifactId='greenballs' version='1.14' url='http://wiki.jenkins-ci.org/display/JENKINS/Green+Balls'>
+    <l:description>Because green balls are better than blue</l:description>
+    <l:license name='The MIT License' url='http://www.opensource.org/licenses/mit-license.php' />
+  </l:dependency>
+</l:dependencies>

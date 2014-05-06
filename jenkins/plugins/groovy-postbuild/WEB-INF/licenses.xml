@@ -1,0 +1,5 @@
+<l:dependencies xmlns:l='licenses' groupId='org.jvnet.hudson.plugins' artifactId='groovy-postbuild' version='1.9'>
+  <l:dependency name='Groovy Postbuild' groupId='org.jvnet.hudson.plugins' artifactId='groovy-postbuild' version='1.9' url='http://wiki.jenkins-ci.org/display/JENKINS/Groovy+Postbuild+Plugin'>
+    <l:description />
+  </l:dependency>
+</l:dependencies>

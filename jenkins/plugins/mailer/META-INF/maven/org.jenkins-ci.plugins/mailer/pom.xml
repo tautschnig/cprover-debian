@@ -7,7 +7,7 @@
   </parent>
   <artifactId>mailer</artifactId>
   <packaging>hpi</packaging>
-  <version>1.5</version>
+  <version>1.8</version>
   <name>Jenkins Mailer Plugin</name>
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Mailer</url>
 
@@ -29,13 +29,6 @@
     <powermock.version>1.4.12</powermock.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
   </properties>
-  <developers>
-    <developer>
-      <id>slide</id>
-      <name>Alex Earl</name>
-      <email>slide.o.mix@gmail.com</email>
-    </developer>
-  </developers>
   <dependencies>
     <dependency>
       <groupId>javax.servlet</groupId>

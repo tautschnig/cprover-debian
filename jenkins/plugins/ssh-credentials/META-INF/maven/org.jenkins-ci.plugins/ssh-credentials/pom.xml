@@ -29,11 +29,11 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.424</version>
+    <version>1.466</version>
   </parent>
 
   <artifactId>ssh-credentials</artifactId>
-  <version>1.5.1</version>
+  <version>1.6.1</version>
   <packaging>hpi</packaging>
 
   <name>SSH Credentials Plugin</name>
@@ -61,7 +61,7 @@
     <connection>scm:git:git://github.com/jenkinsci/ssh-credentials-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/ssh-credentials-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/ssh-credentials-plugin</url>
-    <tag>ssh-credentials-1.5.1</tag>
+    <tag>ssh-credentials-1.6.1</tag>
   </scm>
 
   <properties>
@@ -96,14 +96,14 @@
     <dependency>
       <groupId>org.jenkins-ci.plugins</groupId>
       <artifactId>credentials</artifactId>
-      <version>1.8.3</version>
+      <version>1.9.4</version>
     </dependency>
     <!-- jenkins dependencies -->
     <!-- test dependencies -->
     <dependency>
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
-      <version>4.10</version>
+      <version>4.11</version>
       <scope>test</scope>
     </dependency>
     <dependency>
