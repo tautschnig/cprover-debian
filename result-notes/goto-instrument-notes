@@ -1,13 +1,266 @@
-- a2ps: 2 YYSTYPEs, second exists in multiple modules and each renamed separately
-- abraca: huge array of constants (with typecasts), exceeds memory when re-compiling
-- aeskeyfind: reported #692293
-- accountsservice: gir_dummy_function
-- aweather: make_static_symbol does not set location, reported to Daniel
-- anjuta: gir_dummy_function
+* data up to guile-1.8 *
 
-DEBUG:
-- alpine: integer exception
-- amanda: address_of argument invalid
-- alsa-utils: check names of types, why is struct re-introduced
-- for non-converging ones: check when if is introduced
+REBUILD, then dump again
+- gst0.10-python: irep nil (recompiled?)
+- gst-plugins-base0.10: irep nil (recompiled?)
+- gst-plugins-good0.10: irep nil (recompiled?)
+- gst-plugins-ugly0.10: irep nil (recompiled?)
+- gstreamer0.10-dvswitch: irep nil (recompiled?)
+- gstreamer0.10-editing-services: irep nil (recompiled?)
+- gstreamer0.10-ffmpeg: irep nil (recompiled?)
+- gstreamer0.10-rtsp: irep nil (recompiled?)
+- gthumb: irep nil (recompiled?)
+- gtkaml: irep nil (recompiled?)
+- gtkimageview: irep nil (recompiled?)
+- gtkpod: irep nil (recompiled?)
+- gtk-sharp2: irep nil (recompiled?)
+- gtksourceview2: irep nil (recompiled?)
+- gtksourceview3: irep nil (recompiled?)
+- gtk-vnc: irep nil (recompiled?)
+- gtranslator: irep nil (recompiled?)
+- gucharmap: irep nil (recompiled?)
+
+RESTART AFTER goto-instrument update
+- euler: label not found
+- gpe-ownerinfo: label not found
+
+RESTARTED:
+
+IGNORE
+- 3dchess: wrong #include for time() function
+- acm: various missing #include
+- aeskeyfind: reported #692293
+- afpfs-ng: reported #702889 
+- amide: reported #703076
+- arc: reported https://sourceforge.net/tracker/?func=detail&aid=3608089&group_id=93691&atid=605144
+- audacity: wrong number of arguments (yes, but better fix #272598)
+- avce00: reported #703073
+- batmand: reported, fixed in jessie #703540
+- bitlbee: reported #703550
+- bristol: reported #703542
+- btrfs-tools: wrong number of arguments, fixed upstream
+- charybdis: reported #703546 
+- clamsmtp: reported #703538
+- connman: reported #703547
+- ctdb: reported, fixed in jessie #703551
+- dacs: reported #703552
+- ebview: reported #703133
+- evolver: missing argument in KnR, fixed in upstream 2.50
+- gnokii: reported #703669
+
+- blktap: wrong number of function arguments -- might be ok as likely not really linked together
+- db4.7: wrong number of arguments; yes, but arguments not used
+- cryptcat: missing arguments in KnR
+- crack: missing arguments in KnR
+- cracklib2: missing arguments in KnR
+
+FIX LINKING or other FRAMEWORK issues
+- a2ps: 2 YYSTYPEs, second exists in multiple modules and each renamed separately
+- autofs: 2 YYSTYPEs, second exists in multiple modules and each renamed separately
+- basemap: conversion between struct types
+- bc: conversion between struct types
+- chromium-browser: implicit conversion between struct types
+- dnprogs: conversion between union types
+- evolution-ews: conversion between struct and union types
+- evolution-mapi: conversion between struct and union types
+- evolution-data-server: conversion between struct and union types
+- gplanarity: struct conversions
+- gplcver: struct conversions
+- gradm2: struct conversions
+- bibutils: struct component not found
+- clif: struct component not found
+- cook: struct component not found
+- gauche: struct component not found
+- gross: struct type conversion
+
+- fbi: static_array
+- fish: duplicate symbol (static_array)
+- elilo: symbol defined twice
+- gnu-efi: duplicate symbol
+
+FIX IN DUMP-C
+- aisleriot: assignment to constant struct member
+- awesome: array element constant
+- djmount: constant
+- dmraid: constant
+- eina: constant
+- freebsd-buildutils: constant
+- asterisk: constant
+- aweather: constant
+- grilo-plugins: constant
+
+- firestring: missing symbol -> reorder static local declarations
+- flashrom: missing symbol -> reorder static local declarations
+- gegl: missing symbol -> reorder static local declarations
+
+- ctwm: conversion of struct to pointer (broken by type-in-struct replacement hack)
+
+- coq: out of memory
+- foomatic-filters: out of memory
+- geoip: out of memory
+- gforth: out of memory
+
+DEBUG
+- gdcm: syntax error - maybe double $link in type name?
+- glw: syntax error
+- gsmartcontrol: wrong number of arguments (debuggable)
+- gsl: array conversion (debuggable)
+
+- cuba: invalid array typecasts
+- darkplaces: array conversion
+- beast: array conversion
+- glusterfs: array conversion
+- gnome-desktop3: array conversion
+- gnubg: array conversion
+- gnumeric: array conversion
+- goocanvas: array conversion
+- gretl: array conversion
+- gtkboard: array conversion
+
+- gtg-trace: address_of error
+- atp: index out of bounds (font_names takes >20 elements)
+- flite: index out of bounds
+- ats-lang-anairiats: missing cast in function ats_raise_exn
+- dealer: conversion void to int
+- apron: conversion int to struct
+- gpe-bluetooth: syntax error: address of struct taken
+
+- csound: double with initializer list
+- edje: union initializer
+- embryo: union initializer
+- gmerlin-encoders: char** with initializer list
+- gmerlin: struct* with initializer list
+- gmerlin-avdecoder: uint* with initializer list
+
+- farstream: no convergence
+- fceu: no convergence
+- geeqie: no convergence
+- gsoap: no convergence
+- gsoko: no convergence
+- gst-fluendo-mp3: no convergence
+
+- grhino: wrong number of arguments
+- gri: wrong number of arguments
+- gridsite: wrong number of arguments
+- grilo: wrong number of arguments
+- gringotts: wrong number of arguments
+- grok: wrong number of arguments
+- grpn: wrong number of arguments
+- gscanbus: wrong number of arguments
+- gsm0710muxd: wrong number of arguments
+- gobject-introspection: wrong number of arguments (gcc_builtin_va_arg_next)
+- gsmc: wrong number of arguments
+- gsnmp: wrong number of arguments
+- gsql: wrong number of arguments
+- gss: wrong number of arguments
+- gstm: wrong number of arguments
+- gtimer: wrong number of arguments
+- gtk2-engines-murrine: wrong number of arguments
+- gtk2-engines-qtcurve: wrong number of arguments
+- gtk-chtheme: wrong number of arguments
+- gtkgl2: wrong number of arguments
+- gtk-gnutella: wrong number of arguments
+- gtkhtml3.14: wrong number of arguments
+- gtkhtml4.0: wrong number of arguments
+- gtkperf: wrong number of arguments
+- gtkpool: wrong number of arguments
+- gtktrain: wrong number of arguments
+- gtypist: wrong number of arguments
+- guava: wrong number of arguments
+- guifications: wrong number of arguments
+- guile-1.8: wrong number of arguments
+- bluez: wrong number of arguments, invalid argument for initializer list (struct btd_device_driver monitor_driver)
+- flasm: wrong number of arguments, inf not found
+- bind9: wrong number of arguments
+- cpm: wrong number of arguments
+- crm114: wrong number of arguments
+- drac: wrong number of arguments
+- drawmap: wrong number of arguments
+- dvi2dvi: wrong number of arguments
+- dvi2ps: wrong number of arguments
+- epwutil: wrong number of arguments
+- fbb: wrong number of arguments
+- gir1.2-fcitx: wrong number of arguments
+- filter: wrong number of arguments
+- gabedit: wrong number of arguments
+- gargoyle-free: wrong number of arguments
+- gp2c: wrong number of arguments
+- grafx2: wrong number of arguments
+- grcm: wrong number of arguments
+- gregorio: wrong number of arguments
+- citadel: wrong number of arguments
+- dialign: wrong number of arguments
+- dmitry: wrong number of arguments
+- alsa-lib: wrong number of arguments
+- apache2: wrong number of arguments
+- binutils-avr: wrong number of arguments
+- binutils-h8300-hms: wrong number of arguments
+- binutils-msp430: wrong number of arguments
+- binutils-z80: wrong number of arguments
+- dbus: wrong number of arguments
+- gdal: wrong number of arguments
+- dovecot: wrong number of arguments
+- git: wrong number of arguments
+- gnome-breakout: wrong number of arguments
+- gnome-desktop: wrong number of arguments
+- gnome-menus: wrong number of arguments
+- gnome-mplayer: wrong number of arguments
+- gnome-paint: wrong number of arguments
+- gnome-panel: wrong number of arguments
+- gnome-vfs: wrong number of arguments
+- gnotime: wrong number of arguments
+- alpine: wrong number of arguments
+- anjuta: wrong number of arguments
+- at-spi2-core: wrong number of arguments
+- ayttm: wrong number of arguments
+- baycomepp: wrong number of arguments
+- binutils-mingw-w64: syntax error
+- amanda: wrong number of arguments
+- brasero: wrong number of arguments
+- bsdgames: wrong number of arguments
+- bsdmainutils: wrong number of arguments
+- binutils-m68hc1x: wrong number of arguments
+- cfengine3: wrong number of arguments
+- clutter-gst: wrong number of arguments
+- clutter-gtk: wrong number of arguments
+- coreutils: wrong number of arguments
+- cpl: wrong number of arguments
+- dee: wrong number of arguments
+- cython: wrong number of arguments
+- ekg: wrong number of arguments
+- dx: wrong number of arguments
+- e-uae: wrong number of arguments
+- event-dance: wrong number of arguments
+- exo: wrong number of arguments
+- evince: wrong number of arguments
+- clamav: wrong number of arguments
+- exonerate: wrong number of arguments
+- fastjar: wrong number of arguments
+- eztrace: wrong number of arguments
+- fossil: wrong number of arguments
+- freeipmi: wrong number of arguments
+- freemat: wrong number of arguments
+- freeradius: wrong number of arguments
+- freetds: wrong number of arguments
+- gconf: wrong number of arguments
+- gcr: wrong number of arguments
+- gdk-pixbuf: wrong number of arguments
+- gdm3: wrong number of arguments
+- gifsicle: wrong number of arguments
+- glade: wrong number of arguments
+- globus-xio: wrong number of arguments
+- gambc: wrong number of arguments
+- gnome-dictionary: wrong number of arguments
+- gnome-documents: wrong number of arguments
+- gnome-shell: wrong number of arguments
+- gnupg: wrong number of arguments
+- gnupg2: wrong number of arguments
+- gnuplot: wrong number of arguments
+- gnuradio: wrong number of arguments
+- goban: wrong number of arguments
+- goffice: wrong number of arguments
+- gpa: wrong number of arguments
+- grads: wrong number of arguments
+- gramofile: wrong number of arguments
+- grep: wrong number of arguments
 

@@ -114,7 +114,7 @@ TO REPORT TO DANIEL OR FIX IN SOME WAY
 
 - xenomai: fpflags both enum name and label
 
-- virtualbox: #pragma pack(1) [https://github.com/tautschnig/cprover/issues/1]
+- virtualbox: #pragma pack(1) [https://github.com/tautschnig/cprover-debian/issues/1]
 
 - tightvnc: changes of r2208 need to extend to array of function pointers
 
@@ -124,27 +124,27 @@ RESTART AFTER chroot+goto-cc update
 RESTARTED
 
 DEBUG
-- oce: out of memory
-- scilab: out of memory
-- vtk: out of memory
+- libgdal-grass: invalid ld command line, compare build logs
+- audacious-plugins: unknown error
+- elinks: unknown error
 
 UPSTREAM BUGS
 - racket: reported #702859
-- juju: reported #702791
-- siproxd: reported #702772
-- skyeye: reported https://sourceforge.net/p/skyeye/bugs/100/
+- juju: reported, fixed #702791
+- siproxd: reported, fixed #702772
+- skyeye: reported, fixed https://sourceforge.net/p/skyeye/bugs/100/
 - gnats: reported #702784 
-- service-wrapper-java: reported #702790
-- bup: reported #702769
+- service-wrapper-java: reported, fixed #702790
+- bup: reported, fixed #702769
 - python-psutil: reported #702665
 - libsys-gamin-perl: reported #702663
 - autogen: reported, fixed #702644
-- cil: reported #702646
+- cil: reported, fixed #702646
 - glance: reported #702647
 - bb: reported #702467 
 - xmpi: reported #702438 
 - wmcoincoin: reported #702439
-- graphviz: reported #702436
+- graphviz: reported, fixed #702436
 - xview: reported #702437
 - zapping: reported https://sourceforge.net/tracker/?func=detail&aid=3607056&group_id=2599&atid=102599
 - zbar: reported https://sourceforge.net/p/zbar/bugs/74/
@@ -159,7 +159,7 @@ UPSTREAM BUGS
 - noweb: reported, fixed #701056 
 - alsa-tools: reported #700964
 - alliance: reported #700965
-- adolc: reported #700937
+- adolc: reported, fixed #700937
 - dbacl: reported to developer
 - drbd8: reported #700930
 - clutter-1.0: reported #70093
@@ -236,7 +236,7 @@ UPSTREAM BUGS
 - goattracker: reported #688403
 - gpac: reported to developer
 - gprolog: reported https://sourceforge.net/tracker/?func=detail&atid=109715&aid=3570846&group_id=9715
-- gpsim: reported https://sourceforge.net/tracker/?func=detail&atid=102341&aid=3570700&group_id=2341
+- gpsim: reported, fixed https://sourceforge.net/tracker/?func=detail&atid=102341&aid=3570700&group_id=2341
 - gpstrans: reported #688452
 - gramophone2: reported https://sourceforge.net/tracker/?func=detail&atid=957891&aid=3570576&group_id=196547
 - grisbi: reported #688453
@@ -390,10 +390,6 @@ UPSTREAM BUGS
 
 
 REPORTED TO DANIEL
-- libgdal-grass: warnings printed on stdout
-
-- xserver-xorg-video-intel: padding with multiple bit-field structs
-
 - chimera2: foo() and foo(void) of different type -> fixed in my cprover branch
 - covered: conflicting types  void (*)() [] vs.  void (*)(...) []
 - libast: foo(void)
