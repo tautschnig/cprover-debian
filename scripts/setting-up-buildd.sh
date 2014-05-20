@@ -169,6 +169,8 @@ for o in "$@" ; do
       exit 0
     elif [ "$o" = "objective-c" ] ; then
       exit 0
+    elif [ "$o" = "assembler-with-cpp" ] ; then
+      exit 0
     fi
     lang_next=0
     # don't ignore $o (no continue), might also be relevant option
