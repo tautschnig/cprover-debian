@@ -154,6 +154,7 @@ use_ld=0
 include_next=0
 fpch_preproc=""
 f_opts=""
+gcc_lib_path=""
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
     skip_next=0
@@ -196,6 +197,7 @@ for o in "$@" ; do
     -lfl) has_lfl="/tmp/libflmain.c" ;;
     -lf2c) has_lf2c="/tmp/libf2cmain.c" ;;
     -x) lang_next=1 ;;
+    -xc++) exit 0 ;;
     -Wl,-r) use_ld=1 ;;
     -Wl,-Ttext) exit 0 ;; # we don't really deal with sections starting at special addresses
     -Wl,-Ttext=*) exit 0 ;; # we don't really deal with sections starting at special addresses
@@ -203,7 +205,7 @@ for o in "$@" ; do
     -f*) f_opts="$f_opts $o" ;;
     -*) true ;;
     *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
-    *.c) source_args+=" $o" ;;
+    *.c|*.cpp) source_args+=" $o" ;;
     *.i) source_args+=" $o" ;;
   esac
 done
@@ -221,7 +223,7 @@ if [ -z "$ofiles" ] ; then
     ofiles="a.out"
   else
     for f in $source_args ; do
-      ofiles+=" `basename "$f" | sed 's/\..$/.o/'`"
+      ofiles+=" `basename "$f" | sed 's/\.\(c\|i\|cpp\)$/.o/'`"
     done
   fi
 fi
@@ -271,6 +273,12 @@ fi
 if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] && \
       egrep -q '^extern int nm_test_func\(\);$' $source_args ; then
   sed -i 's/extern int nm_test_func/extern void nm_test_func/' $source_args
+fi
+
+
+# make configure tests avoid "Library not found" warnings
+if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
+  gcc_lib_path="`XXgccXX --print-search-dirs | grep ^libraries: | sed 's/^libraries: =/:/' | sed 's/:/ -L/g'`"
 fi
 
 for f in $objfiles ; do
@@ -338,7 +346,7 @@ if [ -n "$source_args" ] ; then
 fi
 
 if [ $use_ld -eq 0 ] ; then
-  goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc
+  goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc $gcc_lib_path
 else
   goto-cc "$@" -r
 fi
@@ -494,6 +502,14 @@ for f in $objfiles ; do
   fi
 done
 
+trap '\
+  for f in $objfiles ; do \
+    if [ -f "$f.gcc-binary" ] ; then \
+      mv "$f.gcc-binary" "$f" ; \
+    fi ; \
+  done ; \
+  rm -f /tmp/wrapper-$$' EXIT
+
 goto-ld "$@"
 
 for f in $ofiles ; do
@@ -516,12 +532,6 @@ for f in $ofiles ; do
       echo "$f: $objfiles" >> "$gbfile.linked"
     fi
   else
-    mv "$f.gcc-binary" "$f"
-  fi
-done
-
-for f in $objfiles ; do
-  if [ -f "$f.gcc-binary" ] ; then
     mv "$f.gcc-binary" "$f"
   fi
 done
