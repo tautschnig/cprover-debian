@@ -299,6 +299,7 @@ for f in $objfiles ; do
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+      touch -r "$f" /tmp/empty-$$.o
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
     fi
@@ -496,6 +497,7 @@ for f in $objfiles ; do
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+      touch -r "$f" /tmp/empty-$$.o
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
     fi
@@ -546,15 +548,12 @@ cat > $cow_base/tmp/pbuilder-deps-wrapper.sh <<"EOF"
 /usr/lib/pbuilder/pbuilder-satisfydepends-classic --control ../*.dsc $@
 EOF
 
-wget http://dkr-build.cs.ox.ac.uk:8080/job/CBMC-trunk/ws/src/goto-cc/goto-cc -O $cow_base/tmp/goto-cc
-chmod a+rx $cow_base/tmp/goto-cc
-
 real_gcc_chroot="`echo $real_gcc | sed "s#^$cow_base##"`"
 real_ld_chroot="`echo $real_ld | sed "s#^$cow_base##"`"
 echo " \
 sed -i 's/sid main/sid main contrib non-free/' /etc/apt/sources.list ; \
 apt-get update ; \
-apt-get install eatmydata adduser ; \
+apt-get install eatmydata adduser cbmc ; \
 addgroup --system --gid 1234 pbuilder ; \
 adduser --system --no-create-home --uid 1234 --gecos pbuilder --disabled-login pbuilder ; \
 mv $real_gcc_chroot $real_gcc_chroot.orig ; \
@@ -565,7 +564,6 @@ mv /tmp/ld-wrapper $real_ld_chroot ; \
 chmod a+rx $real_ld_chroot ; \
 mv /tmp/pbuilder-deps-wrapper.sh /usr/bin ; \
 chmod a+rx /usr/bin/pbuilder-deps-wrapper.sh ; \
-mv /tmp/goto-cc /usr/bin/goto-cc ; \
 cp /usr/bin/goto-cc /usr/bin/goto-ld ; \
 exit" | $SUDO cowbuilder --login --save-after-login --aptcache $APTCACHE --basepath $cow_base
 $SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
