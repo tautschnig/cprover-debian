@@ -553,7 +553,7 @@ real_ld_chroot="`echo $real_ld | sed "s#^$cow_base##"`"
 echo " \
 sed -i 's/sid main/sid main contrib non-free/' /etc/apt/sources.list ; \
 apt-get update ; \
-apt-get install eatmydata adduser cbmc ; \
+apt-get -y install eatmydata adduser cbmc ; \
 addgroup --system --gid 1234 pbuilder ; \
 adduser --system --no-create-home --uid 1234 --gecos pbuilder --disabled-login pbuilder ; \
 mv $real_gcc_chroot $real_gcc_chroot.orig ; \
