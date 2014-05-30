@@ -155,6 +155,7 @@ include_next=0
 fpch_preproc=""
 f_opts=""
 gcc_lib_path=""
+forced_lang=""
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
     skip_next=0
@@ -174,6 +175,7 @@ for o in "$@" ; do
       exit 0
     fi
     lang_next=0
+    forced_lang="$o"
     # don't ignore $o (no continue), might also be relevant option
   fi
   if [ $include_next -eq 1 ] ; then
@@ -198,6 +200,7 @@ for o in "$@" ; do
     -lf2c) has_lf2c="/tmp/libf2cmain.c" ;;
     -x) lang_next=1 ;;
     -xc++) exit 0 ;;
+    -xc) forced_lang="c" ;;
     -Wl,-r) use_ld=1 ;;
     -Wl,-Ttext) exit 0 ;; # we don't really deal with sections starting at special addresses
     -Wl,-Ttext=*) exit 0 ;; # we don't really deal with sections starting at special addresses
@@ -205,8 +208,9 @@ for o in "$@" ; do
     -f*) f_opts="$f_opts $o" ;;
     -*) true ;;
     *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
-    *.c|*.cpp) source_args+=" $o" ;;
+    *.c) source_args+=" $o" ;;
     *.i) source_args+=" $o" ;;
+    *.cpp) if [ "x$forced_lang" = "xc" ] ; then source_args+=" $o" ; fi ;;
   esac
 done
 if [ -z "$source_args" -a -z "$objfiles" ] ; then
