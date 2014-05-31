@@ -65,7 +65,12 @@ EXTRAPACKAGES="eatmydata"
 use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
-  for p in acl2 archivemail bibletime clojure1.2 dico dulwich eglibc libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph ; do
+  for p in \
+    clamav debci libguestfs libaqbanking \
+    acl2 archivemail bibletime clojure1.2 dico dulwich eglibc \
+    libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
+    libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
+    maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph ; do
     if [ x$p = x$cur_pkg ] ; then
       use_eatmydata=0
       break
@@ -84,10 +89,24 @@ fi
 
 #PBUILDERSATISFYDEPENDSCMD="/usr/lib/pbuilder/pbuilder-satisfydepends-classic"
 #PBUILDERSATISFYDEPENDSOPT="--control ../*.dsc"
-PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
+# order of dependencies doesn't permit one-by-one resolution of
+# conflicts/virtual packages
+if [ xoctave-msh = x$cur_pkg ] ; then
+  PBUILDERSATISFYDEPENDSCMD="/usr/lib/pbuilder/pbuilder-satisfydepends-aptitude"
+else
+  PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
+else
+fi
 BINDMOUNTS="$BINDMOUNTS /run/shm"
 BUILDPLACE=/srv/jenkins-slave/cow
 APTCACHE=/srv/jenkins-slave/aptcache
+# concurrent build jobs replace crtend.o by goto-cc generated file
+for p in \
+  gcc-4.9 oce ; do
+  if [ x$p = x$cur_pkg ] ; then
+    DEBBUILDOPTS="-j1"
+  fi
+done
 EOF
 if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
@@ -119,7 +138,11 @@ ulimit -S -v 16000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
-XXgccXX "$@"
+if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
+  XXgccXX "$@"
+else
+  XXgccXX -B /usr/lib/gcc/x86_64-linux-gnu/`echo XXgccXX | sed -e 's/^gcc-//' -e 's/.orig$//'`/ "$@"
+fi
 
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
 function parent_is_wrapper {
@@ -395,7 +418,7 @@ for f in $objfiles ; do
 done
 EOF
 real_gcc_bn=`basename $real_gcc`
-sed -i "s/XXgccXX/$real_gcc_bn.orig/" $cow_base/tmp/gcc-wrapper
+sed -i "s/XXgccXX/$real_gcc_bn.orig/g" $cow_base/tmp/gcc-wrapper
 
 real_ld=`readlink -f $cow_base/usr/bin/ld`
 if [ ! -f "$real_ld" ] ; then
@@ -559,7 +582,7 @@ real_ld_chroot="`echo $real_ld | sed "s#^$cow_base##"`"
 echo " \
 sed -i 's/sid main/sid main contrib non-free/' /etc/apt/sources.list ; \
 apt-get update ; \
-apt-get -y install eatmydata adduser cbmc ; \
+apt-get -y install eatmydata adduser cbmc aptitude ; \
 addgroup --system --gid 1234 pbuilder ; \
 adduser --system --no-create-home --uid 1234 --gecos pbuilder --disabled-login pbuilder ; \
 mv $real_gcc_chroot $real_gcc_chroot.orig ; \
