@@ -290,6 +290,7 @@ for f in $objfiles ; do
     continue
   fi
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+    f_date=`date -r "$f" +%s`
     if [ "$f" = "$likely_has_main" ] ; then
       echo "WARNING: GOTO-CC had not created $f, building binary containing main"
       echo "int main(int argc, char* argv[]) { return 0; }" > /tmp/empty-$$.c
@@ -303,10 +304,10 @@ for f in $objfiles ; do
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-      touch -r "$f" /tmp/empty-$$.o
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
     fi
+    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
     use_ld=1
   fi
 done
@@ -493,6 +494,7 @@ for f in $objfiles ; do
     continue
   fi
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+    f_date=`date -r "$f" +%s`
     echo "WARNING: GOTO-CC had not created $f, building empty binary"
     touch /tmp/empty-$$.c
     if file "$f" | grep -q 32-bit ; then
@@ -501,10 +503,10 @@ for f in $objfiles ; do
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-      touch -r "$f" /tmp/empty-$$.o
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
     fi
+    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
   fi
 done
 
