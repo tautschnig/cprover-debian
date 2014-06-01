@@ -244,6 +244,12 @@ if echo $ofiles | grep -q "\.typelib\.so$" ; then
   exit 0
 fi
 
+# work around bear test tracing all calls
+if echo $PWD | grep -q test/exec_anatomy$ && \
+   echo $LD_PRELOAD | grep -q /libear.so ; then
+  exit 0
+fi
+
 if [ -z "$ofiles" ] ; then
   if [ $compile_only -eq 0 ] ; then
     ofiles="a.out"
@@ -300,7 +306,6 @@ if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] && \
       egrep -q '^extern int nm_test_func\(\);$' $source_args ; then
   sed -i 's/extern int nm_test_func/extern void nm_test_func/' $source_args
 fi
-
 
 # make configure tests avoid "Library not found" warnings
 if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
