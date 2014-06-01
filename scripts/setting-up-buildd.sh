@@ -95,7 +95,6 @@ if [ xoctave-msh = x$cur_pkg ] ; then
   PBUILDERSATISFYDEPENDSCMD="/usr/lib/pbuilder/pbuilder-satisfydepends-aptitude"
 else
   PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
-else
 fi
 BINDMOUNTS="$BINDMOUNTS /run/shm"
 BUILDPLACE=/srv/jenkins-slave/cow
