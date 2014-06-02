@@ -176,7 +176,6 @@ use_ld=0
 include_next=0
 fpch_preproc=""
 f_opts=""
-gcc_lib_path=""
 forced_lang=""
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
@@ -295,23 +294,6 @@ for f in $objfiles ; do
   fi
 done
     
-if [ -n "$has_lfl$has_lf2c" ] && [ "$ofiles" = "conftest" ] && \
-    egrep -q '^[[:space:]]*(int[[:space:]]|void[[:space:]]|)[[:space:]]*main' $source_args > /dev/null 2>&1 ; then
-  has_lfl=""
-  hs_lf2c=""
-fi
-
-# make configure test for global_symbol_pipeline work
-if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] && \
-      egrep -q '^extern int nm_test_func\(\);$' $source_args ; then
-  sed -i 's/extern int nm_test_func/extern void nm_test_func/' $source_args
-fi
-
-# make configure tests avoid "Library not found" warnings
-if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
-  gcc_lib_path="`XXgccXX --print-search-dirs | grep ^libraries: | sed 's/^libraries: =/:/' | sed 's/:/ -L/g'`"
-fi
-
 for f in $objfiles ; do
   if echo "$f" | egrep -q '^(/usr|/lib)' ; then
     continue
@@ -338,6 +320,12 @@ for f in $objfiles ; do
     use_ld=1
   fi
 done
+
+if [ -n "$has_lfl$has_lf2c" ] && [ -n "$source_args" ] && \
+    egrep -q '^[[:space:]]*(int[[:space:]]|void[[:space:]]|)[[:space:]]*main' $source_args > /dev/null 2>&1 ; then
+  has_lfl=""
+  has_lf2c=""
+fi
 
 if [ -n "$has_lfl" ] ; then
   cat > $has_lfl <<"EOT"
@@ -378,8 +366,14 @@ if [ -n "$source_args" ] ; then
   use_ld=0
 fi
 
+err_only=""
+# make configure tests avoid "Library not found" warnings
+if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
+  err_only="--verbosity 1"
+fi
+
 if [ $use_ld -eq 0 ] ; then
-  goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc $gcc_lib_path
+  goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc $err_only
 else
   goto-cc "$@" -r
 fi
