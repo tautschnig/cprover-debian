@@ -66,7 +66,7 @@ use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
-    clamav debci libguestfs libaqbanking \
+    clamav debci libguestfs libaqbanking python-mne \
     acl2 archivemail bibletime clojure1.2 dico dulwich eglibc \
     libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
     libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
