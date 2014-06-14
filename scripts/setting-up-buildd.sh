@@ -68,7 +68,7 @@ if [ -s debian/changelog ] ; then
   for p in \
     clamav debci libguestfs libaqbanking python-mne \
     acl2 archivemail bibletime clojure1.2 dico dulwich eglibc \
-    libmongodb-perl ceilometer \
+    libmongodb-perl ceilometer visp x4d-icons \
     libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
     libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
     maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph ; do
@@ -97,7 +97,9 @@ if [ xoctave-msh = x$cur_pkg ] ; then
 else
   PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
 fi
-#BINDMOUNTS="$BINDMOUNTS /run/shm"
+if [ xpython-mne != x$cur_pkg ] ; then
+  BINDMOUNTS="$BINDMOUNTS /run/shm"
+fi
 BUILDPLACE=/srv/jenkins-slave/cow
 APTCACHE=/srv/jenkins-slave/aptcache
 # concurrent build jobs replace crtend.o by goto-cc generated file
