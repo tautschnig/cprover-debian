@@ -66,9 +66,9 @@ use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
-    clamav debci libguestfs libaqbanking python-mne \
+    clamav debci libguestfs libaqbanking python-mne joblib \
     acl2 archivemail bibletime clojure1.2 dico dulwich eglibc \
-    libmongodb-perl ceilometer visp x4d-icons \
+    libmongodb-perl ceilometer visp x4d-icons libxshmfence \
     libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
     libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
     maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph ; do
@@ -97,9 +97,15 @@ if [ xoctave-msh = x$cur_pkg ] ; then
 else
   PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
 fi
-if [ xpython-mne != x$cur_pkg ] ; then
-  BINDMOUNTS="$BINDMOUNTS /run/shm"
-fi
+bindmounds_before="$BINDMOUNTS"
+BINDMOUNTS="$BINDMOUNTS /run/shm"
+# /dev/shm permissions
+for p in \
+  python-mne joblib libxshmfence ; do
+  if [ x$p = x$cur_pkg ] ; then
+    BINDMOUNTS="$bindmounds_before"
+  fi
+done
 BUILDPLACE=/srv/jenkins-slave/cow
 APTCACHE=/srv/jenkins-slave/aptcache
 # concurrent build jobs replace crtend.o by goto-cc generated file
