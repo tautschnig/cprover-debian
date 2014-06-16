@@ -71,7 +71,9 @@ if [ -s debian/changelog ] ; then
     libmongodb-perl ceilometer visp x4d-icons libxshmfence \
     libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
     libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
-    maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph ; do
+    maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph \
+    openimageio
+    do
     if [ x$p = x$cur_pkg ] ; then
       use_eatmydata=0
       break
@@ -110,7 +112,7 @@ BUILDPLACE=/srv/jenkins-slave/cow
 APTCACHE=/srv/jenkins-slave/aptcache
 # concurrent build jobs replace crtend.o by goto-cc generated file
 for p in \
-  gcc-4.9 oce ptlib ; do
+  gcc-4.9 oce ptlib openblas ; do
   if [ x$p = x$cur_pkg ] ; then
     DEBBUILDOPTS="-j1"
   fi
