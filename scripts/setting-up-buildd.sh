@@ -310,25 +310,32 @@ for f in $objfiles ; do
     continue
   fi
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    f_date=`date -r "$f" +%s`
-    if [ "$f" = "$likely_has_main" ] ; then
-      echo "WARNING: GOTO-CC had not created $f, building binary containing main"
-      echo "int main(int argc, char* argv[]) { return 0; }" > /tmp/empty-$$.c
-    else
-      echo "WARNING: GOTO-CC had not created $f, building empty binary"
-      touch /tmp/empty-$$.c
-    fi
-    if file "$f" | grep -q 32-bit ; then
-      f_opts="$f_opts -m32"
-    fi
-    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
-    rm /tmp/empty-$$.c
-    if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-      mv "$f" "$f.gcc-binary"
-      mv /tmp/empty-$$.o "$f"
-    fi
-    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
-    use_ld=1
+    while true ; do
+      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+        f_date=`date -r "$f" +%s`
+        if [ "$f" = "$likely_has_main" ] ; then
+          echo "WARNING: GOTO-CC had not created $f, building binary containing main"
+          echo "int main(int argc, char* argv[]) { return 0; }" > /tmp/empty-$$.c
+        else
+          echo "WARNING: GOTO-CC had not created $f, building empty binary"
+          touch /tmp/empty-$$.c
+        fi
+        if file "$f" | grep -q 32-bit ; then
+          f_opts="$f_opts -m32"
+        fi
+        goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+        rm /tmp/empty-$$.c
+        if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+          mv "$f" "$f.gcc-binary"
+          mv /tmp/empty-$$.o "$f"
+        fi
+        touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+        use_ld=1
+      else
+        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+        sleep 1
+      fi
+    done
   fi
 done
 
@@ -383,6 +390,13 @@ if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
   err_only="--verbosity 1"
 fi
 
+trap '\
+  for f in $objfiles ; do \
+    if [ -f "$f.gcc-binary" ] ; then \
+      mv "$f.gcc-binary" "$f" ; \
+    fi ; \
+  done' EXIT
+
 if [ $use_ld -eq 0 ] ; then
   goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc $err_only
 else
@@ -416,12 +430,6 @@ for f in $ofiles ; do
       echo "$f: $objfiles" >> "$gbfile.linked"
     fi
   else
-    mv "$f.gcc-binary" "$f"
-  fi
-done
-
-for f in $objfiles ; do
-  if [ -f "$f.gcc-binary" ] ; then
     mv "$f.gcc-binary" "$f"
   fi
 done
@@ -526,19 +534,26 @@ for f in $objfiles ; do
     continue
   fi
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    f_date=`date -r "$f" +%s`
-    echo "WARNING: GOTO-CC had not created $f, building empty binary"
-    touch /tmp/empty-$$.c
-    if file "$f" | grep -q 32-bit ; then
-      f_opts="$f_opts -m32"
-    fi
-    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
-    rm /tmp/empty-$$.c
-    if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-      mv "$f" "$f.gcc-binary"
-      mv /tmp/empty-$$.o "$f"
-    fi
-    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+    while true ; do
+      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+        f_date=`date -r "$f" +%s`
+        echo "WARNING: GOTO-CC had not created $f, building empty binary"
+        touch /tmp/empty-$$.c
+        if file "$f" | grep -q 32-bit ; then
+          f_opts="$f_opts -m32"
+        fi
+        goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+        rm /tmp/empty-$$.c
+        if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+          mv "$f" "$f.gcc-binary"
+          mv /tmp/empty-$$.o "$f"
+        fi
+        touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+      else
+        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+        sleep 1
+      fi
+    done
   fi
 done
 
