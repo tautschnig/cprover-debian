@@ -148,32 +148,8 @@ ulimit -S -v 16000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
-if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
-  XXgccXX "$@"
-else
-  XXgccXX -B /usr/lib/gcc/x86_64-linux-gnu/`echo XXgccXX | sed -e 's/^gcc-//' -e 's/.orig$//'`/ "$@"
-fi
 
-# http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
-function parent_is_wrapper {
-  # Look up the parent of the given PID.
-  pid=${1:-$$}
-  stat=($(</proc/${pid}/stat))
-  ppid=${stat[3]}
-
-  if [ -f /tmp/wrapper-$ppid ] ; then
-    return 0
-  elif [ ${ppid} -eq 1 ] ; then
-    return 1
-  fi
-
-  parent_is_wrapper ${ppid}
-}
-# exit if called from wrapper
-if parent_is_wrapper ; then
-  exit 0
-fi
-
+orig_only=0
 ofiles=""
 objfiles=""
 source_args=""
@@ -200,11 +176,11 @@ for o in "$@" ; do
   fi
   if [ $lang_next -eq 1 ] ; then
     if [ "$o" = "c++" ] ; then
-      exit 0
+      orig_only=1
     elif [ "$o" = "objective-c" ] ; then
-      exit 0
+      orig_only=1
     elif [ "$o" = "assembler-with-cpp" ] ; then
-      exit 0
+      orig_only=1
     fi
     lang_next=0
     forced_lang="$o"
@@ -231,11 +207,11 @@ for o in "$@" ; do
     -lfl) has_lfl="/tmp/libflmain.c" ;;
     -lf2c) has_lf2c="/tmp/libf2cmain.c" ;;
     -x) lang_next=1 ;;
-    -xc++) exit 0 ;;
+    -xc++) orig_only=1 ;;
     -xc) forced_lang="c" ;;
     -Wl,-r) use_ld=1 ;;
-    -Wl,-Ttext) exit 0 ;; # we don't really deal with sections starting at special addresses
-    -Wl,-Ttext=*) exit 0 ;; # we don't really deal with sections starting at special addresses
+    -Wl,-Ttext) skip_next=1 ; orig_only=1 ;; # we don't really deal with sections starting at special addresses
+    -Wl,-Ttext=*) orig_only=1 ;; # we don't really deal with sections starting at special addresses
     -include) include_next=1 ;;
     -f*) f_opts="$f_opts $o" ;;
     -*) true ;;
@@ -246,18 +222,18 @@ for o in "$@" ; do
   esac
 done
 if [ -z "$source_args" -a -z "$objfiles" ] ; then
-  exit 0
+  orig_only=1
 fi
 
 # gir_dummy_function workaround
 if echo $ofiles | grep -q "\.typelib\.so$" ; then
-  exit 0
+  orig_only=1
 fi
 
 # work around bear test tracing all calls
 if echo $PWD | grep -q test/exec_anatomy$ && \
    echo $LD_PRELOAD | grep -q /libear.so ; then
-  exit 0
+  orig_only=1
 fi
 
 if [ -z "$ofiles" ] ; then
@@ -278,19 +254,9 @@ if [ -n "$objfiles" -a -z "$source_args" ] ; then
     fi
   done
   if [ $some_gb -eq 0 ] ; then
-    exit 0
+    orig_only=1
   fi
 fi
-
-for f in $ofiles ; do
-  if [ ! -e "$f" ] ; then
-    echo "GCC did not create $f"
-    exit 1
-  elif [ "$f" = "/dev/null" ] ; then
-    continue
-  fi
-  mv "$f" "$f.gcc-binary"
-done
 
 likely_has_main=""
 for f in $objfiles ; do
@@ -304,6 +270,12 @@ for f in $objfiles ; do
     has_lf2c=""
   fi
 done
+
+trap '\
+  for f in $objfiles ; do \
+    rm -f "$f.gcc-binary" ; \
+  done ; \
+  rm -f /tmp/wrapper-$$' EXIT
     
 for f in $objfiles ; do
   if echo "$f" | egrep -q '^(/usr|/lib)' ; then
@@ -312,31 +284,80 @@ for f in $objfiles ; do
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
     while true ; do
       if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-        f_date=`date -r "$f" +%s`
-        if [ "$f" = "$likely_has_main" ] ; then
-          echo "WARNING: GOTO-CC had not created $f, building binary containing main"
-          echo "int main(int argc, char* argv[]) { return 0; }" > /tmp/empty-$$.c
-        else
-          echo "WARNING: GOTO-CC had not created $f, building empty binary"
-          touch /tmp/empty-$$.c
-        fi
-        if file "$f" | grep -q 32-bit ; then
-          f_opts="$f_opts -m32"
-        fi
-        goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
-        rm /tmp/empty-$$.c
-        if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-          mv "$f" "$f.gcc-binary"
-          mv /tmp/empty-$$.o "$f"
-        fi
-        touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
-        use_ld=1
         break
       else
         echo "WARNING: blocked by $(cat "$f.gcc-binary")"
         sleep 1
       fi
     done
+  fi
+done
+
+if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
+  XXgccXX "$@"
+else
+  XXgccXX -B /usr/lib/gcc/x86_64-linux-gnu/`echo XXgccXX | sed -e 's/^gcc-//' -e 's/.orig$//'`/ "$@"
+fi
+
+# http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
+function parent_is_wrapper {
+  # Look up the parent of the given PID.
+  pid=${1:-$$}
+  stat=($(</proc/${pid}/stat))
+  ppid=${stat[3]}
+
+  if [ -f /tmp/wrapper-$ppid ] ; then
+    return 0
+  elif [ ${ppid} -eq 1 ] ; then
+    return 1
+  fi
+
+  parent_is_wrapper ${ppid}
+}
+# exit if called from wrapper or orig_only
+if [ $orig_only -eq 1 ] || parent_is_wrapper ; then
+  exit 0
+fi
+
+for f in $ofiles ; do
+  if [ ! -e "$f" ] ; then
+    echo "GCC did not create $f"
+    exit 1
+  elif [ "$f" = "/dev/null" ] ; then
+    continue
+  fi
+  mv "$f" "$f.gcc-binary"
+done
+
+for f in $objfiles ; do
+  if echo "$f" | egrep -q '^(/usr|/lib)' ; then
+    continue
+  fi
+  if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+    if [ ! -e "$f.gcc-binary" ] ; then
+      echo "Missing lock file $f.gcc-binary"
+      exit 1
+    fi
+
+    f_date=`date -r "$f" +%s`
+    if [ "$f" = "$likely_has_main" ] ; then
+      echo "WARNING: GOTO-CC had not created $f, building binary containing main"
+      echo "int main(int argc, char* argv[]) { return 0; }" > /tmp/empty-$$.c
+    else
+      echo "WARNING: GOTO-CC had not created $f, building empty binary"
+      touch /tmp/empty-$$.c
+    fi
+    if file "$f" | grep -q 32-bit ; then
+      f_opts="$f_opts -m32"
+    fi
+    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+    rm /tmp/empty-$$.c
+    if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+      mv "$f" "$f.gcc-binary"
+      mv /tmp/empty-$$.o "$f"
+    fi
+    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+    use_ld=1
   fi
 done
 
@@ -396,7 +417,8 @@ trap '\
     if [ -f "$f.gcc-binary" ] ; then \
       mv "$f.gcc-binary" "$f" ; \
     fi ; \
-  done' EXIT
+  done ; \
+  rm -f /tmp/wrapper-$$' EXIT
 
 if [ $use_ld -eq 0 ] ; then
   goto-cc "$@" $has_lfl $has_lf2c $fpch_preproc $err_only
@@ -451,6 +473,77 @@ ulimit -S -v 16000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
+
+orig_only=0
+ofiles=""
+objfiles=""
+ofile_next=0
+skip_next=0
+f_opts=""
+for o in "$@" ; do
+  if [ $skip_next -eq 1 ] ; then
+    skip_next=0
+    continue
+  fi
+  if [ $ofile_next -eq 1 ] ; then
+    ofiles="$o"
+    ofile_next=0
+    continue
+  fi
+  case "$o" in
+    -Ttext) skip_next=1 ; orig_only=1 ;; # we don't really deal with sections starting at special addresses
+    -Ttext=*) orig_only=1 ;; # we don't really deal with sections starting at special addresses
+    -soname|-h) skip_next=1 ;;
+    -o) ofile_next=1 ;;
+    -o*) ofiles="`echo $o | cut -b3-`" ;;
+    -*) true ;;
+    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
+  esac
+done
+if [ -z "$objfiles" ] ; then
+  orig_only=1
+fi
+  
+if [ -z "$ofiles" ] ; then
+  ofiles="a.out"
+fi
+
+some_gb=0
+for f in $objfiles ; do
+  if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+    some_gb=1
+  fi
+done
+if [ $some_gb -eq 0 ] ; then
+  orig_only=1
+fi
+
+trap '\
+  for f in $objfiles ; do \
+    rm -f "$f.gcc-binary" ; \
+  done ; \
+  rm -f /tmp/wrapper-$$' EXIT
+
+for f in $objfiles ; do
+  if [ ! -e "$f" ] ; then
+    echo "GCC did not create $f"
+    exit 1
+  fi
+  if echo "$f" | egrep -q '^(/usr|/lib)' ; then
+    continue
+  fi
+  if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+    while true ; do
+      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+        break
+      else
+        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+        sleep 1
+      fi
+    done
+  fi
+done
+
 XXldXX "$@"
 
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
@@ -468,51 +561,8 @@ function parent_is_wrapper {
 
   parent_is_wrapper ${ppid}
 }
-# exit if called from wrapper
-if parent_is_wrapper ; then
-  exit 0
-fi
-
-ofiles=""
-objfiles=""
-ofile_next=0
-skip_next=0
-f_opts=""
-for o in "$@" ; do
-  if [ $skip_next -eq 1 ] ; then
-    skip_next=0
-    continue
-  fi
-  if [ $ofile_next -eq 1 ] ; then
-    ofiles="$o"
-    ofile_next=0
-    continue
-  fi
-  case "$o" in
-    -Ttext) exit 0 ;; # we don't really deal with sections starting at special addresses
-    -Ttext=*) exit 0 ;; # we don't really deal with sections starting at special addresses
-    -soname|-h) skip_next=1 ;;
-    -o) ofile_next=1 ;;
-    -o*) ofiles="`echo $o | cut -b3-`" ;;
-    -*) true ;;
-    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
-  esac
-done
-if [ -z "$objfiles" ] ; then
-  exit 0
-fi
-  
-if [ -z "$ofiles" ] ; then
-  ofiles="a.out"
-fi
-
-some_gb=0
-for f in $objfiles ; do
-  if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    some_gb=1
-  fi
-done
-if [ $some_gb -eq 0 ] ; then
+# exit if called from wrapper or orig_only
+if [ $orig_only -eq 1 ] || parent_is_wrapper ; then
   exit 0
 fi
 
@@ -535,27 +585,24 @@ for f in $objfiles ; do
     continue
   fi
   if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    while true ; do
-      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-        f_date=`date -r "$f" +%s`
-        echo "WARNING: GOTO-CC had not created $f, building empty binary"
-        touch /tmp/empty-$$.c
-        if file "$f" | grep -q 32-bit ; then
-          f_opts="$f_opts -m32"
-        fi
-        goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
-        rm /tmp/empty-$$.c
-        if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
-          mv "$f" "$f.gcc-binary"
-          mv /tmp/empty-$$.o "$f"
-        fi
-        touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
-        break
-      else
-        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
-        sleep 1
-      fi
-    done
+    if [ ! -e "$f.gcc-binary" ] ; then
+      echo "Missing lock file $f.gcc-binary"
+      exit 1
+    fi
+
+    f_date=`date -r "$f" +%s`
+    echo "WARNING: GOTO-CC had not created $f, building empty binary"
+    touch /tmp/empty-$$.c
+    if file "$f" | grep -q 32-bit ; then
+      f_opts="$f_opts -m32"
+    fi
+    goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
+    rm /tmp/empty-$$.c
+    if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
+      mv "$f" "$f.gcc-binary"
+      mv /tmp/empty-$$.o "$f"
+    fi
+    touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
   fi
 done
 
