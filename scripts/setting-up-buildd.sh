@@ -331,6 +331,7 @@ for f in $objfiles ; do
         fi
         touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
         use_ld=1
+        break
       else
         echo "WARNING: blocked by $(cat "$f.gcc-binary")"
         sleep 1
@@ -549,6 +550,7 @@ for f in $objfiles ; do
           mv /tmp/empty-$$.o "$f"
         fi
         touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+        break
       else
         echo "WARNING: blocked by $(cat "$f.gcc-binary")"
         sleep 1
