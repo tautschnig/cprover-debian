@@ -271,34 +271,6 @@ for f in $objfiles ; do
   fi
 done
 
-trap '\
-  for f in $objfiles ; do \
-    rm -f "$f.gcc-binary" ; \
-  done ; \
-  rm -f /tmp/wrapper-$$' EXIT
-    
-for f in $objfiles ; do
-  if echo "$f" | egrep -q '^(/usr|/lib)' ; then
-    continue
-  fi
-  if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    while true ; do
-      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-        break
-      else
-        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
-        sleep 1
-      fi
-    done
-  fi
-done
-
-if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
-  XXgccXX "$@"
-else
-  XXgccXX -B /usr/lib/gcc/x86_64-linux-gnu/`echo XXgccXX | sed -e 's/^gcc-//' -e 's/.orig$//'`/ "$@"
-fi
-
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
 function parent_is_wrapper {
   # Look up the parent of the given PID.
@@ -314,8 +286,40 @@ function parent_is_wrapper {
 
   parent_is_wrapper ${ppid}
 }
+if parent_is_wrapper ; then
+  orig_only=1
+else
+  trap '\
+    for f in $objfiles ; do \
+      rm -f "$f.gcc-binary" ; \
+    done ; \
+    rm -f /tmp/wrapper-$$' EXIT
+
+  for f in $objfiles ; do
+    if echo "$f" | egrep -q '^(/usr|/lib)' ; then
+      continue
+    fi
+    if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+      while true ; do
+        if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+          break
+        else
+          echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+          sleep 1
+        fi
+      done
+    fi
+  done
+fi
+
+if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
+  XXgccXX "$@"
+else
+  XXgccXX -B /usr/lib/gcc/x86_64-linux-gnu/`echo XXgccXX | sed -e 's/^gcc-//' -e 's/.orig$//'`/ "$@"
+fi
+
 # exit if called from wrapper or orig_only
-if [ $orig_only -eq 1 ] || parent_is_wrapper ; then
+if [ $orig_only -eq 1 ] ; then
   exit 0
 fi
 
@@ -355,6 +359,8 @@ for f in $objfiles ; do
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
+    else
+      rm -f /tmp/empty-$$.o "$f.gcc-binary"
     fi
     touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
     use_ld=1
@@ -518,34 +524,6 @@ if [ $some_gb -eq 0 ] ; then
   orig_only=1
 fi
 
-trap '\
-  for f in $objfiles ; do \
-    rm -f "$f.gcc-binary" ; \
-  done ; \
-  rm -f /tmp/wrapper-$$' EXIT
-
-for f in $objfiles ; do
-  if [ ! -e "$f" ] ; then
-    echo "GCC did not create $f"
-    exit 1
-  fi
-  if echo "$f" | egrep -q '^(/usr|/lib)' ; then
-    continue
-  fi
-  if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-    while true ; do
-      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-        break
-      else
-        echo "WARNING: blocked by $(cat "$f.gcc-binary")"
-        sleep 1
-      fi
-    done
-  fi
-done
-
-XXldXX "$@"
-
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
 function parent_is_wrapper {
   # Look up the parent of the given PID.
@@ -561,8 +539,40 @@ function parent_is_wrapper {
 
   parent_is_wrapper ${ppid}
 }
+if parent_is_wrapper ; then
+  orig_only=1
+else
+  trap '\
+    for f in $objfiles ; do \
+      rm -f "$f.gcc-binary" ; \
+    done ; \
+    rm -f /tmp/wrapper-$$' EXIT
+
+  for f in $objfiles ; do
+    if [ ! -e "$f" ] ; then
+      echo "GCC did not create $f"
+      exit 1
+    fi
+    if echo "$f" | egrep -q '^(/usr|/lib)' ; then
+      continue
+    fi
+    if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+      while true ; do
+        if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+          break
+        else
+          echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+          sleep 1
+        fi
+      done
+    fi
+  done
+fi
+
+XXldXX "$@"
+
 # exit if called from wrapper or orig_only
-if [ $orig_only -eq 1 ] || parent_is_wrapper ; then
+if [ $orig_only -eq 1 ] ; then
   exit 0
 fi
 
@@ -601,6 +611,8 @@ for f in $objfiles ; do
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
       mv "$f" "$f.gcc-binary"
       mv /tmp/empty-$$.o "$f"
+    else
+      rm -f /tmp/empty-$$.o "$f.gcc-binary"
     fi
     touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
   fi
