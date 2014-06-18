@@ -194,10 +194,10 @@ for o in "$@" ; do
     continue
   fi
   case "$o" in
-    -E) exit 0 ;;
-    -S) exit 0 ;;
-    -MM) exit 0 ;;
-    -M) exit 0 ;;
+    -E) orig_only=1 ;;
+    -S) orig_only=1 ;;
+    -MM) orig_only=1 ;;
+    -M) orig_only=1 ;;
     -MT) skip_next=1 ;;
     -MQ) skip_next=1 ;;
     -Xlinker) skip_next=1 ;;
