@@ -303,8 +303,17 @@ else
       while true ; do
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
+        elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
+          p="$(cat "$f.gcc-binary")"
+          # avoid deadlock by blocking ourselves
+          if [ "x$p" = "x$$" ] ; then
+            rm -f "$f.gcc-binary"
+          else
+            echo "WARNING: gcc blocked by $p"
+            sleep 1
+          fi
         else
-          echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+          echo "WARNING: gcc blocked by goto-cc"
           sleep 1
         fi
       done
@@ -560,8 +569,17 @@ else
       while true ; do
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
+        elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
+          p="$(cat "$f.gcc-binary")"
+          # avoid deadlock by blocking ourselves
+          if [ "x$p" = "x$$" ] ; then
+            rm -f "$f.gcc-binary"
+          else
+            echo "WARNING: ld blocked by $p"
+            sleep 1
+          fi
         else
-          echo "WARNING: blocked by $(cat "$f.gcc-binary")"
+          echo "WARNING: ld blocked by goto-ld"
           sleep 1
         fi
       done
