@@ -66,13 +66,13 @@ use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
-    clamav debci libguestfs libaqbanking python-mne joblib \
-    acl2 archivemail bibletime clojure1.2 dico dulwich eglibc \
-    libmongodb-perl ceilometer visp x4d-icons libxshmfence \
-    libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
-    libio-async-loop-glib-perl libio-socket-ip-perl libslf4j-java \
-    maxima ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph \
-    openimageio
+      acl2 archivemail bibletime ceilometer clamav clojure1.2 debci \
+      dico dulwich eglibc joblib libaqbanking libaudio-mpd-perl \
+      libdbd-firebird-perl libfile-sync-perl libguestfs \
+      libio-async-loop-glib-perl libio-socket-ip-perl libmongodb-perl \
+      libslf4j-java libxshmfence maxima openimageio python-mne \
+      ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph visp \
+      x4d-icons
     do
     if [ x$p = x$cur_pkg ] ; then
       use_eatmydata=0
@@ -110,13 +110,13 @@ for p in \
 done
 BUILDPLACE=/srv/jenkins-slave/cow
 APTCACHE=/srv/jenkins-slave/aptcache
-# concurrent build jobs replace crtend.o by goto-cc generated file
-for p in \
-  gcc-4.9 oce ptlib openblas ; do
-  if [ x$p = x$cur_pkg ] ; then
-    DEBBUILDOPTS="-j1"
-  fi
-done
+# # concurrent build jobs replace crtend.o by goto-cc generated file
+# for p in \
+#   gcc-4.9 oce ptlib openblas ; do
+#   if [ x$p = x$cur_pkg ] ; then
+#     DEBBUILDOPTS="-j1"
+#   fi
+# done
 EOF
 if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
