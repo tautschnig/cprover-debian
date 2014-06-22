@@ -304,7 +304,7 @@ else
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
         elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
-          p="$(cat "$f.gcc-binary")"
+          p="$(cat "$f.gcc-binary" 2>/dev/null || echo 0)"
           # avoid deadlock by blocking ourselves
           if [ "x$p" = "x$$" ] ; then
             rm -f "$f.gcc-binary"
@@ -570,7 +570,7 @@ else
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
         elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
-          p="$(cat "$f.gcc-binary")"
+          p="$(cat "$f.gcc-binary" 2>/dev/null || echo 0)"
           # avoid deadlock by blocking ourselves
           if [ "x$p" = "x$$" ] ; then
             rm -f "$f.gcc-binary"
