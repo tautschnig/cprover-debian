@@ -429,7 +429,7 @@ fi
 
 trap '\
   for f in $objfiles ; do \
-    if [ -f "$f.gcc-binary" ] ; then \
+    if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
       mv "$f.gcc-binary" "$f" ; \
     fi ; \
   done ; \
@@ -638,7 +638,7 @@ done
 
 trap '\
   for f in $objfiles ; do \
-    if [ -f "$f.gcc-binary" ] ; then \
+    if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
       mv "$f.gcc-binary" "$f" ; \
     fi ; \
   done ; \
