@@ -117,6 +117,8 @@ APTCACHE=/srv/jenkins-slave/aptcache
 #     DEBBUILDOPTS="-j1"
 #   fi
 # done
+# work around https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=677666
+export USER=pbuilder
 EOF
 if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
