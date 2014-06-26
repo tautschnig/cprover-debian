@@ -304,16 +304,17 @@ else
     if echo "$f" | egrep -q '^(/usr|/lib)' ; then
       continue
     fi
-    if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-      while true ; do
-        if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-          break
-        else
-          echo "WARNING: gcc blocked by goto-cc"
-          sleep 1
+    while true ; do
+      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+        if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+          rm -f "$f.gcc-binary"
         fi
-      done
-    fi
+        break
+      else
+        echo "WARNING: gcc blocked by goto-cc"
+        sleep 1
+      fi
+    done
   done
 fi
 
@@ -564,16 +565,17 @@ else
     if echo "$f" | egrep -q '^(/usr|/lib)' ; then
       continue
     fi
-    if ! objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
-      while true ; do
-        if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
-          break
-        else
-          echo "WARNING: ld blocked by goto-ld"
-          sleep 1
+    while true ; do
+      if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
+        if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
+          rm -f "$f.gcc-binary"
         fi
-      done
-    fi
+        break
+      else
+        echo "WARNING: ld blocked by goto-ld"
+        sleep 1
+      fi
+    done
   done
 fi
 
