@@ -154,6 +154,7 @@ touch /tmp/wrapper-$$
 orig_only=0
 ofiles=""
 objfiles=""
+uniq_objfiles=""
 source_args=""
 compile_only=0
 ofile_next=0
@@ -227,6 +228,8 @@ if [ -z "$source_args" -a -z "$objfiles" ] ; then
   orig_only=1
 fi
 
+uniq_objfiles="`echo $objfiles | tr ' ' '\n' | sort | uniq`"
+
 # gir_dummy_function workaround
 if echo $ofiles | grep -q "\.typelib\.so$" ; then
   orig_only=1
@@ -250,7 +253,7 @@ fi
 
 if [ -n "$objfiles" -a -z "$source_args" ] ; then
   some_gb=0
-  for f in $objfiles ; do
+  for f in $uniq_objfiles ; do
     if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
       some_gb=1
     fi
@@ -261,7 +264,7 @@ if [ -n "$objfiles" -a -z "$source_args" ] ; then
 fi
 
 likely_has_main=""
-for f in $objfiles ; do
+for f in $uniq_objfiles ; do
   if [ ! -e "$f" ] ; then
     echo "GCC did not create $f"
     exit 1
@@ -292,12 +295,12 @@ if parent_is_wrapper ; then
   orig_only=1
 else
   trap '\
-    for f in $objfiles ; do \
+    for f in $uniq_objfiles ; do \
       rm -f "$f.gcc-binary" ; \
     done ; \
     rm -f /tmp/wrapper-$$' EXIT
 
-  for f in $objfiles ; do
+  for f in $uniq_objfiles ; do
     if echo "$f" | egrep -q '^(/usr|/lib)' ; then
       continue
     fi
@@ -305,15 +308,6 @@ else
       while true ; do
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
-        elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
-          p="$(cat "$f.gcc-binary" 2>/dev/null || echo 0)"
-          # avoid deadlock by blocking ourselves
-          if [ "x$p" = "x$$" ] ; then
-            rm -f "$f.gcc-binary"
-          else
-            echo "WARNING: gcc blocked by $p"
-            sleep 1
-          fi
         else
           echo "WARNING: gcc blocked by goto-cc"
           sleep 1
@@ -344,7 +338,7 @@ for f in $ofiles ; do
   mv "$f" "$f.gcc-binary"
 done
 
-for f in $objfiles ; do
+for f in $uniq_objfiles ; do
   if echo "$f" | egrep -q '^(/usr|/lib)' ; then
     continue
   fi
@@ -430,8 +424,8 @@ if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
 fi
 
 trap '\
-  for f in $objfiles ; do \
-    if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
+  for f in $uniq_objfiles ; do \
+    if [ -f "$f.gcc-binary" ] ; then \
       mv "$f.gcc-binary" "$f" ; \
     fi ; \
   done ; \
@@ -494,6 +488,7 @@ touch /tmp/wrapper-$$
 orig_only=0
 ofiles=""
 objfiles=""
+uniq_objfiles=""
 ofile_next=0
 skip_next=0
 f_opts=""
@@ -520,13 +515,15 @@ done
 if [ -z "$objfiles" ] ; then
   orig_only=1
 fi
+
+uniq_objfiles="`echo $objfiles | tr ' ' '\n' | sort | uniq`"
   
 if [ -z "$ofiles" ] ; then
   ofiles="a.out"
 fi
 
 some_gb=0
-for f in $objfiles ; do
+for f in $uniq_objfiles ; do
   if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
     some_gb=1
   fi
@@ -554,12 +551,12 @@ if parent_is_wrapper ; then
   orig_only=1
 else
   trap '\
-    for f in $objfiles ; do \
+    for f in $uniq_objfiles ; do \
       rm -f "$f.gcc-binary" ; \
     done ; \
     rm -f /tmp/wrapper-$$' EXIT
 
-  for f in $objfiles ; do
+  for f in $uniq_objfiles ; do
     if [ ! -e "$f" ] ; then
       echo "GCC did not create $f"
       exit 1
@@ -571,15 +568,6 @@ else
       while true ; do
         if ( set -o noclobber; echo "$$" > "$f.gcc-binary" ) 2> /dev/null; then
           break
-        elif file "$f.gcc-binary" | grep -q ": ASCII text$" ; then
-          p="$(cat "$f.gcc-binary" 2>/dev/null || echo 0)"
-          # avoid deadlock by blocking ourselves
-          if [ "x$p" = "x$$" ] ; then
-            rm -f "$f.gcc-binary"
-          else
-            echo "WARNING: ld blocked by $p"
-            sleep 1
-          fi
         else
           echo "WARNING: ld blocked by goto-ld"
           sleep 1
@@ -606,7 +594,7 @@ for f in $ofiles ; do
   mv "$f" "$f.gcc-binary"
 done
 
-for f in $objfiles ; do
+for f in $uniq_objfiles ; do
   if [ ! -e "$f" ] ; then
     echo "GCC did not create $f"
     exit 1
@@ -639,8 +627,8 @@ for f in $objfiles ; do
 done
 
 trap '\
-  for f in $objfiles ; do \
-    if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
+  for f in $uniq_objfiles ; do \
+    if [ -f "$f.gcc-binary" ] ; then \
       mv "$f.gcc-binary" "$f" ; \
     fi ; \
   done ; \
