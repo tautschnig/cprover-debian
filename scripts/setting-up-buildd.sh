@@ -71,8 +71,8 @@ if [ -s debian/changelog ] ; then
       libdbd-firebird-perl libfile-sync-perl libguestfs \
       libio-async-loop-glib-perl libio-socket-ip-perl libmongodb-perl \
       libslf4j-java libxshmfence maxima openimageio python-mne \
-      ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph visp \
-      x4d-icons
+      ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph \
+      statsmodels visp x4d-icons
     do
     if [ x$p = x$cur_pkg ] ; then
       use_eatmydata=0
@@ -103,7 +103,7 @@ bindmounds_before="$BINDMOUNTS"
 BINDMOUNTS="$BINDMOUNTS /run/shm"
 # /dev/shm permissions
 for p in \
-  python-mne joblib libxshmfence ; do
+  python-mne joblib libxshmfence statsmodels ; do
   if [ x$p = x$cur_pkg ] ; then
     BINDMOUNTS="$bindmounds_before"
   fi
