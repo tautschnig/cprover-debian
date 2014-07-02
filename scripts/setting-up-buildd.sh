@@ -167,6 +167,7 @@ include_next=0
 fpch_preproc=""
 f_opts=""
 forced_lang=""
+is_shared=0
 for o in "$@" ; do
   if [ $skip_next -eq 1 ] ; then
     skip_next=0
@@ -217,6 +218,7 @@ for o in "$@" ; do
     -Wl,-Ttext=*) orig_only=1 ;; # we don't really deal with sections starting at special addresses
     -include) include_next=1 ;;
     -f*) f_opts="$f_opts $o" ;;
+    -shared) is_shared=1 ;;
     -*) true ;;
     *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
     *.c) source_args+=" $o" ;;
@@ -264,17 +266,22 @@ if [ -n "$objfiles" -a -z "$source_args" ] ; then
 fi
 
 likely_has_main=""
-for f in $uniq_objfiles ; do
-  if [ ! -e "$f" ] ; then
-    echo "GCC did not create $f"
-    exit 1
-  fi
-  if nm -B "$f" 2>/dev/null | awk '{ print $2":"$3 }' | grep -q "^T:main$" ; then
-    likely_has_main="$f"
-    has_lfl=""
-    has_lf2c=""
-  fi
-done
+if [ $is_shared -eq 1 ] ; then
+  has_lfl=""
+  has_lf2c=""
+else
+  for f in $uniq_objfiles ; do
+    if [ ! -e "$f" ] ; then
+      echo "GCC did not create $f"
+      exit 1
+    fi
+    if nm -B "$f" 2>/dev/null | awk '{ print $2":"$3 }' | grep -q "^T:main$" ; then
+      likely_has_main="$f"
+      has_lfl=""
+      has_lf2c=""
+    fi
+  done
+fi
 
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
 function parent_is_wrapper {
