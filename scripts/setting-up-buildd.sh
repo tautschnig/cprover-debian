@@ -151,6 +151,7 @@ trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
 
+ifs=$IFS
 orig_only=0
 ofiles=""
 objfiles=""
@@ -220,17 +221,19 @@ for o in "$@" ; do
     -f*) f_opts="$f_opts $o" ;;
     -shared) is_shared=1 ;;
     -*) true ;;
-    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
-    *.c) source_args+=" $o" ;;
-    *.i) source_args+=" $o" ;;
-    *.cpp) if [ "x$forced_lang" = "xc" ] ; then source_args+=" $o" ; fi ;;
+    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=":$o" ;;
+    *.c) source_args+=":$o" ;;
+    *.i) source_args+=":$o" ;;
+    *.cpp) if [ "x$forced_lang" = "xc" ] ; then source_args+=":$o" ; fi ;;
   esac
 done
+objfiles="`echo $objfiles | sed 's/^://'`"
+source_args="`echo $source_args | sed 's/^://'`"
 if [ -z "$source_args" -a -z "$objfiles" ] ; then
   orig_only=1
 fi
 
-uniq_objfiles="`echo $objfiles | tr ' ' '\n' | sort | uniq`"
+uniq_objfiles="`echo $objfiles | tr ':' '\n' | sort | uniq | tr '\n' ':' | sed 's/:$/\n/'`"
 
 # gir_dummy_function workaround
 if echo $ofiles | grep -q "\.typelib\.so$" ; then
@@ -247,19 +250,24 @@ if [ -z "$ofiles" ] ; then
   if [ $compile_only -eq 0 ] ; then
     ofiles="a.out"
   else
+    IFS=:
     for f in $source_args ; do
-      ofiles+=" `basename "$f" | sed 's/\.\(c\|i\|cpp\)$/.o/'`"
+      ofiles+=":`basename "$f" | sed 's/\.\(c\|i\|cpp\)$/.o/'`"
     done
+    IFS=$ifs
   fi
 fi
+ofiles="`echo $ofiles | sed 's/^://'`"
 
 if [ -n "$objfiles" -a -z "$source_args" ] ; then
   some_gb=0
+  IFS=:
   for f in $uniq_objfiles ; do
     if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
       some_gb=1
     fi
   done
+  IFS=$ifs
   if [ $some_gb -eq 0 ] ; then
     orig_only=1
   fi
@@ -270,6 +278,7 @@ if [ $is_shared -eq 1 ] ; then
   has_lfl=""
   has_lf2c=""
 else
+  IFS=:
   for f in $uniq_objfiles ; do
     if [ ! -e "$f" ] ; then
       echo "GCC did not create $f"
@@ -281,6 +290,7 @@ else
       has_lf2c=""
     fi
   done
+  IFS=$ifs
 fi
 
 # http://stackoverflow.com/questions/3586888/how-do-i-find-the-top-level-parent-pid-of-a-given-process-using-bash
@@ -302,11 +312,13 @@ if parent_is_wrapper ; then
   orig_only=1
 else
   trap '\
+    IFS=: ; \
     for f in $uniq_objfiles ; do \
       rm -f "$f.gcc-binary" ; \
     done ; \
     rm -f /tmp/wrapper-$$' EXIT
 
+  IFS=:
   for f in $uniq_objfiles ; do
     if echo "$f" | egrep -q '^(/usr|/lib)' ; then
       continue
@@ -323,6 +335,7 @@ else
       fi
     done
   done
+  IFS=$ifs
 fi
 
 if [ "x`declare -p PATH | cut -b10`" = "xx" ] ; then
@@ -336,6 +349,7 @@ if [ $orig_only -eq 1 ] ; then
   exit 0
 fi
 
+IFS=:
 for f in $ofiles ; do
   if [ ! -e "$f" ] ; then
     echo "GCC did not create $f"
@@ -345,7 +359,9 @@ for f in $ofiles ; do
   fi
   mv "$f" "$f.gcc-binary"
 done
+IFS=$ifs
 
+IFS=:
 for f in $uniq_objfiles ; do
   if echo "$f" | egrep -q '^(/usr|/lib)' ; then
     continue
@@ -379,9 +395,10 @@ for f in $uniq_objfiles ; do
     use_ld=1
   fi
 done
+IFS=$ifs
 
 if [ -n "$has_lfl$has_lf2c" ] && [ -n "$source_args" ] && \
-    egrep -q '^[[:space:]]*(int[[:space:]]|void[[:space:]]|)[[:space:]]*main' $source_args > /dev/null 2>&1 ; then
+    egrep -q '^[[:space:]]*(int[[:space:]]|void[[:space:]]|)[[:space:]]*main' `echo $source_args | tr ':' ' '` > /dev/null 2>&1 ; then
   has_lfl=""
   has_lf2c=""
 fi
@@ -427,11 +444,12 @@ fi
 
 err_only=""
 # make configure tests avoid "Library not found" warnings
-if [ "$ofiles" = "conftest" ] && [ "$source_args" = " conftest.c" ] ; then
+if [ "$ofiles" = "conftest" ] && [ "$source_args" = "conftest.c" ] ; then
   err_only="--verbosity 1"
 fi
 
 trap '\
+  IFS=: ; \
   for f in $uniq_objfiles ; do \
     if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
       mv "$f.gcc-binary" "$f" ; \
@@ -445,6 +463,7 @@ else
   goto-cc "$@" -r
 fi
 
+IFS=:
 for f in $ofiles ; do
   if [ ! -e "$f" ] ; then
     echo "GOTO-CC did not create $f"
@@ -475,6 +494,7 @@ for f in $ofiles ; do
     mv "$f.gcc-binary" "$f"
   fi
 done
+IFS=$ifs
 EOF
 real_gcc_bn=`basename $real_gcc`
 sed -i "s/XXgccXX/$real_gcc_bn.orig/g" $cow_base/tmp/gcc-wrapper
@@ -493,6 +513,7 @@ trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
 
+ifs=$IFS
 orig_only=0
 ofiles=""
 objfiles=""
@@ -517,25 +538,28 @@ for o in "$@" ; do
     -o) ofile_next=1 ;;
     -o*) ofiles="`echo $o | cut -b3-`" ;;
     -*) true ;;
-    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=" $o" ;;
+    *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=":$o" ;;
   esac
 done
+objfiles="`echo $objfiles | sed 's/^://'`"
 if [ -z "$objfiles" ] ; then
   orig_only=1
 fi
 
-uniq_objfiles="`echo $objfiles | tr ' ' '\n' | sort | uniq`"
+uniq_objfiles="`echo $objfiles | tr ':' '\n' | sort | uniq | tr '\n' ':' | sed 's/:$/\n/'`"
   
 if [ -z "$ofiles" ] ; then
   ofiles="a.out"
 fi
 
 some_gb=0
+IFS=:
 for f in $uniq_objfiles ; do
   if objdump -h -j goto-cc "$f" > /dev/null 2<&1 ; then
     some_gb=1
   fi
 done
+IFS=$ifs
 if [ $some_gb -eq 0 ] ; then
   orig_only=1
 fi
@@ -559,11 +583,13 @@ if parent_is_wrapper ; then
   orig_only=1
 else
   trap '\
+    IFS=: ; \
     for f in $uniq_objfiles ; do \
       rm -f "$f.gcc-binary" ; \
     done ; \
     rm -f /tmp/wrapper-$$' EXIT
 
+  IFS=:
   for f in $uniq_objfiles ; do
     if [ ! -e "$f" ] ; then
       echo "GCC did not create $f"
@@ -584,6 +610,7 @@ else
       fi
     done
   done
+  IFS=$ifs
 fi
 
 XXldXX "$@"
@@ -603,6 +630,7 @@ for f in $ofiles ; do
   mv "$f" "$f.gcc-binary"
 done
 
+IFS=:
 for f in $uniq_objfiles ; do
   if [ ! -e "$f" ] ; then
     echo "GCC did not create $f"
@@ -634,8 +662,10 @@ for f in $uniq_objfiles ; do
     touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
   fi
 done
+IFS=$ifs
 
 trap '\
+  IFS=: ; \
   for f in $uniq_objfiles ; do \
     if [ -f "$f.gcc-binary" ] && ! file "$f.gcc-binary" | grep -q ": ASCII text$" ; then \
       mv "$f.gcc-binary" "$f" ; \
