@@ -5,8 +5,7 @@
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.4.1">
-      <useBuildBlocker>true</useBuildBlocker>
-      <blockingJobs>sid-.*</blockingJobs>
+      <useBuildBlocker>false</useBuildBlocker>
     </hudson.plugins.buildblocker.BuildBlockerProperty>
   </properties>
   <scm class="hudson.scm.NullSCM"/>
@@ -26,6 +25,16 @@
 </command>
     </hudson.tasks.Shell>
   </builders>
-  <publishers/>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>JOB-prepare-binaries-slaves</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
   <buildWrappers/>
 </project>

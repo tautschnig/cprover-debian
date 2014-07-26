@@ -46,6 +46,10 @@ f.eachLine() {
         env(&quot;PKG&quot;, &quot;${pkgName}&quot;)
       }
     }
+
+    publishers {
+      if(!is_disabled) allowBrokenBuildClaiming()
+    }
     configure { project -&gt;
       project / buildWrappers / &apos;com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper&apos; / includes (&quot;sid-goto-cc-${pkgName}/workspace/goto-binaries.tar.bz2&quot;)
     }

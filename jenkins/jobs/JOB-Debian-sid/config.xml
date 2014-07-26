@@ -44,35 +44,6 @@ rm -f Sources.main.gz Sources.contrib.gz
 #sed -i &apos;s#^MIRROR=.*$#MIRROR=ftp://ftp.uk.debian.org#&apos; getlist
 #./getlist wheezy
 
-# see https://github.com/tautschnig/cprover-debian/tree/master/result-notes for reasons
-not_for_us=&quot;\
-cmucl \
-fuse4bsd \
-gnumach \
-hurd \
-mig \
-mit-scheme \
-mozart \
-mozart-stdlib \
-nyquist \
-oaklisp \
-openbios-ppc \
-openbios-sparc \
-openhackware \
-pixbros \
-pixfrogger \
-proll \
-scsh-0.6 \
-scsh-install-lib \
-wine-gecko-1.4 \
-wireless-regdb \
-xserver-xorg-video-geode \
-&quot;
-
-for p in $not_for_us ; do
-  sed -i &quot;/^$p$/d&quot; list.$DIST.amd64
-done
-
 cp list.$DIST.amd64 list.$DIST.amd64-short
 sed -i &apos;/^[a-z]/d&apos; list.$DIST.amd64-short
 </command>
@@ -85,6 +56,12 @@ sed -i &apos;/^[a-z]/d&apos; list.$DIST.amd64-short
 import groovy.sql.Sql;
 
 def sql = Sql.newInstance(&quot;jdbc:postgresql://public-udd-mirror.xvm.mit.edu:5432/udd&quot;, &quot;public-udd-mirror&quot;, &quot;public-udd-mirror&quot;, &quot;org.postgresql.Driver&quot;)
+
+def check_res = \
+sql.firstRow(&quot;SELECT count(*) \
+                   FROM bugs INNER JOIN bugs_usertags USING (id) \
+                   WHERE bugs_usertags.email = &apos;mt@debian.org&apos; AND bugs_usertags.tag = &apos;goto-cc&apos;&quot;)
+assert check_res.count != null &amp;&amp; check_res.count &gt; 0, &apos;Could not select any bug reports&apos;
 
 def rc_buggy = [:]
 sql.eachRow(&quot;SELECT id, bugs.source AS source FROM bugs, popcon_src \
@@ -120,130 +97,70 @@ def disabled_map = [
   &apos;proll&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;scsh-0.6&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;scsh-install-lib&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;slof&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;wine-gecko-1.4&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;wine-gecko-2.21&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;wireless-regdb&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;xserver-xorg-video-geode&apos;:&apos;not-for-us [amd64]&apos;,
-  &apos;afterstep&apos;:&apos;Reported https://sourceforge.net/tracker/?func=detail&amp;atid=100030&amp;aid=3571004&amp;group_id=30&apos;,
-  &apos;ap-utils&apos;:&apos;Reported to developer&apos;,
+  &apos;zsnes&apos;:&apos;not-for-us [amd64]&apos;,
   &apos;aqualung&apos;:&apos;Nested functions&apos;,
-  &apos;audit&apos;:&apos;duplicate function -- visibility attribute &quot;hidden&quot;&apos;,
+  &apos;asterisk&apos;:&apos;Nested functions&apos;,
   &apos;auto-multiple-choice&apos;:&apos;Nested functions&apos;,
   &apos;bogl&apos;:&apos;Nested functions&apos;,
-  &apos;buddy&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;aid=3605234&amp;group_id=112658&amp;atid=662728&apos;,
-  &apos;bvi&apos;:&apos;reported to developer&apos;,
-  &apos;bygfoot&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=445176&amp;aid=3570998&amp;group_id=46139&apos;,
   &apos;cadabra&apos;:&apos;Nested functions&apos;,
   &apos;calcurse&apos;:&apos;Nested functions&apos;,
   &apos;clutter-gesture&apos;:&apos;Nested functions&apos;,
-  &apos;crasm&apos;:&apos;Reported https://sourceforge.net/tracker/?func=detail&amp;atid=675772&amp;aid=3571000&amp;group_id=116718&apos;,
-  &apos;crossfire&apos;:&apos;Reported, fixed https://sourceforge.net/tracker/?func=detail&amp;atid=113833&amp;aid=3571001&amp;group_id=13833&apos;,
-  &apos;cups&apos;:&apos;test suite fails to start -- requires network, maybe fixable using DEVFS&apos;,
-  &apos;dbacl&apos;:&apos;reported to developer&apos;,
-  &apos;debian-installer-netboot-images&apos;:&apos;SHA1 checksum fails on download&apos;,
-  &apos;denemo&apos;:&apos;reported http://savannah.gnu.org/bugs/index.php?37483&apos;,
-  &apos;deng&apos;:&apos;reported, fixed http://sourceforge.net/p/deng/bugs/1083/&apos;,
-  &apos;dieharder&apos;:&apos;reported to developer&apos;,
-  &apos;doc-debian&apos;:&apos;Requires special build setup, see http://sources.debian.net/src/doc-debian/6.1/README.build&apos;,
-  &apos;dsniff&apos;:&apos;reported to developer&apos;,
-  &apos;duff&apos;:&apos;reported to developer, fixed&apos;,
-  &apos;dump&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=101306&amp;aid=3570260&amp;group_id=1306&apos;,
   &apos;elfutils&apos;:&apos;Nested functions&apos;,
-  &apos;ettercap&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=117435&amp;aid=3570262&amp;group_id=17435&apos;,
-  &apos;etw&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=577838&amp;aid=3570424&amp;group_id=84846&apos;,
-  &apos;expect&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=113179&amp;aid=3570431&amp;group_id=13179&apos;,
-  &apos;fastlink&apos;:&apos;reported to developer, fixed&apos;,
   &apos;ffindex&apos;:&apos;Nested functions&apos;,
   &apos;filters&apos;:&apos;Nested functions&apos;,
-  &apos;findutils&apos;:&apos;reported http://savannah.gnu.org/bugs/?37423&apos;,
   &apos;freedroidrpg&apos;:&apos;Nested functions&apos;,
-  &apos;fxt&apos;:&apos;reported https://savannah.nongnu.org/bugs/index.php?38293&apos;,
-  &apos;g2&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=102180&amp;aid=3570508&amp;group_id=2180&apos;,
   &apos;gambas3&apos;:&apos;Nested functions&apos;,
   &apos;gerris&apos;:&apos;Nested functions&apos;,
-  &apos;ggobi&apos;:&apos;reported http://code.google.com/p/ggobi-documentation/issues/detail?id=48&apos;,
   &apos;gimp-plugin-registry&apos;:&apos;Nested functions&apos;,
-  &apos;gkrellm-gkrellmpc&apos;:&apos;reported to developer&apos;,
   &apos;gmysqlcc&apos;:&apos;Nested functions&apos;,
-  &apos;gngb&apos;:&apos;reported to developer&apos;,
-  &apos;gnugo&apos;:&apos;reported to developer&apos;,
-//  &apos;golang&apos;:&apos;reported, fixed http://code.google.com/p/go/issues/detail?id=4143&apos;,
-  &apos;gpac&apos;:&apos;reported to developer&apos;,
   &apos;gpe-calendar&apos;:&apos;Nested functions&apos;,
-  &apos;gpm&apos;:&apos;nested functions&apos;,
-  &apos;gprolog&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=109715&amp;aid=3570846&amp;group_id=9715&apos;,
+  &apos;gpm&apos;:&apos;Nested functions&apos;,
   &apos;gpsdrive&apos;:&apos;Nested functions&apos;,
-//  &apos;gpsim&apos;:&apos;reported, fixed https://sourceforge.net/tracker/?func=detail&amp;atid=102341&amp;aid=3570700&amp;group_id=2341&apos;,
-  &apos;gramophone2&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;atid=957891&amp;aid=3570576&amp;group_id=196547&apos;,
-  &apos;grub&apos;:&apos;nested functions&apos;,
-  &apos;gwc&apos;:&apos;nested functions&apos;,
-//  &apos;h323plus&apos;:&apos;unknown error (configure?)&apos;,
-//  &apos;html-xml-utils&apos;:&apos;reported to developer, fixed&apos;,
-  &apos;icheck&apos;:&apos;same as CLANG (restrict)&apos;,
-  &apos;idjc&apos;:&apos;nested functions&apos;,
-//  &apos;instead&apos;:&apos;reported, fixed http://code.google.com/p/instead/issues/detail?id=21&apos;,
-  &apos;jamin&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;aid=3573791&amp;group_id=78441&amp;atid=553290&apos;,
+  &apos;grub&apos;:&apos;Nested functions&apos;,
+  &apos;gwc&apos;:&apos;Nested functions&apos;,
+  &apos;idjc&apos;:&apos;Nested functions&apos;,
   &apos;kraptor&apos;:&apos;Nested functions&apos;,
   &apos;lasso&apos;:&apos;Nested functions&apos;,
-  &apos;libaqbanking&apos;:&apos;/dev/urandom missing&apos;,
-  &apos;libcgroup&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;aid=3605228&amp;group_id=218421&amp;atid=1043649&apos;,
-  &apos;libdbd-oracle-perl&apos;:&apos;reported #689915, rejected (contrib)&apos;,
-  &apos;libdessert0.87&apos;:&apos;reported to developer&apos;,
   &apos;libeventdb&apos;:&apos;Nested functions&apos;,
   &apos;libgpevtype&apos;:&apos;Nested functions&apos;,
   &apos;libhandoff&apos;:&apos;Nested functions&apos;,
   &apos;libhdate&apos;:&apos;Nested functions&apos;,
-//  &apos;libslf4j-java&apos;:&apos;test suite failure&apos;,
   &apos;libsx&apos;:&apos;Nested functions&apos;,
-//  &apos;libtest-http-server-simple-stashwarnings-perl&apos;:&apos;test suite failure&apos;,
-//  &apos;lighttpd&apos;:&apos;test suite errors (network required?)&apos;,
-//  &apos;lua-lgi&apos;:&apos;reported, fixed https://github.com/pavouk/lgi/issues/26&apos;,
-//  &apos;lua-rexlib&apos;:&apos;reported, fixed https://github.com/rrthomas/lrexlib/issues/1&apos;,
+  &apos;lintian&apos;:&apos;Nested functions&apos;,
+  &apos;litl&apos;:&apos;Nested functions&apos;,
   &apos;luvcview&apos;:&apos;Nested functions&apos;,
-  &apos;lxc&apos;:&apos;nested functions&apos;,
+  &apos;lxc&apos;:&apos;Nested functions&apos;,
   &apos;mandos&apos;:&apos;Nested functions&apos;,
   &apos;matchbox-panel&apos;:&apos;Nested functions&apos;,
-//  &apos;maxima&apos;:&apos;test suite errors (maybe works in unstable)&apos;,
   &apos;mcdp&apos;:&apos;Nested functions&apos;,
-  &apos;med-fichier&apos;:&apos;nested functions&apos;,
-  &apos;midori&apos;:&apos;reported, fixed https://bugs.launchpad.net/midori/+bug/1060341&apos;,
-  &apos;mz&apos;:&apos;reported to developer&apos;,
+  &apos;med-fichier&apos;:&apos;Nested functions&apos;,
   &apos;ncpfs&apos;:&apos;Nested functions&apos;,
-  &apos;neartree&apos;:&apos;reported to developer, fixed&apos;,
   &apos;netplug&apos;:&apos;Nested functions&apos;,
-  &apos;open-vm-tools&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;aid=3574402&amp;group_id=204462&amp;atid=989708&apos;,
+  &apos;openrc&apos;:&apos;Nested functions&apos;,
   &apos;p3scan&apos;:&apos;Nested functions&apos;,
   &apos;partconf&apos;:&apos;Nested functions&apos;,
+  &apos;paxtest&apos;:&apos;Nested functions&apos;,
   &apos;pdp&apos;:&apos;Nested functions&apos;,
-//  &apos;pmw&apos;:&apos;reported to developer, fixed&apos;,
-//  &apos;ptlib&apos;:&apos;missing files&apos;,
-//  &apos;python-djvulibre&apos;:&apos;test suite failures&apos;,
-//  &apos;python-eventlet&apos;:&apos;Unknown reason&apos;,
-  &apos;qxw&apos;:&apos;nested functions&apos;,
-//  &apos;radare2&apos;:&apos;reported, fixed https://github.com/radare/radare2/issues/52, but also OOM&apos;,
+  &apos;proot&apos;:&apos;Nested functions&apos;,
+  &apos;qxw&apos;:&apos;Nested functions&apos;,
   &apos;rainbow&apos;:&apos;Nested functions&apos;,
+  &apos;ratpoints&apos;:&apos;Nested functions&apos;,
   &apos;rawstudio&apos;:&apos;Nested functions&apos;,
-//  &apos;remctl&apos;:&apos;Unknown reason&apos;,
-  &apos;reprepro&apos;:&apos;nested functions&apos;,
+  &apos;reprepro&apos;:&apos;Nested functions&apos;,
   &apos;rsh-redone&apos;:&apos;Nested functions&apos;,
-//  &apos;ruby-httpclient&apos;:&apos;test suite error (network required?)&apos;,
-//  &apos;runit&apos;:&apos;Unknown reason&apos;,
-//  &apos;sim4&apos;:&apos;reported to developer, fixed&apos;,
-  &apos;skyeye&apos;:&apos;reported, fixed https://sourceforge.net/p/skyeye/bugs/100/&apos;,
-  &apos;smbc&apos;:&apos;nested functions&apos;,
-  &apos;spl&apos;:&apos;nested functions&apos;,
-//  &apos;strigi&apos;:&apos;re-try, error is not reproducible on console&apos;,
-//  &apos;systemd&apos;:&apos;date fails to set timestamp, may be cowbuilder problem&apos;,
-  &apos;systemtap&apos;:&apos;nested functions&apos;,
-//  &apos;tdb&apos;:&apos;nested functions in configure check&apos;,
-//  &apos;tevent&apos;:&apos;nested functions in configure check&apos;,
-//  &apos;tomcat7&apos;:&apos;test suite failures&apos;,
-  &apos;w-scan&apos;:&apos;nested functions&apos;,
-  &apos;win32-loader&apos;:&apos;nested functions&apos;,
-  &apos;xbmc&apos;:&apos;/dev/urandom -&gt; try USEDEVFS&apos;,
-//  &apos;xmlrpc-c&apos;:&apos;test tries to bind to port 8080&apos;,
-  &apos;zapping&apos;:&apos;reported https://sourceforge.net/tracker/?func=detail&amp;aid=3607056&amp;group_id=2599&amp;atid=102599&apos;,
-  &apos;zbar&apos;:&apos;reported https://sourceforge.net/p/zbar/bugs/74/&apos;,
-  &apos;zvbi&apos;:&apos;nested functions&apos;
+  &apos;slurm-llnl&apos;:&apos;Nested functions&apos;,
+  &apos;smbc&apos;:&apos;Nested functions&apos;,
+  &apos;spl&apos;:&apos;Nested functions&apos;,
+  &apos;systemtap&apos;:&apos;Nested functions&apos;,
+  &apos;upstart&apos;:&apos;Nested functions&apos;,
+  &apos;w-scan&apos;:&apos;Nested functions&apos;,
+  &apos;win32-loader&apos;:&apos;Nested functions&apos;,
+  &apos;zvbi&apos;:&apos;Nested functions&apos;
 ]
 
 disabled_map &lt;&lt; rc_buggy &lt;&lt; reported
@@ -254,11 +171,11 @@ f.withWriter{ out -&gt;
 }
 
   </groovyScript>
-      <behavior>0</behavior>
+      <behavior>2</behavior>
       <runForMatrixParent>false</runForMatrixParent>
     </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
     <hudson.tasks.BuildTrigger>
-      <childProjects>JOB-Debian-sid-goto-cc</childProjects>
+      <childProjects>JOB-Debian-sid-goto-cc,JOB-Debian-sid-needs-build,JOB-prepare-binaries-master</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

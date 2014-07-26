@@ -46,6 +46,7 @@ f.eachLine() {
       }
     }
     publishers {
+      if(!is_disabled) allowBrokenBuildClaiming()
       downstream(&quot;sid-analysis-${pkgName}&quot;)
     }
   }

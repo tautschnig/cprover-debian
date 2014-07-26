@@ -29,31 +29,30 @@
 
 DIST=sid
 MIRROR=ftp://ftp.uk.debian.org
-if [ x$NODE_NAME = &quot;x&quot; ] ; then
-  NODE_NAME=master
-fi
 
 BUILDDIR=$WORKSPACE
 BASEPATH=&quot;/srv/sid-base.cow&quot;
-Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-$NODE_NAME/JOB-Debian-sid/workspace/Sources
+Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-slaves/label/$NODE_NAME/JOB-Debian-sid/workspace/Sources
 
 function print_bugreport_template {
   local pkg=&quot;$1&quot;
   local ver=&quot;$2&quot;
 
 cat &lt;&lt;EOF
-To: bugs@debian.org
+To: submit@bugs.debian.org
+Subject: $pkg: 
 
 Package: $pkg
 Version: $ver
 Usertags: goto-cc
 
-During a rebuild of all packages in a clean sid chroot (and cowbuilder+pbuilder)
-the build failed with the following error. Please note that we use our research
-compiler tool-chain (using tools from the cbmc package), which permits extended
-reporting on type inconsistencies at link time.
+During a rebuild of all Debian packages in a clean sid chroot (using cowbuilder
+and pbuilder) the build failed with the following error. Please note that we
+use our research compiler tool-chain (using tools from the cbmc package), which
+permits extended reporting on type inconsistencies at link time.
 
 http://sources.debian.net/src/$pkg/$ver/
+http://packages.qa.debian.org/$pkg
 EOF
 
 }
@@ -81,8 +80,13 @@ function build {
 
     #sloccount --duplicates --wide --details . &gt; $BUILDDIR/../JOB-Debian-sloccount/$PACKAGE-sloccount.sc
 
-    cd $BUILDDIR
     if [ $retval -eq 0 ] ; then
+      cp debian/copyright $BUILDDIR/goto-binaries/
+      cd $BUILDDIR
+      echo &quot;Package: $PACKAGE&quot; &gt; goto-binaries/control
+      echo &quot;Version: $FULLVER&quot; &gt;&gt; goto-binaries/control
+      echo &quot;Goto-CC-Date: `date -r $BASEPATH/usr/bin/goto-cc`&quot; &gt;&gt; goto-binaries/control
+      echo &quot;Goto-CC-MD5Sum: `md5sum $BASEPATH/usr/bin/goto-cc | awk &apos;{ print $1 }&apos;`&quot; &gt;&gt; goto-binaries/control
       rm -rf $PACKAGE-* result *.deb
       if [ -d goto-binaries ] ; then tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; fi
     else
@@ -112,7 +116,7 @@ build $PKG</command>
       <canRunOnFailed>true</canRunOnFailed>
       <useStableBuildAsReference>false</useStableBuildAsReference>
       <useDeltaValues>false</useDeltaValues>
-      <thresholds plugin="analysis-core@1.56">
+      <thresholds plugin="analysis-core@1.57">
         <unstableTotalAll></unstableTotalAll>
         <unstableTotalHigh></unstableTotalHigh>
         <unstableTotalNormal></unstableTotalNormal>
@@ -130,12 +134,9 @@ build $PKG</command>
         <hudson.plugins.warnings.ConsoleParser>
           <parserName>GNU C Compiler 4 (gcc)</parserName>
         </hudson.plugins.warnings.ConsoleParser>
-        <hudson.plugins.warnings.ConsoleParser>
-          <parserName>goto-cc errors</parserName>
-        </hudson.plugins.warnings.ConsoleParser>
       </consoleParsers>
     </hudson.plugins.warnings.WarningsPublisher>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.20">
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.21">
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
       <cleanWhenSuccess>true</cleanWhenSuccess>
@@ -147,7 +148,6 @@ build $PKG</command>
       <cleanupMatrixParent>false</cleanupMatrixParent>
       <externalDelete></externalDelete>
     </hudson.plugins.ws__cleanup.WsCleanup>
-    <hudson.plugins.claim.ClaimPublisher plugin="claim@2.3"/>
   </publishers>
   <buildWrappers>
     <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.4">
