@@ -29,12 +29,12 @@ THE SOFTWARE.
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.532</version>
+    <version>1.538</version>
   </parent>
 
   <groupId>org.jenkins-ci.main</groupId><!-- for historical reason, this plugin has a different groupId -->
   <artifactId>maven-plugin</artifactId><!-- for the same reason, artifactId is against the convention -->
-  <version>2.0.3</version>
+  <version>2.5</version>
   <packaging>hpi</packaging>
 
   <name>Maven Integration plugin</name>
@@ -43,7 +43,7 @@ THE SOFTWARE.
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Maven+Project+Plugin</url>
 
   <properties>
-    <mavenInterceptorsVersion>1.4</mavenInterceptorsVersion>
+    <mavenInterceptorsVersion>1.5</mavenInterceptorsVersion>
     <mavenVersion>3.1.0</mavenVersion>
     <maven.version>${mavenVersion}</maven.version>
     <aetherVersion>0.9.0.M3</aetherVersion>
@@ -409,6 +409,15 @@ THE SOFTWARE.
       not to have version number in the .hpi file name.
     -->
     <finalName>${project.artifactId}</finalName>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5</version>
+        </plugin>
+      </plugins>
+    </pluginManagement>
     <plugins>
       <plugin>
         <groupId>org.jenkins-ci.tools</groupId>
@@ -492,44 +501,6 @@ THE SOFTWARE.
     </plugins>
   </build>
 
-  <profiles>
-    
-  <profile>
-    <id>cobertura2</id>
-    <build>
-      <plugins>
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>cobertura-maven-plugin</artifactId>
-          <!-- version specified in grandparent pom -->
-          <inherited>true</inherited>
-          <configuration>
-            <formats>
-              <format>html</format>
-              <format>xml</format>
-            </formats>
-          </configuration>
-          <executions>
-            <execution>
-              <id>coverage-instrument</id>
-              <phase>process-test-classes</phase>
-              <goals>
-                <goal>instrument</goal>
-              </goals>
-            </execution>
-            <execution>
-              <id>coverage-report</id>
-              <phase>test</phase>
-              <goals>
-                <goal>generate-report</goal>
-              </goals>
-            </execution>
-          </executions>
-        </plugin>
-      </plugins>
-    </build>
-  </profile>
-  </profiles>
 
   <repositories>
     <repository>
@@ -548,6 +519,7 @@ THE SOFTWARE.
     <connection>scm:git:git://github.com/jenkinsci/maven-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/maven-plugin.git</developerConnection>
     <url>http://github.com/jenkinsci/maven-plugin</url>
+    <tag>maven-plugin-2.5</tag>
   </scm>
 
 </project>

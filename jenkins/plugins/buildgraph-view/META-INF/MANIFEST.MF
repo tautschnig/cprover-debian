@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: nicolas
+Build-Jdk: 1.7.0_40
+Extension-Name: buildgraph-view
+Implementation-Title: buildgraph-view
+Implementation-Version: 1.1.1
+Group-Id: org.jenkins-ci.plugins
+Short-Name: buildgraph-view
+Long-Name: buildgraph-view
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Build+Graph+View+Plugin
+Plugin-Version: 1.1.1
+Hudson-Version: 1.466
+Jenkins-Version: 1.466
+Plugin-Dependencies: parameterized-trigger:2.18;resolution:=optional
+Plugin-Developers: Nicolas De Loof:ndeloof:,Greg Gross:gregory144:
+

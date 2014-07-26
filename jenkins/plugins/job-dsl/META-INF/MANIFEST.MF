@@ -1,15 +1,14 @@
 Manifest-Version: 1.0
 PluginFirstClassLoader: true
 Mask-Classes: groovy.grape
-v: 1.22
+v: 1.24
 Compatible-Since-Version: 1.20
 Url: https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
-Plugin-Dependencies: ant:1.2;resolution:=optional,cloudbees-folder:4.2
- ;resolution:=optional,credentials:1.9.4;resolution:=optional,javadoc:
- 1.1;resolution:=optional,maven-plugin:1.480;resolution:=optional
+Plugin-Dependencies: cloudbees-folder:4.2;resolution:=optional,credent
+ ials:1.9.4;resolution:=optional
 Group-Id: org.jenkins-ci.plugins
 Jenkins-Version: 1.480
-Plugin-Version: 1.22
+Plugin-Version: 1.24
 Long-Name: Job DSL
 Short-Name: job-dsl
 

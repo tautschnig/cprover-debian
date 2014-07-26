@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: 23054389
+Build-Jdk: 1.6.0_38
+Extension-Name: build-failure-analyzer
+Specification-Title: Jenkins Build Failure Analyzer Plugin
+Implementation-Title: build-failure-analyzer
+Implementation-Version: 1.9.0
+Plugin-Class: com.sonyericsson.jenkins.plugins.bfa.PluginImpl
+Group-Id: com.sonyericsson.jenkins.plugins.bfa
+Short-Name: build-failure-analyzer
+Long-Name: Build Failure Analyzer
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Build+Failure+Analyzer
+Plugin-Version: 1.9.0
+Hudson-Version: 1.480
+Jenkins-Version: 1.480
+Plugin-Dependencies: build-flow-plugin:0.10;resolution:=optional,build
+ graph-view:1.0,gerrit-trigger:2.7.0;resolution:=optional,git:1.1.10
+Plugin-Developers: Robert Sandell:rsandell:robert.sandell@sonymobile.c
+ om,Tomas Westling:t_westling:tomas.westling@sonymobile.com
+

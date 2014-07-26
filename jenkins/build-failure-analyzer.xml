@@ -1,0 +1,55 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.sonyericsson.jenkins.plugins.bfa.PluginImpl plugin="build-failure-analyzer@1.9.0">
+  <noCausesMessage>No problems were identified. If you know why this problem occurred, please add a suitable Cause for it.</noCausesMessage>
+  <globalEnabled>true</globalEnabled>
+  <gerritTriggerEnabled>false</gerritTriggerEnabled>
+  <knowledgeBase class="com.sonyericsson.jenkins.plugins.bfa.db.LocalFileKnowledgeBase">
+    <causes>
+      <entry>
+        <string>8ca2e986-e1ec-40bc-9629-b30a2415ac80</string>
+        <com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+          <id>8ca2e986-e1ec-40bc-9629-b30a2415ac80</id>
+          <name>Broken build dependencies</name>
+          <description>Broken build dependencies</description>
+          <categories class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>FTBFS</string>
+            </a>
+          </categories>
+          <indications>
+            <com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+              <pattern>^E: Could not satisfy build-dependency</pattern>
+            </com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+          </indications>
+        </com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+      </entry>
+      <entry>
+        <string>f2f8a0d0-913d-41da-b0bb-827ceba356a9</string>
+        <com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+          <id>f2f8a0d0-913d-41da-b0bb-827ceba356a9</id>
+          <name>Out of memory</name>
+          <description>Out of memory</description>
+          <categories class="java.util.Arrays$ArrayList">
+            <a class="string-array">
+              <string>Improvement</string>
+            </a>
+          </categories>
+          <indications>
+            <com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+              <pattern>^(Out of memory|file .*: memory exhausted before)</pattern>
+            </com.sonyericsson.jenkins.plugins.bfa.model.indication.BuildLogIndication>
+          </indications>
+        </com.sonyericsson.jenkins.plugins.bfa.model.FailureCause>
+      </entry>
+    </causes>
+  </knowledgeBase>
+  <nrOfScanThreads>3</nrOfScanThreads>
+  <graphsEnabled>false</graphsEnabled>
+  <sodVariables>
+    <minimumSodWorkerThreads>1</minimumSodWorkerThreads>
+    <maximumSodWorkerThreads>1</maximumSodWorkerThreads>
+    <sodThreadKeepAliveTime>15</sodThreadKeepAliveTime>
+    <sodWaitForJobShutdownTimeout>30</sodWaitForJobShutdownTimeout>
+    <sodCorePoolNumberOfThreads>5</sodCorePoolNumberOfThreads>
+  </sodVariables>
+</com.sonyericsson.jenkins.plugins.bfa.PluginImpl>

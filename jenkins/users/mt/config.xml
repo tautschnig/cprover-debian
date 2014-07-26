@@ -5,7 +5,7 @@
     <jenkins.security.ApiTokenProperty>
       <apiToken>x</apiToken>
     </jenkins.security.ApiTokenProperty>
-    <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@1.9.4">
+    <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@1.14">
       <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash"/>
     </com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty>
     <hudson.model.MyViewsProperty>
@@ -25,8 +25,11 @@
     <hudson.security.HudsonPrivateSecurityRealm_-Details>
       <passwordHash>x</passwordHash>
     </hudson.security.HudsonPrivateSecurityRealm_-Details>
-    <hudson.tasks.Mailer_-UserProperty plugin="mailer@1.5">
+    <hudson.tasks.Mailer_-UserProperty plugin="mailer@1.8">
       <emailAddress>mt@eecs.qmul.ac.uk</emailAddress>
     </hudson.tasks.Mailer_-UserProperty>
+    <hudson.model.PaneStatusProperties>
+      <collapsed/>
+    </hudson.model.PaneStatusProperties>
   </properties>
 </user>

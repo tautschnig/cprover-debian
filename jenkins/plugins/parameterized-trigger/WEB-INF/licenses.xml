@@ -1,5 +1,5 @@
-<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='parameterized-trigger' version='2.24'>
-  <l:dependency name='Jenkins Parameterized Trigger plugin' groupId='org.jenkins-ci.plugins' artifactId='parameterized-trigger' version='2.24' url='http://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin'>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='parameterized-trigger' version='2.25'>
+  <l:dependency name='Jenkins Parameterized Trigger plugin' groupId='org.jenkins-ci.plugins' artifactId='parameterized-trigger' version='2.25' url='http://wiki.jenkins-ci.org/display/JENKINS/Parameterized+Trigger+Plugin'>
     <l:description />
     <l:license name='The MIT License (MIT)' url='http://opensource.org/licenses/MIT' />
   </l:dependency>

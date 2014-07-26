@@ -5,14 +5,14 @@ Built-By: ikedam
 Build-Jdk: 1.6.0_45
 Extension-Name: groovy-postbuild
 Implementation-Title: groovy-postbuild
-Implementation-Version: 1.9
+Implementation-Version: 1.10
 Plugin-Class: org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuild
  Plugin
 Group-Id: org.jvnet.hudson.plugins
 Short-Name: groovy-postbuild
 Long-Name: Groovy Postbuild
 Url: http://wiki.jenkins-ci.org/display/JENKINS/Groovy+Postbuild+Plugin
-Plugin-Version: 1.9
+Plugin-Version: 1.10
 Hudson-Version: 1.466
 Jenkins-Version: 1.466
 Plugin-Developers: Stefan Wolf:wolfs:,Serban Iordache:beryx:
