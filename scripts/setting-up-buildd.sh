@@ -383,6 +383,7 @@ for f in $uniq_objfiles ; do
     if file "$f" | grep -q 32-bit ; then
       f_opts="$f_opts -m32"
     fi
+    IFS=$ifs
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
@@ -393,6 +394,7 @@ for f in $uniq_objfiles ; do
     fi
     touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
     use_ld=1
+    IFS=:
   fi
 done
 IFS=$ifs
@@ -651,6 +653,7 @@ for f in $uniq_objfiles ; do
     if file "$f" | grep -q 32-bit ; then
       f_opts="$f_opts -m32"
     fi
+    IFS=$ifs
     goto-cc $f_opts -o /tmp/empty-$$.o -c /tmp/empty-$$.c
     rm /tmp/empty-$$.c
     if ! objcopy --add-section goto-cc=/tmp/empty-$$.o "$f" ; then
@@ -660,6 +663,7 @@ for f in $uniq_objfiles ; do
       rm -f /tmp/empty-$$.o "$f.gcc-binary"
     fi
     touch -t `date -d @$f_date +%Y%m%d%H%M.%S` "$f"
+    IFS=:
   fi
 done
 IFS=$ifs
