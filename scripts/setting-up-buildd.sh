@@ -66,7 +66,7 @@ use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
-      acl2 archivemail bibletime ceilometer clamav clojure1.2 debci \
+      acl2 archivemail bibletime blender ceilometer clamav clojure1.2 debci \
       dico dulwich eglibc joblib libaqbanking libaudio-mpd-perl \
       libdbd-firebird-perl libfile-sync-perl libguestfs \
       libio-async-loop-glib-perl libio-socket-ip-perl libmongodb-perl \
@@ -205,6 +205,7 @@ for o in "$@" ; do
     -M) orig_only=1 ;;
     -MT) skip_next=1 ;;
     -MQ) skip_next=1 ;;
+    -MF) skip_next=1 ;;
     -Xlinker) skip_next=1 ;;
     -o) ofile_next=1 ;;
     -o*) ofiles="`echo $o | cut -b3-`" ;;
@@ -224,7 +225,7 @@ for o in "$@" ; do
     *.o|*.so.[0-9]|*.so.[0-9].[0-9]|*.so.[0-9].[0-9].[0-9]|*.so.[0-9].[0-9].[0-9][0-9]) objfiles+=":$o" ;;
     *.c) source_args+=":$o" ;;
     *.i) source_args+=":$o" ;;
-    *.cpp) if [ "x$forced_lang" = "xc" ] ; then source_args+=":$o" ; fi ;;
+    *.cpp|*.cc) if [ "x$forced_lang" = "xc" ] ; then source_args+=":$o" ; else orig_only=1 ; fi ;;
   esac
 done
 objfiles="`echo $objfiles | sed 's/^://'`"
