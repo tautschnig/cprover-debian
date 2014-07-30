@@ -94,11 +94,12 @@ fi
 #PBUILDERSATISFYDEPENDSOPT="--control ../*.dsc"
 # order of dependencies doesn't permit one-by-one resolution of
 # conflicts/virtual packages
-if [ xoctave-msh = x$cur_pkg ] ; then
-  PBUILDERSATISFYDEPENDSCMD="/usr/lib/pbuilder/pbuilder-satisfydepends-aptitude"
-else
+# by now not even aptitude can solve it any longer
+# if [ xoctave-msh = x$cur_pkg ] ; then
+#   PBUILDERSATISFYDEPENDSCMD="/usr/lib/pbuilder/pbuilder-satisfydepends-aptitude"
+# else
   PBUILDERSATISFYDEPENDSCMD="/usr/bin/pbuilder-deps-wrapper.sh"
-fi
+# fi
 bindmounds_before="$BINDMOUNTS"
 BINDMOUNTS="$BINDMOUNTS /run/shm"
 # /dev/shm permissions
@@ -119,6 +120,7 @@ APTCACHE=/srv/jenkins-slave/aptcache
 # done
 # work around https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=677666
 export USER=pbuilder
+DEBBUILDOPTS="--source-option=--auto-commit"
 EOF
 if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
@@ -146,7 +148,7 @@ cat > $cow_base/tmp/gcc-wrapper <<"EOF"
 #!/bin/bash
 
 set -e
-ulimit -S -v 16000000 || true
+ulimit -S -v 24000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
@@ -511,7 +513,7 @@ cat > $cow_base/tmp/ld-wrapper <<"EOF"
 #!/bin/bash
 
 set -e
-ulimit -S -v 16000000 || true
+ulimit -S -v 24000000 || true
 trap "rm -f /tmp/wrapper-$$" EXIT
 
 touch /tmp/wrapper-$$
