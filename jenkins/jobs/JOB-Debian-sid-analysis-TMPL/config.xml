@@ -38,19 +38,21 @@ fi
 if [ x$NODE_NAME = xmaster ] ; then
 BASEDIR=$WORKSPACE/../../
 export PATH=$BASEDIR/JOB-prepare-binaries-$NODE_NAME/workspace/:$PATH
-GOTO_CC=goto-cc
-GOTO_INSTRUMENT=goto-instrument
-CBMC=cbmc
+GOTO_CC=debian-builds-goto-cc
+GOTO_INSTRUMENT=debian-builds-goto-instrument
+CBMC=debian-builds-cbmc
 else
 BASEDIR=$WORKSPACE/../
 export PATH=$BASEDIR/JOB-prepare-binaries-slaves/label/$NODE_NAME/:$PATH
-GOTO_CC=goto-cc
-GOTO_INSTRUMENT=goto-instrument
-CBMC=cbmc
+GOTO_CC=debian-builds-goto-cc
+GOTO_INSTRUMENT=debian-builds-goto-instrument
+CBMC=debian-builds-cbmc
 fi
+
+export LC_ALL=&quot;en_GB.UTF-8&quot;
+export TMPDIR=$PWD
 EOF
 
-export TMPDIR=$PWD
 
 </command>
     </hudson.tasks.Shell>
@@ -150,6 +152,18 @@ while read f ; do
         fi
       fi
     done
+
+    if [ ! -f FAILED ] ; then
+      if ! /usr/bin/time -f%Us $GOTO_INSTRUMENT --dump-c --use-system-headers &quot;$f&quot; &quot;$ff.c&quot; ; then
+        touch FAILED
+      elif ! gcc -std=c99 -c &quot;$ff.c&quot; ; then
+        mkdir -p failed-recompile/
+        cp &quot;$f&quot; &quot;$ff.c&quot; failed-recompile/
+        # not fatal for now
+        # touch FAILED
+      fi
+    fi
+            
     rm -f &quot;$ff.c&quot; &quot;$ff.o&quot; &quot;$ff.1.c&quot; &quot;$ff.2.c&quot; &quot;$ff.3.c&quot; &quot;$ff.4.c&quot; &quot;$ff.5.c&quot; &quot;$ff.6.c&quot; &quot;$ff.7.c&quot;
     if [ -f FAILED ] ; then
       break
@@ -178,6 +192,13 @@ IFS=&quot;
 
 while read f ; do
   echo &quot;To edit: $f&quot;
+  race_check=&quot;&quot;
+  # --race-check is too broken in that the points-to analysis will consume way too much memory
+  # and will introduce invalid objects
+  #if $GOTO_INSTRUMENT --list-symbols &quot;$f&quot; | grep -q &apos;^main void (void)$&apos; ; then
+  #  race_check=&quot;--race-check&quot;
+  #fi
+
 
   if ! /usr/bin/time -f%Us $GOTO_INSTRUMENT \
       --bounds-check \
@@ -188,7 +209,7 @@ while read f ; do
       --unsigned-overflow-check \
       --undefined-shift-check \
       --nan-check \
-      --race-check \
+      $race_check \
       &quot;$f&quot; &quot;$f.instr.o&quot; ; then
     touch FAILED
     break

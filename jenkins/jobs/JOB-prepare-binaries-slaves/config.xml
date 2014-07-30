@@ -49,8 +49,8 @@ if ! file /srv/sid-base.cow/usr/bin/ld.bfd | grep -q &quot;Bourne-Again shell sc
   exit 1
 fi
 
-cp goto-cc /srv/sid-base.cow/usr/bin/goto-cc
-cp goto-cc /srv/sid-base.cow/usr/bin/goto-ld
+cp debian-builds-goto-cc /srv/sid-base.cow/usr/bin/goto-cc
+cp debian-builds-goto-cc /srv/sid-base.cow/usr/bin/goto-ld
 
 if [ ! -f mole-0.2.tar.gz ] ; then
   wget http://diy.inria.fr/mole/mole-0.2.tar.gz
@@ -69,7 +69,7 @@ fi
   <publishers/>
   <buildWrappers>
     <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.3">
-      <includes>JOB-Debian-sid/workspace/Sources,JOB-prepare-binaries-master/workspace/*</includes>
+      <includes>JOB-Debian-sid/workspace/Sources,JOB-prepare-binaries-master/workspace/debian-builds-*</includes>
       <excludes></excludes>
       <flatten>false</flatten>
       <includeAntExcludes>false</includeAntExcludes>

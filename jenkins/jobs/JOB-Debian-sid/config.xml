@@ -44,13 +44,13 @@ rm -f Sources.main.gz Sources.contrib.gz
 #sed -i &apos;s#^MIRROR=.*$#MIRROR=ftp://ftp.uk.debian.org#&apos; getlist
 #./getlist wheezy
 
-cp list.$DIST.amd64 list.$DIST.amd64-short
-sed -i &apos;/^[a-z]/d&apos; list.$DIST.amd64-short
+#cp list.$DIST.amd64 list.$DIST.amd64-short
+#sed -i &apos;/^[a-z]/d&apos; list.$DIST.amd64-short
 </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
-    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@1.9">
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@1.10">
       <groovyScript>manager.hudson.class.classLoader.addURL(new URL(&quot;file:///usr/share/java/postgresql-jdbc4.jar&quot;))
 
 import groovy.sql.Sql;
@@ -165,6 +165,12 @@ def disabled_map = [
 
 disabled_map &lt;&lt; rc_buggy &lt;&lt; reported
 
+new File(&quot;/import/debian-mole/debian-builds/patch-candidates&quot;).eachFile() { file-&gt;
+  str = disabled_map.getAt(file.getName())
+  if(str==null) str=&quot;see claim&quot;
+  disabled_map[file.getName()]=str+&quot;, proposed patch&quot;
+}
+
 def f = new File(manager.build.workspace.getRemote() + &quot;/from_udd&quot;)
 f.withWriter{ out -&gt;
   disabled_map.each {k, v -&gt; out.println &quot;${k};${v}&quot;}
@@ -175,7 +181,7 @@ f.withWriter{ out -&gt;
       <runForMatrixParent>false</runForMatrixParent>
     </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
     <hudson.tasks.BuildTrigger>
-      <childProjects>JOB-Debian-sid-goto-cc,JOB-Debian-sid-needs-build,JOB-prepare-binaries-master</childProjects>
+      <childProjects>JOB-Debian-sid-goto-cc, JOB-Debian-sid-needs-build, JOB-prepare-binaries-master</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>

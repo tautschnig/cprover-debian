@@ -69,10 +69,23 @@ function build {
     VER=`echo $FULLVER | sed s/^.*://`
     umask 0022; export DEB_VENDOR=Debian; dget -u -x ${MIRROR}/debian/${DIR}/${PACKAGE}_${VER}.dsc
     cd $(find . -type d ! -name .)
-    mkdir -p $BUILDDIR/result
-    export -n DISPLAY; pdebuild --pbuilder cowbuilder --use-pdebuild-internal --buildresult $BUILDDIR/result/ -- --basepath $BASEPATH
+    retval=0
+    if [ -d /import/debian-mole/debian-builds/patch-candidates/$PACKAGE ] ; then
+      for p in /import/debian-mole/debian-builds/patch-candidates/$PACKAGE/* ; do
+        if patch -p1 --dry-run &lt; $p ; then
+          patch -p1 &lt; $p
+        else
+          retval=1
+          break
+        fi
+      done
+    fi
+    if [ $retval -eq 0 ] ; then
+      mkdir -p $BUILDDIR/result
+      export -n DISPLAY PKG HUDSON_URL; pdebuild --pbuilder cowbuilder --use-pdebuild-internal --buildresult $BUILDDIR/result/ -- --basepath $BASEPATH
+    fi
 
-    if [ $? -eq 0 ]; then
+    if [ $retval -eq 0 ] &amp;&amp; [ $? -eq 0 ]; then
         retval=0
     else
         retval=1

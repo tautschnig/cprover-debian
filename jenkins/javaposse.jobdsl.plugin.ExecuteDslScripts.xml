@@ -5,13 +5,20 @@
     <com.google.common.collect.HashMultimap>
       <default/>
       <int>2</int>
+      <int>2</int>
+      <string>JOB-Debian-sid-analysis-TMPL</string>
       <int>1</int>
+      <javaposse.jobdsl.plugin.SeedReference>
+        <templateJobName>JOB-Debian-sid-analysis-TMPL</templateJobName>
+        <seedJobName>JOB-Debian-sid-analysis</seedJobName>
+        <digest>4cbcd81f5f2bf5cdb8723524577d8e53</digest>
+      </javaposse.jobdsl.plugin.SeedReference>
       <string>JOB-Debian-sid-goto-cc-TMPL</string>
       <int>1</int>
       <javaposse.jobdsl.plugin.SeedReference>
         <templateJobName>JOB-Debian-sid-goto-cc-TMPL</templateJobName>
         <seedJobName>JOB-Debian-sid-goto-cc</seedJobName>
-        <digest>bc3d69e6fdcbfe82dd4872105b500914</digest>
+        <digest>392389e0035d4e66e8b066d5898ad3fa</digest>
       </javaposse.jobdsl.plugin.SeedReference>
     </com.google.common.collect.HashMultimap>
   </templateJobMap>

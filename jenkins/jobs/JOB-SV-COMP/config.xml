@@ -1,0 +1,331 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>3</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.4.1">
+      <useBuildBlocker>false</useBuildBlocker>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+  </properties>
+  <scm class="hudson.scm.SubversionSCM" plugin="subversion@2.4.1">
+    <locations>
+      <hudson.scm.SubversionSCM_-ModuleLocation>
+        <remote>https://svn.sosy-lab.org/software/sv-benchmarks/trunk/c</remote>
+        <credentialsId></credentialsId>
+        <local>.</local>
+        <depthOption>infinity</depthOption>
+        <ignoreExternalsOption>true</ignoreExternalsOption>
+      </hudson.scm.SubversionSCM_-ModuleLocation>
+    </locations>
+    <excludedRegions></excludedRegions>
+    <includedRegions></includedRegions>
+    <excludedUsers></excludedUsers>
+    <excludedRevprop></excludedRevprop>
+    <excludedCommitMessages></excludedCommitMessages>
+    <workspaceUpdater class="hudson.scm.subversion.UpdateUpdater"/>
+    <ignoreDirPropChanges>false</ignoreDirPropChanges>
+    <filterChangelog>false</filterChangelog>
+  </scm>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>set</name>
+      <values>
+        <string>BitVectors</string>
+        <string>Concurrency</string>
+        <string>ControlFlowInteger</string>
+        <string>DeviceDrivers64</string>
+        <string>DriverChallenges</string>
+        <string>Floats</string>
+        <string>HeapManipulation</string>
+        <string>Loops</string>
+        <string>MemorySafety</string>
+        <string>ProductLines</string>
+        <string>Recursive</string>
+        <string>Sequentialized</string>
+        <string>Simple</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+warn()
+{
+  echo &quot;$1&quot; &gt;&amp;2
+}
+
+
+die()
+{
+  warn &quot;$1&quot;
+  exit 1
+}
+
+parse_property_file()
+{
+  local fn=$1
+
+  cat $fn | sed &apos;s/[[:space:]]//g&apos; | perl -n -e &apos;
+if(/^CHECK\(init\((\S+)\(\)\),LTL\(G(\S+)\)\)$/) {
+  print &quot;ENTRY=$1\n&quot;;
+  print &quot;PROPERTY=\&quot;--error-label $1\&quot;\n&quot; if($2 =~ /^!label\((\S+)\)$/);
+  print &quot;PROPERTY=\&quot; \&quot;\n&quot; if($2 =~ /^!call\(__VERIFIER_error\(\)\)$/);
+  print &quot;PROPERTY=\&quot;--pointer-check --memory-leak-check --bounds-check\&quot;\n&quot; if($2 =~ /^valid-(free|deref|memtrack)$/);
+}&apos;
+}
+
+parse_property()
+{
+  local fn=$1
+  local dn=`dirname $fn`
+
+  if [ -s $fn.prp ] ; then
+    parse_property_file $fn.prp
+  elif [ -s $dn/ALL.prp ] ; then
+    parse_property_file $dn/ALL.prp
+  fi
+}
+
+convert()
+{
+  local category=$1
+  local fn=$2
+
+  ENTRY=&quot;&quot;
+  ERROR_LABEL=&quot;&quot;
+  eval `parse_property $fn`
+
+  if [ &quot;x$ENTRY&quot; = &quot;x&quot; ] ; then
+    die &quot;Failed to parse entry function of $fn&quot;
+  elif [ &quot;x$PROPERTY&quot; = &quot;x&quot; ] ; then
+    warn &quot;Unhandled property in $fn&quot;
+    return
+  fi
+
+  if [ &quot;x$category&quot; = &quot;xConcurrency&quot; ] ; then
+    fn=&quot;`echo $fn | sed &apos;s/i$/c/&apos;`&quot;
+    if [ ! -s $fn ] ; then
+      die &quot;Non-preprocessed file $fn in Concurrency category not found&quot;
+    fi
+  fi
+
+  local suffix=&quot;`echo $fn | sed &apos;s/.*\.//&apos;`&quot;
+  if [ &quot;x$suffix&quot; != &quot;xc&quot; ] &amp;&amp; [ &quot;x$suffix&quot; != &quot;xi&quot; ] ; then
+    die &quot;Failed to determine suffix of $fn&quot;
+  fi
+
+  local expected_result=&quot;&quot;
+  local expected_exitcode=&quot;&quot;
+  local expect_more=&quot;&quot;
+  case $fn in
+    *_true-valid*) expected_result=SUCCESSFUL ; expect_more=TRUE ; expected_exitcode=0 ;;
+    *_true-unreach-call*) expected_result=SUCCESSFUL ; expect_more=TRUE ; expected_exitcode=0 ;;
+    *_false-valid*) expected_result=FAILED ; expect_more=FALSE ; expected_exitcode=10 ;;
+    *_false-unreach-call*) expected_result=FAILED ; expect_more=FALSE ; expected_exitcode=10 ;;
+  esac
+  if [ &quot;x$expected_result&quot; = &quot;x&quot; ] ; then
+    warn &quot;Failed to determine expected result of $fn&quot;
+    return
+  fi
+  case $fn in
+    *_false-valid-memtrack.*) expect_more=&quot;$expect_more(valid-memtrack)&quot; ;;
+    *_false-valid-deref.*) expect_more=&quot;$expect_more(valid-deref)&quot; ;;
+    *_false-valid-free.*) expect_more=&quot;$expect_more(valid-free)&quot; ;;
+  esac
+
+  local bitwidth=64
+  case $category in
+    BitVectors) bitwidth=32 ;;
+    Concurrency) bitwidth=32 ;;
+    ControlFlowInteger) bitwidth=32 ;;
+    DeviceDrivers64) bitwidth=64 ;;
+    HeapManipulation) bitwidth=32 ;;
+    MemorySafety) bitwidth=32 ;;
+    Recursive) bitwidth=32 ;;
+    Sequentialized) bitwidth=32 ;;
+    Simple) bitwidth=32 ;;
+    DriverChallenges) bitwidth=64 ;;
+    Stateful) bitwidth=64 ;;
+  esac
+
+  mkdir -p cprover-regr/$category/$fn
+  cp $fn cprover-regr/$category/$fn/main.$suffix
+
+  cat &gt; cprover-regr/$category/$fn/test.desc &lt;&lt;EOF
+CORE
+main.$suffix
+--function $ENTRY $PROPERTY --$bitwidth
+^EXIT=$expected_exitcode$
+^SIGNAL=0$
+^VERIFICATION $expected_result$
+^$expect_more$
+--
+^warning: ignoring
+EOF
+
+  if [ &quot;x$category&quot; = &quot;xConcurrency&quot; ] &amp;&amp; [ &quot;`basename $fn`&quot; = &quot;scull_true.c&quot; ] ; then
+    cp pthread-atomic/scull_true.h cprover-regr/$category/$fn/scull_safe.h
+  fi
+}
+
+
+category=$set
+if [ &quot;x$category&quot; = &quot;xProductLines&quot; ] ; then
+  category=&quot;ControlFlowInteger&quot;
+elif [ &quot;x$category&quot; = &quot;xLoops&quot; ] ; then
+  category=&quot;ControlFlowInteger&quot;
+elif [ &quot;x$category&quot; = &quot;xStateful&quot; ] ; then
+  continue
+elif [ &quot;x$category&quot; = &quot;xDriverChallenges&quot; ] ; then
+  continue
+fi
+
+for f in `cat $set.set` ; do
+  if [ ! -s &quot;$f&quot; ] ; then
+    warn &quot;File $f not found&quot;
+    continue
+  fi
+  convert $category $f
+done
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+mkdir -p bin
+#cp JOB-prepare-binaries-master/workspace/cbmc-trunk/regression/test.pl bin
+cp /import/debian-mole/test.pl bin/
+cp JOB-prepare-binaries-master/workspace/trunk-cbmc bin/cbmc
+cp JOB-prepare-binaries-master/workspace/debian-builds-goto-cc bin/goto-cc
+cp JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument bin/goto-instrument
+
+sed -i &apos;2 s/^$/setpgrp(0,0);/&apos; bin/test.pl
+
+cat &gt; bin/inc.sh &lt;&lt;&quot;EOF&quot;
+#!/bin/bash
+
+parse_result()
+{
+  if tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*__CPROVER_memory_leak == NULL$&quot; ; then
+    echo &apos;FALSE(valid-memtrack)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*dereference failure:&quot; ; then
+    echo &apos;FALSE(valid-deref)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*double free$&quot; ; then
+    echo &apos;FALSE(valid-free)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*free argument has offset zero$&quot; ; then
+    echo &apos;FALSE(valid-free)&apos;
+  else
+    echo FALSE
+  fi
+}
+
+export args=$@
+
+export LOG=`mktemp -t cbmc-log.XXXXXX`
+trap &quot;rm -f $LOG $LOG.latest $LOG.ok&quot; EXIT
+
+timeout 850 bash -c &apos; \
+\
+ulimit -v 15000000 ; \
+\
+EC=42 ; \
+for c in 2 6 12 17 21 40 200 1000 ; do \
+  echo &quot;Unwind: $c&quot; &gt; $LOG.latest ; \
+  cbmc --unwind $c --no-unwinding-assertions $args &gt;&gt; $LOG.latest 2&gt;&amp;1 ; \
+  ec=$? ; \
+  if [ $ec -eq 0 ] ; then \
+    if ! tail -n 10 $LOG.latest | grep -q &quot;^VERIFICATION SUCCESSFUL$&quot; ; then ec=1 ; fi ; \
+  fi ; \
+  if [ $ec -eq 10 ] ; then \
+    if ! tail -n 10 $LOG.latest | grep -q &quot;^VERIFICATION FAILED$&quot; ; then ec=1 ; fi ; \
+  fi ; \
+\
+  case $ec in \
+    0) EC=0 ; mv $LOG.latest $LOG.ok ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ;; \
+    10) EC=10 ; mv $LOG.latest $LOG.ok ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ; break ;; \
+    *) if [ $EC -ne 0 ] ; then EC=$ec ; mv $LOG.latest $LOG.ok ; fi ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ; break ;; \
+  esac ; \
+\
+done \
+&apos;
+
+if [ ! -s $LOG.ok ] ; then
+  exit 1
+fi
+
+eval `tail -n 1 $LOG.ok`
+cat $LOG.ok
+case $EC in
+  0) echo &quot;TRUE&quot; ;;
+  10) parse_result ;;
+  *) echo &quot;UNKNOWN&quot; ;;
+esac
+exit $EC
+EOF
+
+chmod a+x bin/inc.sh</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+#if [ $set != &quot;BitVectors&quot; ] ; then
+#  exit 0
+#fi
+
+export PATH=$PWD/bin:$PATH
+
+category=$set
+if [ &quot;x$category&quot; = &quot;xProductLines&quot; ] ; then
+  category=&quot;ControlFlowInteger&quot;
+elif [ &quot;x$category&quot; = &quot;xLoops&quot; ] ; then
+  category=&quot;ControlFlowInteger&quot;
+fi
+
+echo &quot;Category: $category&quot;
+cd cprover-regr/$category
+
+for d in * ; do
+  echo &quot;Subset: $d&quot;
+  cd $d
+  test.pl -j 4 -c &quot;timeout 900 inc.sh&quot;
+  cd ..
+done
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.3">
+      <includes>JOB-prepare-binaries-master/workspace/cbmc-trunk/regression/test.pl,JOB-prepare-binaries-master/workspace/trunk-cbmc,JOB-prepare-binaries-master/workspace/debian-builds-goto-cc,JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument</includes>
+      <excludes></excludes>
+      <flatten>false</flatten>
+      <includeAntExcludes>false</includeAntExcludes>
+      <hudsonHomeRelative>false</hudsonHomeRelative>
+      <relativeTo>somewhereElse</relativeTo>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>
