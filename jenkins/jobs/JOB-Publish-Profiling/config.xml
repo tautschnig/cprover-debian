@@ -1,0 +1,107 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>3</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.4.1">
+      <useBuildBlocker>false</useBuildBlocker>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>true</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+for d in ../../JOB-Profiling/htmlreports/Profile_and_Results/* ; do
+  bn=`basename $d`
+  v=`echo $bn | cut -f1 -d+ | sed &apos;s/^r//&apos;`
+  s=`echo $bn | cut -f2- -d+`
+  if [ $bn = &quot;htmlpublisher-wrapper.html&quot; ] ; then
+    continue
+  elif [ -d /srv/mt/nginx/cbmc-profiling/$bn ] ; then
+    if [ -f /srv/mt/nginx/cbmc-profiling/$bn/control ] ; then
+      mv /srv/mt/nginx/cbmc-profiling/$bn/control /srv/mt/nginx/cbmc-profiling/
+    fi
+    rm -r /srv/mt/nginx/cbmc-profiling/$bn
+  elif [ -d /srv/mt/nginx/cbmc-profiling/r*+$s ] ; then
+    if [ -f /srv/mt/nginx/cbmc-profiling/r*+$s/control ] ; then
+      mv /srv/mt/nginx/cbmc-profiling/r*+$s/control /srv/mt/nginx/cbmc-profiling/
+    fi
+    rm -r /srv/mt/nginx/cbmc-profiling/r*+$s
+  fi
+
+  cp -a $d /srv/mt/nginx/cbmc-profiling/
+  if [ -f /srv/mt/nginx/cbmc-profiling/control ] ; then
+    mv /srv/mt/nginx/cbmc-profiling/control /srv/mt/nginx/cbmc-profiling/$bn/
+  fi
+done
+
+for c in `ls /srv/mt/nginx/cbmc-profiling/` ; do
+  if [ $c = index.html ] ; then
+    continue
+  fi
+
+  if [ -f /srv/mt/nginx/cbmc-profiling/$c/control ] ; then
+    configs=&quot;`grep ^Rank: /srv/mt/nginx/cbmc-profiling/$c/control | awk &apos;{print $2}&apos;`:$c $configs&quot;
+  else
+    configs=&quot;100000:$c $configs&quot;
+  fi
+done
+
+cat &gt; /srv/mt/nginx/cbmc-profiling/index.html &lt;&lt;&quot;EOF&quot;
+&lt;html&gt;
+  &lt;head&gt;
+    &lt;title&gt;CBMC Profiling Results&lt;/title&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+EOF
+
+for c in `echo $configs | tr &apos; &apos; &apos;\n&apos; | sort -rn | cut -f2 -d:` ; do
+  n=$c
+  d=&quot;&quot;
+  v=`echo $c | cut -f1 -d+ | sed &apos;s/^r//&apos;`
+  if [ -f /srv/mt/nginx/cbmc-profiling/$c/control ] ; then
+    n=&quot;`grep ^Name: /srv/mt/nginx/cbmc-profiling/$c/control | cut -f2- -d&quot; &quot;`&quot;
+    d=&quot;`grep ^Description: /srv/mt/nginx/cbmc-profiling/$c/control | cut -f2- -d&quot; &quot; | sed &quot;s/\\$REV/r$v/&quot;`&quot;
+  fi
+  cat &gt;&gt; /srv/mt/nginx/cbmc-profiling/index.html &lt;&lt;EOF
+    &lt;h1&gt;$n&lt;/h1&gt;
+    &lt;p&gt;$d&lt;/p&gt;
+    &lt;ul&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/full.profile.html&quot;&gt;Full CPU profile&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/full.profile.svg&quot;&gt;Full CPU profile (SVG)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/full.profile.pdf&quot;&gt;Full CPU profile (PDF)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/results/index.html&quot;&gt;Detailed benchmark results and logs&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/massif/td_top.html&quot;&gt;Memory profile (visualisation)&lt;/a&gt;&lt;/li&gt;
+      &lt;li&gt;&lt;a href=&quot;$c/massif/massif.txt&quot;&gt;Memory profile (plain text)&lt;/a&gt;&lt;/li&gt;
+    &lt;/ul&gt;
+EOF
+done
+
+cat &gt;&gt; /srv/mt/nginx/cbmc-profiling/index.html &lt;&lt;&quot;EOF&quot;
+  &lt;/body&gt;
+&lt;/html&gt;
+EOF
+
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>

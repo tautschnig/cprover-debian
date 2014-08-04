@@ -48,7 +48,6 @@
         <string>Concurrency</string>
         <string>ControlFlowInteger</string>
         <string>DeviceDrivers64</string>
-        <string>DriverChallenges</string>
         <string>Floats</string>
         <string>HeapManipulation</string>
         <string>Loops</string>
@@ -61,6 +60,315 @@
     </hudson.matrix.TextAxis>
   </axes>
   <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+cat &gt; KNOWNBUG &lt;&lt;EOF
+Concurrency/pthread/bigshot_s_true-unreach-call.c
+Concurrency/pthread/fib_bench_longest_false-unreach-call.c
+
+ControlFlowInteger/eca/Problem01_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem03_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem04_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem05_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem05_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem05_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem06_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem06_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem06_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem07_00_true-unreach-call.c
+ControlFlowInteger/eca/Problem07_10_true-unreach-call.c
+ControlFlowInteger/eca/Problem07_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem07_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem07_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem07_50_true-unreach-call.c
+ControlFlowInteger/eca/Problem07_60_false-unreach-call.c
+ControlFlowInteger/eca/Problem08_00_true-unreach-call.c
+ControlFlowInteger/eca/Problem08_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem08_20_true-unreach-call.c
+ControlFlowInteger/eca/Problem08_30_true-unreach-call.c
+ControlFlowInteger/eca/Problem08_40_true-unreach-call.c
+ControlFlowInteger/eca/Problem08_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem08_60_false-unreach-call.c
+ControlFlowInteger/eca/Problem09_00_true-unreach-call.c
+ControlFlowInteger/eca/Problem09_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem09_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem09_30_true-unreach-call.c
+ControlFlowInteger/eca/Problem09_40_true-unreach-call.c
+ControlFlowInteger/eca/Problem09_50_true-unreach-call.c
+ControlFlowInteger/eca/Problem09_60_false-unreach-call.c
+ControlFlowInteger/eca/Problem10_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem10_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem11_60_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem12_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem13_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem14_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem14_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem15_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem16_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem16_08_false-unreach-call.c
+ControlFlowInteger/eca/Problem16_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem16_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem17_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_40_false-unreach-call.c
+ControlFlowInteger/eca/Problem18_50_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_00_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_10_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_20_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_30_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_38_false-unreach-call.c
+ControlFlowInteger/eca/Problem19_50_false-unreach-call.c
+
+ControlFlowInteger/loops/matrix_false-unreach-call_true-termination.i
+
+ControlFlowInteger/product-lines/elevator_spec1_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec0_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec11_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec1_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec27_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec4_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec6_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec7_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec8_productSimulator_false-unreach-call.cil.c
+ControlFlowInteger/product-lines/email_spec9_productSimulator_false-unreach-call.cil.c
+
+DeviceDrivers64/ldv-commit-tester/m0_false-unreach-call_drivers-media-radio-si4713-i2c-ko--111_1a--064368f-1.c
+DeviceDrivers64/ldv-commit-tester/m0_false-unreach-call_drivers-net-b44-ko--114_1a--073676f-1.c
+DeviceDrivers64/ldv-commit-tester/m0_false-unreach-call_drivers-scsi-gdth-ko--111_1a--5934df9-1.c
+DeviceDrivers64/ldv-commit-tester/m0_false-unreach-call_drivers-usb-gadget-g_printer-ko--106_1a--2b9ec6c-1.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-hwmon-ibmpex-ko--130_7a--d631323.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-media-video-cx88-cx88-blackbird-ko--32_7a--d47b389-1.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-media-video-cx88-cx88-blackbird-ko--32_7a--d47b389.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-media-radio-si4713-i2c-ko--111_1a--064368f.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-media-video-cx88-cx88-dvb-ko--32_7a--d47b389-1.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-media-video-cx88-cx88-dvb-ko--32_7a--d47b389.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-net-forcedeth-ko--114_1a--fea891e-1.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-net-forcedeth-ko--114_1a--fea891e.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-net-myri10ge-myri10ge-ko--138_1a--7cb2521.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_drivers-usb-gadget-g_printer-ko--106_1a--2b9ec6c.c
+DeviceDrivers64/ldv-commit-tester/m0_true-unreach-call_sound-core-oss-snd-mixer-oss-ko--143_7a--506218e.c
+DeviceDrivers64/ldv-commit-tester/main0_false-unreach-call_drivers-net-wireless-ath-carl9170-carl9170-ko--32_7a--8a9f335-1.c
+DeviceDrivers64/ldv-commit-tester/main0_true-unreach-call_drivers-net-wireless-ath-carl9170-carl9170-ko--32_7a--8a9f335.c
+DeviceDrivers64/ldv-commit-tester/main1_true-unreach-call_sound-oss-sound-ko--32_7a--c4cb1dd-1.c
+DeviceDrivers64/ldv-commit-tester/main1_true-unreach-call_sound-oss-sound-ko--32_7a--c4cb1dd.c
+
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--ata--libata.ko-ldv_main4_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--gpu--drm--vmwgfx--vmwgfx.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--media--dvb-frontends--stv090x.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--mmc--host--vub300.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--net--can--softing--softing.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--ecryptfs--ecryptfs.ko-ldv_main1_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--zd1211rw--zd1211rw.ko-ldv_main7_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-drivers--usb--core--usbcore.ko-ldv_main1_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--ceph--ceph.ko-ldv_main11_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--hfs--hfs.ko-ldv_main6_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--ubifs--ubifs.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-32_7a-fs--ubifs--ubifs.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-drivers--gpu--drm--vmwgfx--vmwgfx.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-drivers--hwmon--abituguru3.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-drivers--media--rc--rc-core.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_false-unreach-call_linux-3.8-rc1-drivers--media--usb--cpia2--cpia2.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--block--cciss.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--gpu--drm--ttm--ttm.ko-ldv_main5_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--infiniband--hw--mlx4--mlx4_ib.ko-ldv_main4_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--isdn--hisax--hisax.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--isdn--i4l--isdn.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--md--persistent-data--dm-persistent-data.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--media--dvb-core--dvb-core.ko-ldv_main5_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--media--tuners--tda18271.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--media--i2c--cx25840--cx25840.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--message--fusion--mptsas.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--message--i2o--i2o_core.ko-ldv_main4_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--misc--sgi-xp--xpc.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--mmc--host--sdhci.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--arcnet--arcnet.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--chelsio--cxgb4--cxgb4.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--cisco--enic--enic.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--i825xx--znet.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--intel--e1000e--e1000e.ko-ldv_main1_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--neterion--vxge--vxge.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--qlogic--qlge--qlge.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--sfc--sfc.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--sfc--sfc.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--ath--ath5k--ath5k.ko-ldv_main16_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--sfc--sfc.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--ethernet--tehuti--tehuti.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--ipw2x00--ipw2100.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--ipw2x00--ipw2200.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--rndis_wlan.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--net--wireless--zd1211rw--zd1211rw.ko-ldv_main1_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--parport--parport_pc.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--pcmcia--pcmcia.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--scsi--aic7xxx_old.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main17_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--bcm--bcm_wimax.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--rtl8192e--rtl8192e--r8192e_pci.ko-ldv_main7_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--staging--silicom--bpctl_mod.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--usb--host--isp1362-hcd.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-drivers--usb--host--r8a66597-hcd.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-fs--ecryptfs--ecryptfs.ko-ldv_main3_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-fs--ceph--ceph.ko-ldv_main7_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-fs--nfs--nfsv4.ko-ldv_main4_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-kernel--rcutorture.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-net--batman-adv--batman-adv.ko-ldv_main15_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-net--netfilter--ipvs--ip_vs.ko-ldv_main13_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-net--netfilter--ipvs--ip_vs.ko-ldv_main1_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-sound--core--oss--snd-mixer-oss.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-sound--core--seq--snd-seq.ko-ldv_main2_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-32_7a-sound--core--snd-rawmidi.ko-ldv_main0_sequence_infinite_withcheck_stateful.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--block--cciss.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--block--cpqarray.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--char--ipmi--ipmi_msghandler.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--gpu--drm--gma500--gma500_gfx.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--hwmon--w83781d.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--isdn--hardware--eicon--divadidd.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--infiniband--hw--mthca--ib_mthca.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--infiniband--hw--nes--iw_nes.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--md--dm-snapshot.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--media--pci--cx18--cx18.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--media--firewire--firedtv.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--media--usb--dvb-usb-v2--dvb-usb-mxl111sf.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--media--usb--em28xx--em28xx.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--media--usb--tm6000--tm6000.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--misc--sgi-xp--xpc.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--ethernet--chelsio--cxgb4--cxgb4.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--wireless--iwlwifi--iwlwifi.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--ethernet--qlogic--qlge--qlge.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--wireless--hostap--hostap.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--wireless--ipw2x00--ipw2200.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--net--wireless--rtlwifi--rtl8192de--rtl8192de.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--scsi--aic7xxx_old.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--staging--bcm--bcm_wimax.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--staging--panel--panel.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--staging--silicom--bpctl_mod.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--tty--synclink.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--tty--synclinkmp.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--usb--host--ohci-hcd.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--usb--host--r8a66597-hcd.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--hwmon--w83793.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_cilled_true-unreach-call_linux-3.8-rc1-drivers--video--aty--radeonfb.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/32_7a_newdeg_true-unreach-call_linux-3.8-rc1-drivers--media--usb--dvb-usb-v2--dvb-usb-mxl111sf.ko-main.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--em28xx--em28xx.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--sn9c102--sn9c102.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--media--usb--ttusb-dec--ttusb_dec.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--mtd--ubi--ubi.ko-ldv_main4_false-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--net--ethernet--emulex--benet--be2net.ko-ldv_main2_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--net--ethernet--intel--e1000e--e1000e.ko-ldv_main1_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--net--ethernet--qlogic--qlge--qlge.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--net--wireless--mwl8k.ko-ldv_main0_false-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--pcmcia--pcmcia.ko-ldv_main0_false-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--scsi--mpt3sas--mpt3sas.ko-ldv_main4_false-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--scsi--st.ko-ldv_main0_true-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--usb--core--usbcore.ko-ldv_main13_false-unreach-call.cil.out.c
+DeviceDrivers64/ldv-consumption/linux-3.8-rc1-32_7a-drivers--usb--serial--usbserial.ko-ldv_main0_false-unreach-call.cil.out.c
+
+Floats/floats-cbmc-regression/float-no-simp5_true-unreach-call.i
+Floats/floats-cbmc-regression/float21_true-unreach-call.i
+Floats/floats-cbmc-regression/float_lib1_true-unreach-call.i
+Floats/floats-cbmc-regression/float_lib2_true-unreach-call.i
+
+Floats/floats-cdfpl/newton_3_1_true-unreach-call.i
+Floats/floats-cdfpl/newton_3_2_true-unreach-call.i
+Floats/floats-cdfpl/newton_3_3_true-unreach-call.i
+Floats/floats-cdfpl/newton_3_4_true-unreach-call.i
+Floats/floats-cdfpl/newton_3_5_true-unreach-call.i
+Floats/floats-cdfpl/newton_3_6_false-unreach-call.i
+Floats/floats-cdfpl/sine_4_true-unreach-call.i
+Floats/floats-cdfpl/sine_6_true-unreach-call.i
+
+MemorySafety/memsafety/test-0134_true-valid-memsafety.i
+MemorySafety/memsafety/test-0217_true-valid-memsafety.i
+MemorySafety/memsafety/test-0218_true-valid-memsafety.i
+MemorySafety/memsafety/test-0220_false-valid-memtrack.i
+MemorySafety/memsafety/test-0234_false-valid-memtrack.i
+MemorySafety/memsafety/test-0235_false-valid-deref.i
+MemorySafety/memsafety/test-0235_false-valid-memtrack.i
+MemorySafety/memsafety/test-0521_true-valid-memsafety.i
+
+Recursive/recursive/Addition03_false-unreach-call.c
+Recursive/recursive/Fibonacci05_false-unreach-call_true-termination.c
+
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.1.M1.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.1.M4.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.2.M4.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.3.M1.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.3.M4.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.4.M1.c
+Sequentialized/seq-mthreaded/rekcba_aso_false-unreach-call.4.M4.c
+Sequentialized/seq-mthreaded/rekcba_aso_true-unreach-call.1.M4.c
+Sequentialized/seq-mthreaded/rekcba_aso_true-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekcba_aso_true-unreach-call.2.M4.c
+Sequentialized/seq-mthreaded/rekcba_ctm_false-unreach-call.3.c
+Sequentialized/seq-mthreaded/rekcba_ctm_true-unreach-call.1.c
+Sequentialized/seq-mthreaded/rekcba_ctm_true-unreach-call.2.c
+Sequentialized/seq-mthreaded/rekcba_ctm_true-unreach-call.3.c
+Sequentialized/seq-mthreaded/rekcba_ctm_true-unreach-call.4.c
+Sequentialized/seq-mthreaded/rekcba_nxt_false-unreach-call.1.M1.c
+Sequentialized/seq-mthreaded/rekcba_nxt_false-unreach-call.1.M4.c
+Sequentialized/seq-mthreaded/rekcba_nxt_false-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekcba_nxt_false-unreach-call.2.M4.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.1.M1.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.1.M4.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.2.M4.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.4.M1.c
+Sequentialized/seq-mthreaded/rekh_aso_false-unreach-call.4.M4.c
+Sequentialized/seq-mthreaded/rekh_aso_true-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekh_aso_true-unreach-call.2.M4.c
+Sequentialized/seq-mthreaded/rekh_aso_true-unreach-call.3.M1.c
+Sequentialized/seq-mthreaded/rekh_aso_true-unreach-call.3.M4.c
+Sequentialized/seq-mthreaded/rekh_nxt_false-unreach-call.1.M1.c
+Sequentialized/seq-mthreaded/rekh_nxt_false-unreach-call.1.M4.c
+Sequentialized/seq-mthreaded/rekh_nxt_false-unreach-call.2.M1.c
+Sequentialized/seq-mthreaded/rekh_nxt_false-unreach-call.2.M4.c
+
+Sequentialized/seq-pthread/cs_stack_true-unreach-call.i
+
+Sequentialized/systemc/token_ring.11_false-unreach-call_false-termination.cil.c
+Sequentialized/systemc/token_ring.12_false-unreach-call_false-termination.cil.c
+Sequentialized/systemc/token_ring.13_false-unreach-call_false-termination.cil.c
+Sequentialized/systemc/token_ring.14_false-unreach-call_false-termination.cil.c
+Sequentialized/systemc/token_ring.15_false-unreach-call_false-termination.cil.c
+
+Simple/ntdrivers/cdaudio_false-unreach-call.i.cil.c
+Simple/ntdrivers/floppy_false-unreach-call.i.cil.c
+Simple/ntdrivers/floppy_true-unreach-call.i.cil.c
+Simple/ntdrivers/kbfiltr_false-unreach-call.i.cil.c
+EOF
+</command>
+    </hudson.tasks.Shell>
     <hudson.tasks.Shell>
       <command>#!/bin/bash
 
@@ -180,11 +488,16 @@ main.$suffix
 ^warning: ignoring
 EOF
 
+  if grep -q &quot;^$category/$fn$&quot; KNOWNBUG ; then
+    sed -i &apos;1s/CORE/KNOWNBUG/&apos; cprover-regr/$category/$fn/test.desc
+  fi
+
   if [ &quot;x$category&quot; = &quot;xConcurrency&quot; ] &amp;&amp; [ &quot;`basename $fn`&quot; = &quot;scull_true.c&quot; ] ; then
     cp pthread-atomic/scull_true.h cprover-regr/$category/$fn/scull_safe.h
   fi
 }
 
+rm -rf cprover-regr
 
 category=$set
 if [ &quot;x$category&quot; = &quot;xProductLines&quot; ] ; then
@@ -192,9 +505,9 @@ if [ &quot;x$category&quot; = &quot;xProductLines&quot; ] ; then
 elif [ &quot;x$category&quot; = &quot;xLoops&quot; ] ; then
   category=&quot;ControlFlowInteger&quot;
 elif [ &quot;x$category&quot; = &quot;xStateful&quot; ] ; then
-  continue
+  exit 1
 elif [ &quot;x$category&quot; = &quot;xDriverChallenges&quot; ] ; then
-  continue
+  exit 1
 fi
 
 for f in `cat $set.set` ; do
@@ -217,8 +530,16 @@ cp /import/debian-mole/test.pl bin/
 cp JOB-prepare-binaries-master/workspace/trunk-cbmc bin/cbmc
 cp JOB-prepare-binaries-master/workspace/debian-builds-goto-cc bin/goto-cc
 cp JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument bin/goto-instrument
+cp JOB-prepare-binaries-master/workspace/slicing-goto-instrument bin/goto-instrument-slicing
 
 sed -i &apos;2 s/^$/setpgrp(0,0);/&apos; bin/test.pl
+
+if [ ! -f bin/z3 ] ; then
+  wget &apos;http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=z3&amp;DownloadId=868844&amp;FileTime=130482359193930000&amp;Build=20919&apos; -O z3.zip
+  unzip z3.zip
+  mv z3-*/bin/z3 bin/z3
+  rm -rf z3-*
+fi
 
 cat &gt; bin/inc.sh &lt;&lt;&quot;EOF&quot;
 #!/bin/bash
@@ -250,7 +571,7 @@ ulimit -v 15000000 ; \
 EC=42 ; \
 for c in 2 6 12 17 21 40 200 1000 ; do \
   echo &quot;Unwind: $c&quot; &gt; $LOG.latest ; \
-  cbmc --unwind $c --no-unwinding-assertions $args &gt;&gt; $LOG.latest 2&gt;&amp;1 ; \
+  timeout -k15 900 cbmc --unwind $c --no-unwinding-assertions $args &gt;&gt; $LOG.latest 2&gt;&amp;1 ; \
   ec=$? ; \
   if [ $ec -eq 0 ] ; then \
     if ! tail -n 10 $LOG.latest | grep -q &quot;^VERIFICATION SUCCESSFUL$&quot; ; then ec=1 ; fi ; \
@@ -294,6 +615,8 @@ set -e
 #fi
 
 export PATH=$PWD/bin:$PATH
+export TMPDIR=$PWD
+ulimit -S -v 24000000
 
 category=$set
 if [ &quot;x$category&quot; = &quot;xProductLines&quot; ] ; then
@@ -308,7 +631,61 @@ cd cprover-regr/$category
 for d in * ; do
   echo &quot;Subset: $d&quot;
   cd $d
+  echo &quot;CBMC trunk, SV-COMP configuration&quot;
   test.pl -j 4 -c &quot;timeout 900 inc.sh&quot;
+ 
+  rm -f tests.log 
+  echo &quot;Experimental configurations&quot;
+ 
+  echo &quot;Building goto binaries&quot; 
+  for d in * ; do
+    if grep -q -- --32 $d/test.desc ; then
+      goto-cc -m32 $d/main.[ci] -o $d/main.gb
+    else
+      goto-cc $d/main.[ci] -o $d/main.gb
+    fi
+  done
+
+  for d in * ; do
+    ec=0
+    /usr/bin/time -v timeout -k15 900 goto-instrument-slicing --full-slice $d/main.gb $d/main.slice.gb || ec=$?
+    if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+      rm -f $d/main.slice.gb
+      echo &quot;TIMEOUT&quot;
+    elif [ $ec -eq 11 ] ; then
+      # Out of memory
+      rm -f $d/main.slice.gb
+    elif [ $ec -ne 0 ] ; then
+      exit 1
+    fi
+    if [ -f $d/main.slice.gb ] ; then
+      goto-instrument-slicing --count-eloc $d/main.gb
+      goto-instrument-slicing --count-eloc $d/main.slice.gb
+    fi
+
+    ec=0
+    /usr/bin/time -v timeout -k15 900 goto-instrument --accelerate --z3 $d/main.gb $d/main.accel.gb || ec=$?
+    if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+      rm -f $d/main.accel.gb
+      echo &quot;TIMEOUT&quot;
+    elif [ $ec -eq 11 ] ; then
+      # Out of memory
+      rm -f $d/main.accel.gb
+    elif [ $ec -ne 0 ] ; then
+      exit 1
+    fi
+  done
+
+  for d in * ; do
+    if [ -f $d/main.slice.gb ] ; then
+      sed -i &apos;2s/main.[ci]/main.slice.gb/&apos; $d/test.desc
+    else
+      sed -i &apos;1s/CORE/KNOWNBUG/&apos; $d/test.desc
+    fi
+  done
+
+  test.pl -j 4 -c &quot;timeout 900 inc.sh&quot;
+
   cd ..
 done
 </command>
@@ -317,7 +694,7 @@ done
   <publishers/>
   <buildWrappers>
     <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.3">
-      <includes>JOB-prepare-binaries-master/workspace/cbmc-trunk/regression/test.pl,JOB-prepare-binaries-master/workspace/trunk-cbmc,JOB-prepare-binaries-master/workspace/debian-builds-goto-cc,JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument</includes>
+      <includes>JOB-prepare-binaries-master/workspace/trunk-cbmc,JOB-prepare-binaries-master/workspace/debian-builds-goto-cc,JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument,JOB-prepare-binaries-master/workspace/slicing-goto-instrument</includes>
       <excludes></excludes>
       <flatten>false</flatten>
       <includeAntExcludes>false</includeAntExcludes>

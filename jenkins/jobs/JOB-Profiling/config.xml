@@ -57,13 +57,15 @@ if [ ! -f gprof2html.py ] ; then
   sed -i &apos;/webbrowser.open/d&apos; gprof2html.py
 fi
 
+if [ ! -f gprof2dot.py ] ; then
+  wget http://gprof2dot.jrfonseca.googlecode.com/git/gprof2dot.py -O gprof2dot.py
+fi
+
 if [ ! -d massif-view ] ; then
   svn checkout http://massif-view.googlecode.com/svn/trunk/ massif-view
   sed -i &apos;94s/#//;94s/..\/massif.out.28353/massif.out/;98s/#//;101s/#//;104s/#//&apos; \
     massif-view/pysrc/pymassif/html.py
 fi
-
-mv JOB-prepare-binaries-master/workspace/trunk-goto-cc goto-cc
 
 rm -rf html-reports
 mkdir html-reports
@@ -88,6 +90,13 @@ for c in JOB-prepare-binaries-master/workspace/*-cbmc ; do
     echo &quot;$bn yields no valid id&quot;
     exit 1
   fi
+
+  if [ -e JOB-prepare-binaries-master/workspace/$id-goto-cc ] ; then
+    cp JOB-prepare-binaries-master/workspace/$id-goto-cc goto-cc
+  else
+    cp JOB-prepare-binaries-master/workspace/trunk-goto-cc goto-cc
+  fi
+
   if [ &quot;x$id&quot; = xtrunk ] ; then
     id=&quot;r$(&lt;JOB-prepare-binaries-master/workspace/SVN_REV)&quot;
   else
@@ -110,6 +119,10 @@ for c in JOB-prepare-binaries-master/workspace/*-cbmc ; do
   mkdir ../../html-reports/$id
   mv full.profile.html ../../html-reports/$id/
 
+  python ../../gprof2dot.py -w --show-samples full.profile -o full.profile.dot
+  dot -Tsvg full.profile.dot -o ../../html-reports/$id/full.profile.svg
+  dot -Tpdf full.profile.dot -o ../../html-reports/$id/full.profile.pdf
+
   cd ..
 
   cpbm web $id.csv ../html-reports/$id/results
@@ -122,11 +135,19 @@ done
 
 set -e
 
+export PATH=$PWD/scripts:$PWD:$PATH
+
 for c in *-cbmc ; do
   id=`echo $c | sed &apos;s/^profiling-//;s/-cbmc$//&apos;`
   bn=&quot;$id-cbmc&quot;
   if [ ! -e JOB-prepare-binaries-master/workspace/$bn ] ; then
     continue
+  fi
+
+  if [ -e JOB-prepare-binaries-master/workspace/$id-goto-cc ] ; then
+    cp JOB-prepare-binaries-master/workspace/$id-goto-cc goto-cc
+  else
+    cp JOB-prepare-binaries-master/workspace/trunk-goto-cc goto-cc
   fi
   
   if [ &quot;x$id&quot; = xtrunk ] ; then
@@ -137,6 +158,11 @@ for c in *-cbmc ; do
 
   mv JOB-prepare-binaries-master/workspace/$bn .
   rm $c
+
+  cd llbmc-bench
+  cprover/rules clean
+  cprover/rules CONFIG=cbmc.profiling build TOOL=$bn -j4
+  cd ..
 
   valgrind --tool=massif ./$bn \
     --bounds-check --div-by-zero-check --pointer-check --signed-overflow-check \
@@ -163,13 +189,22 @@ done
         <htmlpublisher.HtmlPublisherTarget>
           <reportName>Profile and Results</reportName>
           <reportDir>html-reports</reportDir>
-          <reportFiles>*/full.profile.html, */results/index.html, */massif/td_top.html, */massif/massif.txt</reportFiles>
+          <reportFiles>*/full.profile.html, */full.profile.svg, */results/index.html, */massif/td_top.html, */massif/massif.txt</reportFiles>
           <keepAll>false</keepAll>
           <allowMissing>false</allowMissing>
           <wrapperName>htmlpublisher-wrapper.html</wrapperName>
         </htmlpublisher.HtmlPublisherTarget>
       </reportTargets>
     </htmlpublisher.HtmlPublisher>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>JOB-Publish-Profiling</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
   </publishers>
   <buildWrappers>
     <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.4">
@@ -177,7 +212,7 @@ done
       <behind>false</behind>
     </de.jamba.hudson.plugin.wsclean.PrePostClean>
     <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.3">
-      <includes>JOB-prepare-binaries-master/workspace/SVN_REV,JOB-prepare-binaries-master/workspace/*-cbmc,JOB-prepare-binaries-master/workspace/trunk-goto-cc</includes>
+      <includes>JOB-prepare-binaries-master/workspace/SVN_REV,JOB-prepare-binaries-master/workspace/*-cbmc,JOB-prepare-binaries-master/workspace/*-goto-cc</includes>
       <excludes></excludes>
       <flatten>false</flatten>
       <includeAntExcludes>false</includeAntExcludes>

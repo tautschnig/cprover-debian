@@ -32,7 +32,7 @@ MIRROR=ftp://ftp.uk.debian.org
 
 BUILDDIR=$WORKSPACE
 BASEPATH=&quot;/srv/sid-base.cow&quot;
-Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-slaves/label/$NODE_NAME/JOB-Debian-sid/workspace/Sources
+Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-chroots/label/$NODE_NAME/JOB-Debian-sid/workspace/Sources
 
 function print_bugreport_template {
   local pkg=&quot;$1&quot;

@@ -33,10 +33,10 @@
     <ignoreDirPropChanges>false</ignoreDirPropChanges>
     <filterChangelog>false</filterChangelog>
   </scm>
-  <assignedNode>master</assignedNode>
+  <assignedNode>SID_CHROOT</assignedNode>
   <canRoam>false</canRoam>
   <disabled>false</disabled>
-  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
   <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
   <triggers/>
   <concurrentBuild>false</concurrentBuild>
@@ -72,6 +72,8 @@ apply_patches()
 {
   local src=$1
 
+  # will fail if permissions are wrong
+  ls $src/patches/
   for p in `ls $src/patches/` ; do
     if patch -p1 --dry-run &lt; $src/patches/$p ; then
       patch -p1 &lt; $src/patches/$p
@@ -109,20 +111,36 @@ for d in /import/debian-mole/cbmc-patch-sets/* ; do
   if [ -s $d/BUILD ] ; then
     . $d/BUILD
   else
-    make -j3
+    make -j16
   fi
   cd ..
   [ ! -d $d/patches ] || unapply_patches $d
   for b in cbmc goto-instrument goto-cc ; do
-    cp src/$b/$b ../$bn-$b
+    if [ -e src/$b/$b ] ; then
+      cp src/$b/$b ../$bn-$b
+    fi
   done
 done
 </command>
     </hudson.tasks.Shell>
   </builders>
   <publishers>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@1.10">
+      <groovyScript>new File(&quot;/srv/mt/jenkins/jobs/JOB-prepare-binaries-master/workspace&quot;).eachFile() {
+  f -&gt; f.delete()
+}</groovyScript>
+      <behavior>2</behavior>
+      <runForMatrixParent>false</runForMatrixParent>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier plugin="copy-to-slave@1.4.3">
+      <includes>SVN_REV, *-cbmc, *-goto-cc, *-goto-instrument</includes>
+      <excludes></excludes>
+      <overrideDestinationFolder>false</overrideDestinationFolder>
+      <destinationFolder></destinationFolder>
+      <runAfterResultFinalised>false</runAfterResultFinalised>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier>
     <hudson.tasks.BuildTrigger>
-      <childProjects>JOB-prepare-binaries-slaves</childProjects>
+      <childProjects>JOB-prepare-binaries-slaves, JOB-CSmith, JOB-prepare-binaries-chroots</childProjects>
       <threshold>
         <name>SUCCESS</name>
         <ordinal>0</ordinal>
@@ -131,5 +149,10 @@ done
       </threshold>
     </hudson.tasks.BuildTrigger>
   </publishers>
-  <buildWrappers/>
+  <buildWrappers>
+    <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.4">
+      <before>true</before>
+      <behind>false</behind>
+    </de.jamba.hudson.plugin.wsclean.PrePostClean>
+  </buildWrappers>
 </project>

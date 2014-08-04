@@ -96,9 +96,11 @@ csmith_test() {
   echo
 }
 
+CONFIGS=&quot;`ls JOB-prepare-binaries-master/workspace/*-cbmc | xargs -n1 basename | sed &apos;s/-cbmc$//&apos;`&quot;
+
 csmith_fixed_test() {
   for f in /import/debian-mole/csmith-tests/* ; do
-    for c in trunk debian-builds ; do
+    for c in $CONFIGS ; do
       csmith_test $c $f
     done
   done
@@ -107,7 +109,7 @@ csmith_fixed_test() {
 csmith_random_test() {
   for i in `seq 1 20`; do
     $CS_HOME/src/csmith &gt; t_$i.c
-     for c in trunk debian-builds ; do
+     for c in $CONFIGS ; do
       csmith_test $c t_$i.c
     done
   done

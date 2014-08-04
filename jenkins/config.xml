@@ -1457,6 +1457,7 @@
         <string>JOB-Debian-sid-needs-build</string>
         <string>JOB-Debian-sloccount</string>
         <string>JOB-prepare-binaries</string>
+        <string>JOB-prepare-binaries-chroots</string>
         <string>JOB-prepare-binaries-master</string>
         <string>JOB-prepare-binaries-matrix</string>
         <string>JOB-prepare-binaries-mt-farm01</string>
@@ -1465,6 +1466,7 @@
         <string>JOB-prepare-binaries-mt-farm04</string>
         <string>JOB-prepare-binaries-mt-farm05</string>
         <string>JOB-Profiling</string>
+        <string>JOB-Publish-Profiling</string>
         <string>JOB-SV-COMP</string>
       </jobNames>
       <jobFilters/>
