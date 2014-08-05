@@ -2,13 +2,38 @@
 <project>
   <actions/>
   <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
   <keepDependencies>false</keepDependencies>
   <properties>
     <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.4.1">
       <useBuildBlocker>false</useBuildBlocker>
     </hudson.plugins.buildblocker.BuildBlockerProperty>
   </properties>
-  <scm class="hudson.scm.NullSCM"/>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.2.2">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/csmith-project/csmith.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir>csmith.git</relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+    </extensions>
+  </scm>
   <assignedNode>SID_CHROOT</assignedNode>
   <canRoam>false</canRoam>
   <disabled>false</disabled>
@@ -22,13 +47,14 @@
 
 set -e
 
-if [ ! -d csmith-2.1.0 ] ; then
-  wget http://embed.cs.utah.edu/csmith/csmith-2.1.0.tar.gz
-  tar xzf csmith-2.1.0.tar.gz
-  cd csmith-2.1.0
+if [ ! -e csmith.git/Makefile ] ; then
+  cd csmith.git
   ./configure
-  make
+  cd ..
 fi
+
+cd csmith.git
+make
 </command>
     </hudson.tasks.Shell>
     <hudson.tasks.Shell>
@@ -36,7 +62,7 @@ fi
 
 set -e
 
-CS_HOME=$PWD/csmith-2.1.0
+CS_HOME=$PWD/csmith.git
 
 csmith_test() {
   local conf=$1

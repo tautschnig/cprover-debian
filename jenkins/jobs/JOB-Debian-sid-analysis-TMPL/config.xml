@@ -412,6 +412,7 @@ http://sources.debian.net/src/$PKG/$ver/
 http://packages.qa.debian.org/$PKG
 EOF
 
+rm -f smt2_dec_*
 rm -rf goto-binaries goto-binaries.tar.bz2
 
 exit 1</command>

@@ -8,7 +8,7 @@ mkdir jenkins
 cp -a ../jenkins/.{groovy,owner,subversion} jenkins
 
 for f in `ls ../jenkins | grep -v '.log$' | \
-    egrep -v '^(jobs|secrets|identity.key|credentials.xml|secret.key|secret.key.not-so-secret)$'` ; do
+    egrep -v '^(jobs|secrets|identity.key.enc|credentials.xml|secret.key|secret.key.not-so-secret)$'` ; do
   cp -a ../jenkins/$f jenkins/
 done
 
