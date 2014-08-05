@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<matrix-project>
+<matrix-project plugin="matrix-project@1.2">
   <actions/>
   <description></description>
   <keepDependencies>false</keepDependencies>
@@ -35,12 +35,7 @@
 set -e
 
 mv JOB-prepare-binaries-master/workspace/debian-builds-{cbmc,goto-cc,goto-instrument} .
-
-if [ ! -f mole-0.2.tar.gz ] ; then
-  wget http://diy.inria.fr/mole/mole-0.2.tar.gz
-  tar xzf mole-0.2.tar.gz mole-0.2/goto-instrument-git
-  mv mole-0.2/goto-instrument-git .
-fi
+mv JOB-prepare-binaries-master/workspace/static-cycles-goto-instrument .
 
 if [ ! -f z3 ] ; then
   wget &apos;http://download-codeplex.sec.s-msft.com/Download/Release?ProjectName=z3&amp;DownloadId=868844&amp;FileTime=130482359193930000&amp;Build=20919&apos; -O z3.zip
@@ -53,7 +48,7 @@ fi
   <publishers/>
   <buildWrappers>
     <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.3">
-      <includes>JOB-prepare-binaries-master/workspace/debian-builds-*</includes>
+      <includes>JOB-prepare-binaries-master/workspace/debian-builds-*,JOB-prepare-binaries-master/workspace/static-cycles-goto-instrument</includes>
       <excludes></excludes>
       <flatten>false</flatten>
       <includeAntExcludes>false</includeAntExcludes>

@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<matrix-config>
+<matrix-config plugin="matrix-project@1.2">
   <actions/>
   <keepDependencies>false</keepDependencies>
   <properties/>

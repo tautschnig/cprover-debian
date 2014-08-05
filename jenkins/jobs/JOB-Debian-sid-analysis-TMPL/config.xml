@@ -362,7 +362,7 @@ while read f ; do
 
   echo -n &quot;`date` $f&quot;
   ec=0
-  /usr/bin/time -v timeout -k15 900 $GOTO_INSTRUMENT-git --static-cycles &quot;$f&quot; &gt; cycles/$ff 2&gt;&amp;1 || ec=$?
+  /usr/bin/time -v timeout -k15 900 static-cycles-goto-instrument --static-cycles &quot;$f&quot; &gt; cycles/$ff 2&gt;&amp;1 || ec=$?
   if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
     echo &quot; TIMEOUT&quot;
     mv cycles/$ff cycles/$ff.failed
@@ -421,7 +421,7 @@ exit 1</command>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
   </builders>
   <publishers>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.21">
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.22">
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
       <cleanWhenSuccess>true</cleanWhenSuccess>
@@ -435,7 +435,7 @@ exit 1</command>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.21">
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.22">
       <deleteDirs>false</deleteDirs>
       <cleanupParameter></cleanupParameter>
       <externalDelete></externalDelete>
