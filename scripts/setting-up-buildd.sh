@@ -68,10 +68,10 @@ if [ -s debian/changelog ] ; then
   for p in \
       acl2 archivemail bibletime blender ceilometer clamav clojure1.2 debci \
       dico dulwich eglibc joblib libaqbanking libaudio-mpd-perl \
-      libdbd-firebird-perl libfile-sync-perl libguestfs \
+      libdbd-firebird-perl libfile-sync-perl libgadu libguestfs \
       libio-async-loop-glib-perl libio-socket-ip-perl libmongodb-perl \
-      libslf4j-java libxshmfence maxima openimageio python-mne \
-      ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph \
+      libslf4j-java libxshmfence maxima openimageio openturns python-mne \
+      ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph shishi \
       statsmodels visp x4d-icons
     do
     if [ x$p = x$cur_pkg ] ; then
