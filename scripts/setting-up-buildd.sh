@@ -67,7 +67,7 @@ if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
       acl2 aegis archivemail bibletime blender ceilometer clamav \
-      clojure1.2 debci dico dulwich eglibc joblib libaqbanking \
+      clojure1.2 dataquay debci dico dulwich eglibc joblib libaqbanking \
       libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
       libgadu libguestfs libio-async-loop-glib-perl \
       libio-socket-ip-perl libmongodb-perl libslf4j-java \
