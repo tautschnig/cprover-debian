@@ -68,7 +68,7 @@ if [ -s debian/changelog ] ; then
   for p in \
       acl2 aegis archivemail bibletime blender ceilometer clamav \
       clojure1.2 dataquay debci dico dulwich eglibc emacs24 feh \
-      html-xml-utils joblib kbtin libaqbanking \
+      google-perftools html-xml-utils joblib kbtin libaqbanking \
       libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl \
       libgadu libguestfs libio-async-loop-glib-perl \
       libio-socket-ip-perl libmongodb-perl libslf4j-java libtest-corpus-audio-mpd-perl \
