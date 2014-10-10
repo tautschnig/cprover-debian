@@ -251,6 +251,11 @@ if echo $PWD | grep -q test/exec_anatomy$ && \
   orig_only=1
 fi
 
+# CMake 3 compiler detection workaround
+if [ "$source_args" = "CMakeCCompilerId.c" ] ; then
+  orig_only=1
+fi
+
 if [ -z "$ofiles" ] ; then
   if [ $compile_only -eq 0 ] ; then
     ofiles="a.out"
