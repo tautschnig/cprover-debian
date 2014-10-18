@@ -85,9 +85,9 @@ fi
 
 if [ $use_eatmydata -eq 1 ] ; then
   if [ -z "$LD_PRELOAD" ]; then
-    LD_PRELOAD=/usr/lib/libeatmydata/libeatmydata.so
+    LD_PRELOAD=/usr/lib/x86_64-linux-gnu/libeatmydata.so
   else
-    LD_PRELOAD="$LD_PRELOAD":/usr/lib/libeatmydata/libeatmydata.so
+    LD_PRELOAD="$LD_PRELOAD":/usr/lib/x86_64-linux-gnu/libeatmydata.so
   fi
   export LD_PRELOAD
 fi
