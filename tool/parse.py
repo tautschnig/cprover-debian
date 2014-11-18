@@ -39,6 +39,8 @@ for element in list:
 	file.write(element+"\n")
 file.close()
 
+#start gdb and run second script that controls gdb
+os.system("gdb "+fileName+" -x control.py")
  
 
 
