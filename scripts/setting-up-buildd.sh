@@ -129,6 +129,7 @@ if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   diff /srv/jenkins-slave/.pbuilderrc /srv/jenkins-slave/.pbuilderrc.tmp
 fi
 mv /srv/jenkins-slave/.pbuilderrc.tmp /srv/jenkins-slave/.pbuilderrc
+chmod a+r /srv/jenkins-slave/.pbuilderrc
 
 # from http://www.hermann-uwe.de/blog/rebuilding-the-whole-debian-archive-using-the-open64-compiler
 # $SUDO apt-get install cowbuilder grep-dctrl wget devscripts gcc \
