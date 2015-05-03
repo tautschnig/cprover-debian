@@ -498,6 +498,7 @@ for f in $ofiles ; do
         objcopy -R goto-cc "$f"
       fi
       objcopy --add-section goto-cc="$gbfile" "$f"
+      cp "$f" "$gbfile"
     fi
 
     if [ -n "$objfiles" ] ; then
