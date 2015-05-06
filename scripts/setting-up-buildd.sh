@@ -484,7 +484,8 @@ for f in $ofiles ; do
   elif [ "$f" = "/dev/null" ] ; then
     continue
   fi
-  if [ "`basename "$f"`" != "conftest" ] ; then
+  bf=`basename "$f"`
+  if [ "$bf" != "conftest" ] && ! echo $bf | grep -q "^\." ; then
     gbfile="`readlink -f "$f"`"
     gbfile="`echo "$gbfile" | sed 's#/sid-goto-cc-[^/]*#&/goto-binaries#'`"
     gbfile="`echo "$gbfile" | sed 's#^/tmp/#&goto-binaries/#'`"
@@ -698,7 +699,8 @@ for f in $ofiles ; do
   elif [ "$f" = "/dev/null" ] ; then
     continue
   fi
-  if [ "`basename "$f"`" != "conftest" ] ; then
+  bf=`basename "$f"`
+  if [ "$bf" != "conftest" ] && ! echo $bf | grep -q "^\." ; then
     gbfile="`readlink -f "$f"`"
     gbfile="`echo "$gbfile" | sed 's#/sid-goto-cc-[^/]*#&/goto-binaries#'`"
     gbfile="`echo "$gbfile" | sed 's#^/tmp/#&goto-binaries/#'`"
