@@ -760,6 +760,9 @@ $SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
 mkdir -p /srv/jenkins-slave/.gnupg
 chown -R jenkins-slave /srv/jenkins-slave/.gnupg
 
+# Another hint by Gregor Herrmann, Stephen Kitt
+cp /usr/share/doc/pbuilder/examples/D80no-man-db-rebuild /var/cache/pbuilder/hooks/
+
 #./getlist sid
 #screen -d -m ./buildall list.sid.amd64 sid
 #sleep 1
