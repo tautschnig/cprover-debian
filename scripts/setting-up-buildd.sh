@@ -123,6 +123,7 @@ APTCACHE=/srv/jenkins-slave/aptcache
 # work around https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=677666
 export USER=pbuilder
 DEBBUILDOPTS="--source-option=--auto-commit"
+HOOKDIR="/var/cache/pbuilder/hooks/"
 EOF
 if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
   # abort if different file exists already
@@ -761,6 +762,7 @@ mkdir -p /srv/jenkins-slave/.gnupg
 chown -R jenkins-slave /srv/jenkins-slave/.gnupg
 
 # Another hint by Gregor Herrmann, Stephen Kitt
+mkdir -p /var/cache/pbuilder/hooks/
 cp /usr/share/doc/pbuilder/examples/D80no-man-db-rebuild /var/cache/pbuilder/hooks/
 
 #./getlist sid
