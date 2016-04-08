@@ -1,0 +1,6 @@
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='console-column-plugin' version='1.5'>
+  <l:dependency name='Console Column Plugin' groupId='org.jenkins-ci.plugins' artifactId='console-column-plugin' version='1.5' url='http://wiki.jenkins-ci.org/display/JENKINS/Console+Column+Plugin'>
+    <l:description>Provide a fast-path console link available for views.</l:description>
+    <l:license name='The MIT license' url='https://github.com/jenkinsci/console-column-plugin/raw/master/LICENSE.txt' />
+  </l:dependency>
+</l:dependencies>

@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jlf
+Build-Jdk: 1.6.0
+Extension-Name: console-column-plugin
+Specification-Title: Provide a fast-path console link available for vi
+ ews.
+Implementation-Title: console-column-plugin
+Implementation-Version: 1.5
+Group-Id: org.jenkins-ci.plugins
+Short-Name: console-column-plugin
+Long-Name: Console Column Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Console+Column+Plugin
+Plugin-Version: 1.5
+Hudson-Version: 1.420
+Jenkins-Version: 1.420
+Plugin-Developers: Jesse Farinacci:jieryn:jieryn@gmail.com
+

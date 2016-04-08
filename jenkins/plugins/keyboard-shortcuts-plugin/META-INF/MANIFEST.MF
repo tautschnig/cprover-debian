@@ -1,0 +1,20 @@
+Manifest-Version: 1.0
+Archiver-Version: Plexus Archiver
+Created-By: Apache Maven
+Built-By: jlf
+Build-Jdk: 1.6.0_22
+Extension-Name: keyboard-shortcuts-plugin
+Specification-Title: Provides keyboard shortcuts to quickly navigate a
+ nd manage Jenkins.
+Implementation-Title: keyboard-shortcuts-plugin
+Implementation-Version: 1.2
+Group-Id: org.jenkins-ci.plugins
+Short-Name: keyboard-shortcuts-plugin
+Long-Name: Keyboard Shortcuts Plugin
+Url: http://wiki.jenkins-ci.org/display/JENKINS/Keyboard+Shortcuts+Plu
+ gin
+Plugin-Version: 1.2
+Hudson-Version: 1.455
+Jenkins-Version: 1.455
+Plugin-Developers: Jesse Farinacci:jieryn:jieryn@gmail.com
+

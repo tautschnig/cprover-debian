@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='naginator' version='1.17'><l:dependency name='Naginator' groupId='org.jenkins-ci.plugins' artifactId='naginator' version='1.17' url='http://wiki.jenkins-ci.org/display/JENKINS/Naginator+Plugin'><l:description>Naginator is a plugin for Hudson that schedules a new build
+    immediately following a build failure, thereby nagging the
+    project members that the build is failing.</l:description><l:license name='MIT license' url=''/></l:dependency></l:dependencies>

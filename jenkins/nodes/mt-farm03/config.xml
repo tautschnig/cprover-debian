@@ -1,0 +1,17 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<slave>
+  <name>mt-farm03</name>
+  <description>mt-farm03.eecs.qmul.ac.uk</description>
+  <remoteFS>/srv/jenkins-slave</remoteFS>
+  <numExecutors>32</numExecutors>
+  <mode>NORMAL</mode>
+  <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.9">
+    <host>mt-farm03.eecs.qmul.ac.uk</host>
+    <port>22</port>
+    <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
+  </launcher>
+  <label>SID_CHROOT</label>
+  <nodeProperties/>
+  <userId>mt</userId>
+</slave>

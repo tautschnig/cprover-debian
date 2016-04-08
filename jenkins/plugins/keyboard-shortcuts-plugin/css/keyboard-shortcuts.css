@@ -1,0 +1,126 @@
+/*
+ * The MIT License
+ * 
+ * Copyright (c) 2012, Jesse Farinacci
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in
+ * all copies or substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+ * THE SOFTWARE.
+ */
+
+.ks-banner {
+	background: #000;
+	border-radius: 10px;
+	-moz-border-radius: 10px;
+	-webkit-border-radius: 10px;
+	filter: alpha(opacity = 85);
+	left: 5%;
+	margin: 0;
+	padding: 3em;
+	position: absolute;
+	opacity: .85;
+	-moz-opacity: .85;
+	overflow: auto;
+	top: 5%;
+	width: 85%;
+	z-index: 1001;
+}
+
+.ks-banner-section-top {
+	color: orange;
+	font-size: x-large;
+	font-weight: bold;
+	text-align: center;
+}
+
+.ks-banner-section-bottom {
+	color: orange;
+	border-top-color: orange;
+	border-top-style: solid;
+	border-top-width: medium;
+	margin-top: 3px;
+	width: 100%;
+}
+
+.ks-help-section-container table {
+	padding-bottom: 1em;
+	padding-left: 2em;
+	padding-right: 2em;
+	padding-top: 1em;
+	width: 100%;
+}
+
+.ks-help-section-container td {
+	vertical-align: top;
+}
+
+.ks-help-section th {
+	color: orange;
+	font-size: large;
+	font-weight: bold;
+	border-bottom-color: orange;
+	border-bottom-style: solid;
+	border-bottom-width: thin;
+}
+
+.ks-help-section td {
+	color: white;
+	font-size: medium;
+}
+
+.ks-help-section td.ks-help-section-key {
+	color: orange;
+	font-weight: bold;
+	text-align: right;
+}
+
+.ks-help-section td.ks-help-section-desc {
+	color: white;
+	text-align: left;
+}
+
+#projectstatus tr.ks-view-job-selected {
+	background-color: orange;
+}
+
+ul#ks-selector-items {
+	list-style-type: none;
+	margin: 0;
+	padding-top: 1em;
+	text-align: center;
+}
+
+ul#ks-selector-items li {
+	color: white;
+	display: inline-block;
+	font-size: large;
+	padding-left: 0.5em;
+	padding-right: 0.5em;
+}
+
+ul#ks-selector-items li.ks-selector-selected {
+	background: grey;
+	color: orange;
+	font-weight: bold;
+}
+
+span#ks-selector-items-empty {
+	color: red;
+	font-size: large;
+	font-weight: bold;
+	text-align: center;
+}

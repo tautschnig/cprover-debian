@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.chikli.hudson.plugin.naginator.NaginatorPublisher_-DescriptorImpl plugin="naginator@1.16.1">
+  <regexpTimeoutMs>30000</regexpTimeoutMs>
+</com.chikli.hudson.plugin.naginator.NaginatorPublisher_-DescriptorImpl>

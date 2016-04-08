@@ -1,0 +1,4 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<com.tikal.jenkins.plugins.multijob.PhaseJobsConfig_-DescriptorImpl plugin="jenkins-multijob-plugin@1.20">
+  <parsingRulesGlobal/>
+</com.tikal.jenkins.plugins.multijob.PhaseJobsConfig_-DescriptorImpl>

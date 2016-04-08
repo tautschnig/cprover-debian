@@ -1,0 +1,2 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='de.jamba.hudson.plugin.wsclean' artifactId='hudson-wsclean-plugin' version='1.0.5'><l:dependency name='Distributed Workspace Clean plugin' groupId='de.jamba.hudson.plugin.wsclean' artifactId='hudson-wsclean-plugin' version='1.0.5' url='https://wiki.jenkins-ci.org/display/JENKINS/Distributed+Workspace+Clean+plugin'><l:description>This plugin cleans all workspace directories for the same BuildProject within as same slave group</l:description></l:dependency></l:dependencies>

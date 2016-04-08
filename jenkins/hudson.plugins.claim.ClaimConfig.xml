@@ -1,0 +1,6 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<hudson.plugins.claim.ClaimConfig plugin="claim@2.7">
+  <sendEmails>false</sendEmails>
+  <stickyByDefault>true</stickyByDefault>
+  <groovyScript></groovyScript>
+</hudson.plugins.claim.ClaimConfig>

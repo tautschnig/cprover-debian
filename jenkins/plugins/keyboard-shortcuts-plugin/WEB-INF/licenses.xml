@@ -1,0 +1,12 @@
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='keyboard-shortcuts-plugin' version='1.2'>
+  <l:dependency name='Keyboard Shortcuts Plugin' groupId='org.jenkins-ci.plugins' artifactId='keyboard-shortcuts-plugin' version='1.2' url='http://wiki.jenkins-ci.org/display/JENKINS/Keyboard+Shortcuts+Plugin'>
+    <l:description>Provides keyboard shortcuts to quickly navigate and manage Jenkins.</l:description>
+    <l:license name='The MIT license' url='https://github.com/jenkinsci/keyboard-shortcuts-plugin/raw/master/LICENSE.txt' />
+  </l:dependency>
+  <l:dependency name='Lang' groupId='commons-lang' artifactId='commons-lang' version='2.2' url='http://jakarta.apache.org/commons/lang/'>
+    <l:description>Commons.Lang, a package of Java utility classes for the
+        classes that are in java.lang's hierarchy, or are considered to be so
+        standard as to justify existence in java.lang.</l:description>
+    <l:license name='The Apache Software License, Version 2.0' url='/LICENSE.txt' />
+  </l:dependency>
+</l:dependencies>
