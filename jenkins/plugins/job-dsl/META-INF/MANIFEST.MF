@@ -1,14 +1,16 @@
 Manifest-Version: 1.0
-PluginFirstClassLoader: true
-Mask-Classes: groovy.grape
-v: 1.24
-Compatible-Since-Version: 1.20
-Url: https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
-Plugin-Dependencies: cloudbees-folder:4.2;resolution:=optional,credent
- ials:1.9.4;resolution:=optional
+Plugin-Dependencies: cloudbees-folder:4.4;resolution:=optional,vsphere
+ -cloud:1.1.11;resolution:=optional,config-file-provider:2.8.1;resolut
+ ion:=optional,managed-scripts:1.2.1;resolution:=optional
+Jenkins-Version: 1.609
 Group-Id: org.jenkins-ci.plugins
-Jenkins-Version: 1.480
-Plugin-Version: 1.24
-Long-Name: Job DSL
+Plugin-Developers: Justin Ryan:quidryan:jryan@netflix.com,Andrew Harme
+ l-Law:andrewharmellaw:andrew@harmel-law.com,Daniel Spilker:daspilker:
+ mail@daniel-spilker.com,Matt Sheehan:sheehan:mr.sheehan@gmail.com
 Short-Name: job-dsl
+Compatible-Since-Version: 1.45
+Plugin-Version: 1.45
+Long-Name: Job DSL
+Extension-Name: job-dsl
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
 

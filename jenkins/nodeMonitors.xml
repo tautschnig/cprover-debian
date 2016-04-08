@@ -10,14 +10,14 @@
     <ignored>false</ignored>
     <freeSpaceThreshold>10GB</freeSpaceThreshold>
   </hudson.node__monitors.DiskSpaceMonitor>
-  <hudson.node__monitors.SwapSpaceMonitor>
-    <ignored>false</ignored>
-  </hudson.node__monitors.SwapSpaceMonitor>
   <hudson.node__monitors.TemporarySpaceMonitor>
     <ignored>false</ignored>
-    <freeSpaceThreshold>0.2GB</freeSpaceThreshold>
+    <freeSpaceThreshold>0.1GB</freeSpaceThreshold>
   </hudson.node__monitors.TemporarySpaceMonitor>
   <hudson.node__monitors.ResponseTimeMonitor>
     <ignored>false</ignored>
   </hudson.node__monitors.ResponseTimeMonitor>
+  <hudson.node__monitors.SwapSpaceMonitor>
+    <ignored>true</ignored>
+  </hudson.node__monitors.SwapSpaceMonitor>
 </hudson.util.DescribableList>

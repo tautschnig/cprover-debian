@@ -5,11 +5,11 @@
     <parent>
         <groupId>org.jenkins-ci.plugins</groupId>
         <artifactId>plugin</artifactId>
-        <version>1.445</version>
+        <version>1.532.3</version>
     </parent>
 
     <artifactId>envinject</artifactId>
-    <version>1.89</version>
+    <version>1.92.1</version>
     <packaging>hpi</packaging>
     <name>Environment Injector Plugin</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin</url>
@@ -32,39 +32,55 @@
                 <role>Project Lead Developer</role>
             </roles>
         </developer>
+        <developer>
+            <id>oleg_nenashev</id>
+            <name>Oleg Nenashev</name>
+            <email>o.v.nenashev@gmail.com</email>
+            <timezone>+3</timezone>
+            <roles>
+                <role>Maintainer</role>
+            </roles>
+        </developer>
+        <developer>
+            <id>recena</id>
+            <name>Manuel Recena</name>
+            <email>recena@gmail.com</email>
+            <timezone>+1</timezone>
+            <roles>
+                <role>Contributor</role>
+            </roles>
+        </developer>
     </developers>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>1.6</maven.compiler.source>
         <maven.compiler.target>1.6</maven.compiler.target>
-        <envinject.lib.version>1.19</envinject.lib.version>
+        <envinject.lib.version>1.23</envinject.lib.version>
         <ivy.plugin.version>1.21</ivy.plugin.version>
-        <junit.version>4.9</junit.version>
-        <mockito.version>1.8.5</mockito.version>
+        <junit.version>4.12</junit.version>
+        <mockito.version>1.10.19</mockito.version>
     </properties>
 
     <scm>
         <connection>scm:git:git://github.com/jenkinsci/envinject-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/envinject-plugin.git</developerConnection>
+        <tag>envinject-1.92.1</tag>
     </scm>
 
     <build>
+
         <plugins>
             <plugin>
                 <groupId>org.jenkins-ci.tools</groupId>
                 <artifactId>maven-hpi-plugin</artifactId>
                 <version>1.98</version>
                 <extensions>true</extensions>
-            </plugin>        
+            </plugin>
         </plugins>
     </build>
-    
+
     <dependencies>
-        <dependency>
-            <groupId>org.jenkins-ci.main</groupId>
-            <artifactId>maven-plugin</artifactId>
-        </dependency>
 
         <dependency>
             <groupId>org.jenkins-ci.lib</groupId>
@@ -92,6 +108,12 @@
             <version>${mockito.version}</version>
             <scope>test</scope>
         </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci</groupId>
+            <artifactId>test-annotations</artifactId>
+            <version>1.2</version>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 
     <repositories>
@@ -108,6 +130,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-</project>  
-  
+</project>
+
 

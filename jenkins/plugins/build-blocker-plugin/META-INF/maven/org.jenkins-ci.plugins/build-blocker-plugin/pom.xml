@@ -25,67 +25,142 @@
 -->
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <parent>
-    <groupId>org.jenkins-ci.plugins</groupId>
-    <artifactId>plugin</artifactId>
-    <version>1.466</version>
-  </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.jenkins-ci.plugins</groupId>
+        <artifactId>plugin</artifactId>
+        <version>1.580.1</version>
+    </parent>
 
-  <groupId>org.jenkins-ci.plugins</groupId>
-  <artifactId>build-blocker-plugin</artifactId>
-  <name>Build Blocker Plugin</name>
-  <version>1.4.1</version>
-  <packaging>hpi</packaging>
-  <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+Blocker+Plugin</url>
+    <artifactId>build-blocker-plugin</artifactId>
+    <name>Build Blocker Plugin</name>
+    <version>1.7.3</version>
+    <packaging>hpi</packaging>
+    <url>https://wiki.jenkins-ci.org/display/JENKINS/Build+Blocker+Plugin</url>
 
-  <licenses>
-    <license>
-      <name>The MIT license</name>
-      <url>https://github.com/jencinsci/build-blocker-plugin/raw/master/LICENSE.txt</url>
-      <distribution>repo</distribution>
-    </license>
-  </licenses>
+    <licenses>
+        <license>
+            <name>The MIT license</name>
+            <url>https://github.com/jencinsci/build-blocker-plugin/raw/master/LICENSE.txt</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
 
-  <developers>
-    <developer>
-      <id>ffromm</id>
-      <name>Frederik Fromm</name>
-      <email>frederik.fromm@gmail.com</email>
-    </developer>
-  </developers>
+    <developers>
+        <developer>
+            <id>ffromm</id>
+            <name>Frederik Fromm</name>
+            <email>frederik.fromm@gmail.com</email>
+        </developer>
+    </developers>
 
-  <scm>
-    <connection>scm:git:https://ffromm@github.com/jenkinsci/build-blocker-plugin.git</connection>
-    <developerConnection>scm:git:https://ffromm@github.com/jenkinsci/build-blocker-plugin.git</developerConnection>
-    <url>https://github.com/jenkinsci/build-blocker-plugin.git</url>
-  </scm>
+    <scm>
+        <connection>scm:git:https://ffromm@github.com/jenkinsci/build-blocker-plugin.git</connection>
+        <developerConnection>scm:git:https://ffromm@github.com/jenkinsci/build-blocker-plugin.git</developerConnection>
+        <url>https://github.com/jenkinsci/build-blocker-plugin.git</url>
+        <tag>build-blocker-plugin-1.7.3</tag>
+    </scm>
 
-  <repositories>
-    <repository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </repository>
-  </repositories>
+    <repositories>
+        <repository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+    </repositories>
 
-  <pluginRepositories>
-    <pluginRepository>
-      <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
-    </pluginRepository>
-  </pluginRepositories>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>repo.jenkins-ci.org</id>
+            <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+    </pluginRepositories>
 
-  <distributionManagement>
-    <repository>
-      <id>maven.jenkins-ci.org</id>
-      <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
-    </repository>
-  </distributionManagement>
+    <distributionManagement>
+        <repository>
+            <id>maven.jenkins-ci.org</id>
+            <url>http://maven.jenkins-ci.org/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 
-  <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <compileTarget>1.6</compileTarget>
-    <maven.version>3.0.4</maven.version>
-  </properties>
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <compileTarget>1.6</compileTarget>
+        <maven.version>3.0.4</maven.version>
+    </properties>
 
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                    <version>2.8.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <version>2.5</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>versions-maven-plugin</artifactId>
+                    <version>2.1</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+    <dependencies>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <version>1.3</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-all</artifactId>
+            <version>1.9.5</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-mockito</artifactId>
+            <version>1.5.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <version>1.5.6</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>matrix-project</artifactId>
+            <version>1.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-job</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-cps</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-aggregator</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 </project>

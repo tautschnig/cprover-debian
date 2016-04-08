@@ -1,6 +1,2 @@
-<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='build-blocker-plugin' version='1.4.1'>
-  <l:dependency name='Build Blocker Plugin' groupId='org.jenkins-ci.plugins' artifactId='build-blocker-plugin' version='1.4.1' url='https://wiki.jenkins-ci.org/display/JENKINS/Build+Blocker+Plugin'>
-    <l:description />
-    <l:license name='The MIT license' url='https://github.com/jencinsci/build-blocker-plugin/raw/master/LICENSE.txt' />
-  </l:dependency>
-</l:dependencies>
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='build-blocker-plugin' version='1.7.3'><l:dependency name='Build Blocker Plugin' groupId='org.jenkins-ci.plugins' artifactId='build-blocker-plugin' version='1.7.3' url='https://wiki.jenkins-ci.org/display/JENKINS/Build+Blocker+Plugin'><l:description/><l:license name='The MIT license' url='https://github.com/jencinsci/build-blocker-plugin/raw/master/LICENSE.txt'/></l:dependency></l:dependencies>

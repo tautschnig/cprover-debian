@@ -1,18 +1,21 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
-Built-By: nicolas
-Build-Jdk: 1.7.0_40
+Built-By: nenashev
+Build-Jdk: 1.7.0_75
 Extension-Name: envinject
 Implementation-Title: envinject
-Implementation-Version: 1.89
+Implementation-Version: 1.92.1
+Plugin-Class: org.jenkinsci.plugins.envinject.EnvInjectPlugin
 Group-Id: org.jenkins-ci.plugins
 Short-Name: envinject
 Long-Name: Environment Injector Plugin
 Url: https://wiki.jenkins-ci.org/display/JENKINS/EnvInject+Plugin
-Plugin-Version: 1.89
-Hudson-Version: 1.445
-Jenkins-Version: 1.445
-Plugin-Dependencies: maven-plugin:1.445,ivy:1.21;resolution:=optional
+Plugin-Version: 1.92.1
+Hudson-Version: 1.532.3
+Jenkins-Version: 1.532.3
+Plugin-Dependencies: ivy:1.21;resolution:=optional
 Plugin-Developers: Gregory Boissinot:gbois:gregory.boissinot@gmail.com
+ ,Oleg Nenashev:oleg_nenashev:o.v.nenashev@gmail.com,Manuel Recena:rec
+ ena:recena@gmail.com
 

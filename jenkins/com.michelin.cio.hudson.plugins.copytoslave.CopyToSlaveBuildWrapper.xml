@@ -1,5 +1,5 @@
 <?xml version='1.0' encoding='UTF-8'?>
-<com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper_-DescriptorImpl plugin="copy-to-slave@1.4.3">
+<com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper_-DescriptorImpl plugin="copy-to-slave@1.4.4">
   <relativeToHomeEnabled>false</relativeToHomeEnabled>
   <somewhereElseEnabled>true</somewhereElseEnabled>
   <somewhereElsePath>/srv/mt/jenkins/jobs</somewhereElsePath>

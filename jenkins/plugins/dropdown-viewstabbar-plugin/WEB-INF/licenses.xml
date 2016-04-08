@@ -1,6 +1,2 @@
-<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='dropdown-viewstabbar-plugin' version='1.6'>
-  <l:dependency name='Drop Down ViewsTabBar Plugin' groupId='org.jenkins-ci.plugins' artifactId='dropdown-viewstabbar-plugin' version='1.6' url='http://wiki.jenkins-ci.org/display/JENKINS/DropDown+ViewsTabBar+Plugin'>
-    <l:description>Provides a drop down menu for selecting views.</l:description>
-    <l:license name='The MIT license' url='https://github.com/jenkinsci/dropdown-viewstabbar-plugin/raw/master/LICENSE.txt' />
-  </l:dependency>
-</l:dependencies>
+<?xml version="1.0" encoding="UTF-8"?>
+<l:dependencies xmlns:l='licenses' groupId='org.jenkins-ci.plugins' artifactId='dropdown-viewstabbar-plugin' version='1.7'><l:dependency name='Drop Down ViewsTabBar Plugin' groupId='org.jenkins-ci.plugins' artifactId='dropdown-viewstabbar-plugin' version='1.7' url='http://wiki.jenkins-ci.org/display/JENKINS/DropDown+ViewsTabBar+Plugin'><l:description>Provides a drop down menu for selecting views.</l:description><l:license name='The MIT license' url='https://github.com/jenkinsci/dropdown-viewstabbar-plugin/raw/master/LICENSE.txt'/></l:dependency></l:dependencies>

@@ -2,21 +2,21 @@ Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
 Built-By: hafner
-Build-Jdk: 1.7.0_45
+Build-Jdk: 1.7.0_79
 Extension-Name: warnings
 Specification-Title: This plug-in reads the compiler warnings from the
-     console log file and generates a trend report.
+  console log file and generates a trend report.
 Implementation-Title: warnings
-Implementation-Version: 4.40
+Implementation-Version: 4.52
 Group-Id: org.jvnet.hudson.plugins
 Short-Name: warnings
 Long-Name: Warnings Plug-in
 Url: http://wiki.jenkins-ci.org/x/G4CGAQ
-Plugin-Version: 4.40
-Hudson-Version: 1.424
-Jenkins-Version: 1.424
-Plugin-Dependencies: violations:0.7.11;resolution:=optional,analysis-c
- ore:1.55,dashboard-view:2.2;resolution:=optional,token-macro:1.5.1;re
- solution:=optional,maven-plugin:1.424;resolution:=optional
+Plugin-Version: 4.52
+Hudson-Version: 1.596.1
+Jenkins-Version: 1.596.1
+Plugin-Dependencies: maven-plugin:2.9,token-macro:1.10;resolution:=opt
+ ional,analysis-core:1.75,matrix-project:1.2.1,dashboard-view:2.9.4;re
+ solution:=optional,violations:0.7.11;resolution:=optional
 Plugin-Developers: Ulli Hafner:drulli:ullrich.hafner@gmail.com
 

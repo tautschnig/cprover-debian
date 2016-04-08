@@ -3,31 +3,27 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.495</version>
+    <version>1.580.1</version>
   </parent>
+  
   <artifactId>mailer</artifactId>
   <packaging>hpi</packaging>
-  <version>1.9</version>
+  <version>1.16</version>
   <name>Jenkins Mailer Plugin</name>
+  
   <url>http://wiki.jenkins-ci.org/display/JENKINS/Mailer</url>
-
   <licenses>
     <license>
       <name>The MIT license</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>http://opensource.org/licenses/MIT</url>
       <distribution>repo</distribution>
     </license>
   </licenses>
-
-  <!--
-  <issueManagement>
-    <system>JIRA</system>
-    <url>http://issues.jenkins-ci.org/secure/IssueNavigator.jspa?reset=true&amp;jqlQuery=project+%3D+JENKINS+AND+status+in+%28Open%2C+%22In+Progress%22%2C+Reopened%29+AND+component+%3D+%27email-ext%27</url>
-  </issueManagement>
-  -->
   <properties>
-    <powermock.version>1.4.12</powermock.version>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <powermock.version>1.6.2</powermock.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>  
+    <findbugs-maven-plugin.version>3.0.2</findbugs-maven-plugin.version>
+    <findbugs.failOnError>true</findbugs.failOnError>
   </properties>
   <dependencies>
     <dependency>
@@ -43,21 +39,27 @@
       <scope>provided</scope>
     </dependency>
     <dependency>
+      <groupId>org.jenkins-ci.modules</groupId>
+      <artifactId>instance-identity</artifactId>
+      <version>1.4</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
       <groupId>org.jvnet.mock-javamail</groupId>
       <artifactId>mock-javamail</artifactId>
       <version>1.9</version>
       <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <version>4.7</version>
-      <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-all</artifactId>
-      <version>1.8.5</version>
+      <version>1.10.19</version>
       <scope>test</scope>
     </dependency>
     <dependency>
@@ -65,6 +67,12 @@
       <artifactId>powermock-module-junit4</artifactId>
       <version>${powermock.version}</version>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>junit</groupId>
+          <artifactId>junit</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>org.powermock</groupId>
@@ -72,24 +80,75 @@
       <version>${powermock.version}</version>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.code.findbugs</groupId>
+      <artifactId>annotations</artifactId>
+      <version>3.0.0</version>
+      <scope>provided</scope>
+    </dependency>
   </dependencies>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>3.1</version>
+        <configuration>
+          <source>1.6</source>
+          <target>1.6</target>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>findbugs-maven-plugin</artifactId>
+        <version>${findbugs-maven-plugin.version}</version>
+        <configuration>
+          <xmlOutput>true</xmlOutput>
+          <findbugsXmlWithMessages>true</findbugsXmlWithMessages>
+          <failOnError>${findbugs.failOnError}</failOnError>
+        </configuration>
+        <executions>
+          <execution>
+            <id>run-findbugs</id>
+            <phase>verify</phase> 
+            <goals>
+              <goal>check</goal> 
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>animal-sniffer-maven-plugin</artifactId>
+        <version>1.13</version>
+        <executions>
+          <execution>
+            <id>check-java-api</id>
+            <phase>test</phase>
+            <goals>
+              <goal>check</goal>
+            </goals>
+            <configuration>
+              <signature>
+                <groupId>org.codehaus.mojo.signature</groupId>
+                <artifactId>java16</artifactId>
+                <version>1.1</version>
+              </signature>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
+    <tag>mailer-1.16</tag>
   </scm>
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
       <url>http://repo.jenkins-ci.org/public/</url>
-    </repository>
-    <repository>
-      <id>powermock-repo</id>
-      <url>http://powermock.googlecode.com/svn/repo/</url>
-    </repository>
-    <repository>
-      <id>maven2-repository.dev.java.net</id>
-      <name>Java.net repository for Maven2</name>
-      <url>http://download.java.net/maven/2/</url>
     </repository>
   </repositories>
   <pluginRepositories>

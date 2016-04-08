@@ -2,19 +2,19 @@ Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
 Built-By: m
-Build-Jdk: 1.7.0_21
+Build-Jdk: 1.7.0_79
 Extension-Name: sloccount
 Specification-Title: This plug-in generates the trend report for SLOCC
  ount,    an open source program which counts the number of lines of c
  odes in over    25 different languages, including C/C++, Ada, COBOL, 
  Fortran, SQL, Ruby,    Python, etc...
 Implementation-Title: sloccount
-Implementation-Version: 1.19
+Implementation-Version: 1.21
 Group-Id: hudson.plugins.sloccount
 Short-Name: sloccount
 Long-Name: Jenkins SLOCCount Plug-in
 Url: http://wiki.jenkins-ci.org/display/JENKINS/SLOCCount+Plugin
-Plugin-Version: 1.19
+Plugin-Version: 1.21
 Hudson-Version: 1.447
 Jenkins-Version: 1.447
 Plugin-Dependencies: dashboard-view:2.0;resolution:=optional
