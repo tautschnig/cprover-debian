@@ -736,17 +736,17 @@ apt-get update ; \
 apt-get -y install eatmydata adduser cbmc aptitude libzip2 ; \
 addgroup --system --gid 1234 pbuilder ; \
 adduser --system --no-create-home --uid 1234 --gecos pbuilder --disabled-login pbuilder ; \
-dpkg-divert --add --rename --divert $real_gcc_chroot.orig $real_gcc_chroot ; \
+mv $real_gcc_chroot $real_gcc_chroot.orig ; \
 mv /tmp/gcc-wrapper $real_gcc_chroot ; \
 chmod a+rx $real_gcc_chroot ; \
-dpkg-divert --add --rename --divert $real_ld_chroot.orig $real_ld_chroot ; \
+mv $real_ld_chroot $real_ld_chroot.orig ; \
 mv /tmp/ld-wrapper $real_ld_chroot ; \
 chmod a+rx $real_ld_chroot ; \
 mv /tmp/pbuilder-deps-wrapper.sh /usr/bin ; \
 chmod a+rx /usr/bin/pbuilder-deps-wrapper.sh ; \
-ln -s goto-cc /usr/bin/goto-ld ; \
+cp /usr/bin/goto-cc /usr/bin/goto-ld ; \
 exit" | $SUDO cowbuilder --login --save-after-login --aptcache $APTCACHE --basepath $cow_base
-$SUDO chown jenkins-slave $cow_base/usr/bin/goto-cc
+$SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
 
 #cp /usr/share/doc/pbuilder/examples/rebuild/{buildall,getlist} .
 #sed -i 's#any#linux-any| any#' getlist
