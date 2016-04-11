@@ -72,7 +72,7 @@ if [ -s debian/changelog ] ; then
       libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl libfiu \
       libgadu libguestfs libio-async-loop-glib-perl \
       libio-socket-ip-perl libmongodb-perl libslf4j-java libtest-corpus-audio-mpd-perl \
-      libxshmfence maxima oolite openimageio openturns python-django python-mne \
+      libxshmfence maxima monkeysphere oolite openimageio openturns python-django python-mne \
       ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph shishi \
       statsmodels strongswan visp vpnc winff x11vnc x4d-icons zaqar
     do
