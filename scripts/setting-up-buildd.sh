@@ -66,15 +66,15 @@ use_eatmydata=1
 if [ -s debian/changelog ] ; then
   cur_pkg=$(dpkg-parsechangelog|sed -n 's/^Source: //p')
   for p in \
-      acl2 aegis archivemail bibletime blender ceilometer ck clamav \
+      acl2 aegis aodh archivemail bibletime blender ceilometer ck clamav \
       clojure1.2 dataquay debci dico dulwich eglibc emacs24 feh \
-      google-perftools html-xml-utils joblib kbtin libaqbanking \
+      google-perftools gnuchess-book html-xml-utils joblib kbtin libaqbanking \
       libaudio-mpd-perl libdbd-firebird-perl libfile-sync-perl libfiu \
       libgadu libguestfs libio-async-loop-glib-perl \
       libio-socket-ip-perl libmongodb-perl libslf4j-java libtest-corpus-audio-mpd-perl \
-      libxshmfence maxima oolite openimageio openturns python-mne \
+      libxshmfence maxima oolite openimageio openturns python-django python-mne \
       ruby-httpclient ruby-kgio ruby-spreadsheet ruby-svg-graph shishi \
-      statsmodels visp vpnc winff x11vnc x4d-icons
+      statsmodels strongswan visp vpnc winff x11vnc x4d-icons zaqar
     do
     if [ x$p = x$cur_pkg ] ; then
       use_eatmydata=0
