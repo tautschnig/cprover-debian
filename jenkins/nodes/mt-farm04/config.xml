@@ -6,7 +6,7 @@
   <numExecutors>32</numExecutors>
   <mode>NORMAL</mode>
   <retentionStrategy class="hudson.slaves.RetentionStrategy$Always"/>
-  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.9">
+  <launcher class="hudson.plugins.sshslaves.SSHLauncher" plugin="ssh-slaves@1.10">
     <host>mt-farm04.eecs.qmul.ac.uk</host>
     <port>22</port>
     <credentialsId>650cf1ce-01db-4905-b4f4-00790c8659a3</credentialsId>
