@@ -1,0 +1,508 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.6">
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>3</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.1">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.15">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/dbeyer/sv-benchmarks.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions/>
+  </scm>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.TextAxis>
+      <name>set</name>
+      <values>
+        <string>ArraysMemSafety</string>
+        <string>ArraysReach</string>
+        <string>BitVectorsOverflows</string>
+        <string>BitVectorsReach</string>
+        <string>BusyBox</string>
+        <string>Concurrency</string>
+        <string>ControlFlow</string>
+        <string>DeviceDriversLinux64</string>
+        <string>ECA</string>
+        <string>Floats</string>
+        <string>HeapMemSafety</string>
+        <string>HeapReach</string>
+        <string>Loops</string>
+        <string>ProductLines</string>
+        <string>Recursive</string>
+        <string>Sequentialized</string>
+        <string>Simple</string>
+      </values>
+    </hudson.matrix.TextAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+cp /import/debian-mole/sv-comp-2015-failures KNOWNBUG
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+warn()
+{
+  echo &quot;$1&quot; &gt;&amp;2
+}
+
+
+die()
+{
+  warn &quot;$1&quot;
+  exit 1
+}
+
+parse_property_file()
+{
+  local fn=$1
+
+  cat $fn | sed &apos;s/[[:space:]]//g&apos; | perl -n -e &apos;
+if(/^CHECK\(init\((\S+)\(\)\),LTL\(G(\S+)\)\)$/) {
+  print &quot;ENTRY=$1\n&quot;;
+  print &quot;PROPERTY=\&quot;--error-label $1\&quot;\n&quot; if($2 =~ /^!label\((\S+)\)$/);
+  print &quot;PROPERTY=\&quot; \&quot;\n&quot; if($2 =~ /^!call\(__VERIFIER_error\(\)\)$/);
+  print &quot;PROPERTY=\&quot;--pointer-check --memory-leak-check --bounds-check\&quot;\n&quot; if($2 =~ /^valid-(free|deref|memtrack)$/);
+  print &quot;PROPERTY=\&quot;--signed-overflow-check\&quot;\n&quot; if($2 =~ /^!overflow$/);
+}&apos;
+}
+
+parse_property()
+{
+  local fn=$1
+  local dn=`dirname $fn`
+
+  if [ -s $fn.prp ] ; then
+    parse_property_file $fn.prp
+  elif [ -s $dn/ALL.prp ] ; then
+    parse_property_file $dn/ALL.prp
+  fi
+}
+
+convert()
+{
+  local category=$1
+  local fn=$2
+
+  ENTRY=&quot;&quot;
+  ERROR_LABEL=&quot;&quot;
+  eval `parse_property $fn`
+
+  if [ &quot;x$ENTRY&quot; = &quot;x&quot; ] ; then
+    die &quot;Failed to parse entry function of $fn&quot;
+  elif [ &quot;x$PROPERTY&quot; = &quot;x&quot; ] ; then
+    warn &quot;Unhandled property in $fn&quot;
+    return
+  fi
+
+  if [ &quot;x$category&quot; = &quot;xConcurrency&quot; ] ; then
+    fn=&quot;`echo $fn | sed &apos;s/i$/c/&apos;`&quot;
+    if [ ! -s $fn ] ; then
+      die &quot;Non-preprocessed file $fn in Concurrency category not found&quot;
+    fi
+  fi
+
+  local suffix=&quot;`echo $fn | sed &apos;s/.*\.//&apos;`&quot;
+  if [ &quot;x$suffix&quot; != &quot;xc&quot; ] &amp;&amp; [ &quot;x$suffix&quot; != &quot;xi&quot; ] ; then
+    die &quot;Failed to determine suffix of $fn&quot;
+  fi
+
+  local expected_result=&quot;&quot;
+  local expected_exitcode=&quot;&quot;
+  local expect_more=&quot;&quot;
+  case $fn in
+    *_true-valid*) expected_result=SUCCESSFUL ; expect_more=TRUE ; expected_exitcode=0 ;;
+    *_true-unreach-call*) expected_result=SUCCESSFUL ; expect_more=TRUE ; expected_exitcode=0 ;;
+    *_false-valid*) expected_result=FAILED ; expect_more=FALSE ; expected_exitcode=10 ;;
+    *_false-unreach-call*) expected_result=FAILED ; expect_more=FALSE ; expected_exitcode=10 ;;
+  esac
+  if [ &quot;x$expected_result&quot; = &quot;x&quot; ] ; then
+    warn &quot;Failed to determine expected result of $fn&quot;
+    return
+  fi
+  case $fn in
+    *_false-valid-memtrack.*) expect_more=&quot;$expect_more(valid-memtrack)&quot; ;;
+    *_false-valid-deref.*) expect_more=&quot;$expect_more(valid-deref)&quot; ;;
+    *_false-valid-free.*) expect_more=&quot;$expect_more(valid-free)&quot; ;;
+  esac
+
+  local bitwidth=64
+  case $category in
+    Arrays) bitwidth=32 ;;
+    BitVectors) bitwidth=32 ;;
+    Concurrency) bitwidth=32 ;;
+    ControlFlowInteger) bitwidth=32 ;;
+    Floats) bitwidth=32 ;;
+    HeapManipulation) bitwidth=32 ;;
+  esac
+
+  mkdir -p cprover-regr/$category/$fn
+  cp $fn cprover-regr/$category/$fn/main.$suffix
+
+  cat &gt; cprover-regr/$category/$fn/test.desc &lt;&lt;EOF
+CORE
+main.$suffix
+--function $ENTRY $PROPERTY --$bitwidth
+^EXIT=$expected_exitcode$
+^SIGNAL=0$
+^VERIFICATION $expected_result$
+^$expect_more$
+--
+^warning: ignoring
+EOF
+
+  if grep -q &quot;^$category/$fn$&quot; ../KNOWNBUG ; then
+    sed -i &apos;1s/CORE/KNOWNBUG/&apos; cprover-regr/$category/$fn/test.desc
+  fi
+}
+
+cd c
+
+rm -rf cprover-regr
+
+category=$set
+case $set in
+  ArraysMemSafety) category=&quot;Arrays&quot; ;;
+  ArraysReach) category=&quot;Arrays&quot; ;;
+  BitVectorsOverflows) category=&quot;BitVectors&quot; ;;
+  BitVectorsReach) category=&quot;BitVectors&quot; ;;
+  BusyBox) category=&quot;SoftwareSystems&quot; ;;
+  ControlFlow) category=&quot;ControlFlowInteger&quot; ;;
+  DeviceDriversLinux64) category=&quot;SoftwareSystems&quot; ;;
+  ECA) category=&quot;ControlFlowInteger&quot; ;;
+  HeapMemSafety) category=&quot;HeapManipulation&quot; ;;
+  HeapReach) category=&quot;HeapManipulation&quot; ;;
+  Loops) category=&quot;ControlFlowInteger&quot; ;;
+  ProductLines) category=&quot;ControlFlowInteger&quot; ;;
+  Recursive) category=&quot;ControlFlowInteger&quot; ;;
+  Sequentialized) category=&quot;ControlFlowInteger&quot; ;;
+  Simple) category=&quot;ControlFlowInteger&quot; ;;
+esac
+  
+if [ &quot;x$category&quot; = &quot;xStateful&quot; ] ; then
+  exit 1
+elif [ &quot;x$category&quot; = &quot;xDriverChallenges&quot; ] ; then
+  exit 1
+elif [ &quot;x$category&quot; = &quot;xTermination&quot; ] ; then
+  exit 1
+fi
+
+for f in `cat $set.set` ; do
+  if [ ! -s &quot;$f&quot; ] ; then
+    warn &quot;File $f not found&quot;
+    continue
+  fi
+  convert $category $f
+done
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+mkdir -p bin
+#cp JOB-prepare-binaries-master/workspace/cbmc-trunk/regression/test.pl bin
+cp /import/debian-mole/tools-from-svns/test.pl bin/
+cp JOB-prepare-binaries-master/workspace/trunk-cbmc bin/cbmc
+#cp JOB-prepare-binaries-master/workspace/graphml-cbmc bin/cbmc
+#cp JOB-prepare-binaries-master/workspace/extended-propagation-cbmc bin/cbmc
+#cp JOB-prepare-binaries-master/workspace/debian-builds-goto-cc bin/goto-cc
+#cp JOB-prepare-binaries-master/workspace/debian-builds-goto-instrument bin/goto-instrument
+#cp JOB-prepare-binaries-master/workspace/static-cycles-goto-instrument bin/goto-instrument-slicing
+
+sed -i &apos;2 s/^$/setpgrp(0,0);/&apos; bin/test.pl
+
+#if [ ! -f bin/CPAchecker-1.4-unix/scripts/cpa.sh ] ; then
+#  wget http://cpachecker.sosy-lab.org/CPAchecker-1.4-unix.tar.bz2
+#  tar xjf CPAchecker-1.4-unix.tar.bz2
+#  mv CPAchecker-1.4-unix bin/
+#fi
+
+cat &gt; bin/inc.sh &lt;&lt;&quot;EOF&quot;
+#!/bin/bash
+
+parse_result()
+{
+  if tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*__CPROVER_memory_leak == NULL$&quot; ; then
+    echo &apos;FALSE(valid-memtrack)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*dereference failure:&quot; ; then
+    echo &apos;FALSE(valid-deref)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*double free$&quot; ; then
+    echo &apos;FALSE(valid-free)&apos;
+  elif tail -n 50 $LOG.ok | grep -q &quot;^[[:space:]]*free argument has offset zero$&quot; ; then
+    echo &apos;FALSE(valid-free)&apos;
+  else
+    echo FALSE
+  fi
+}
+
+export args=$@
+
+export LOG=`mktemp -t cbmc-log.XXXXXX`
+trap &quot;rm -f $LOG $LOG.latest $LOG.ok&quot; EXIT
+
+timeout 850 bash -c &apos; \
+\
+ulimit -v 15000000 ; \
+\
+EC=42 ; \
+for c in 2 6 12 17 21 40 200 1000 ; do \
+  echo &quot;Unwind: $c&quot; &gt; $LOG.latest ; \
+  ls -la `which cbmc` &gt;&gt; $LOG.latest ; \
+  echo &quot;PWD=$PWD&quot; &gt;&gt; $LOG.latest ; \
+  echo &quot;timeout -k15 900 cbmc --graphml-cex main.cex --unwind $c --no-unwinding-assertions $args&quot; &gt;&gt; $LOG.latest ; \
+  timeout -k15 900 cbmc --graphml-cex main.cex --unwind $c --no-unwinding-assertions $args &gt;&gt; $LOG.latest 2&gt;&amp;1 ; \
+  ec=$? ; \
+  if [ $ec -eq 0 ] ; then \
+    if ! tail -n 10 $LOG.latest | grep -q &quot;^VERIFICATION SUCCESSFUL$&quot; ; then ec=1 ; fi ; \
+  fi ; \
+  if [ $ec -eq 10 ] ; then \
+    if ! tail -n 10 $LOG.latest | grep -q &quot;^VERIFICATION FAILED$&quot; ; then ec=1 ; fi ; \
+  fi ; \
+\
+  case $ec in \
+    0) EC=0 ; mv $LOG.latest $LOG.ok ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ;; \
+    10) EC=10 ; mv $LOG.latest $LOG.ok ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ; break ;; \
+    *) if [ $EC -ne 0 ] ; then EC=$ec ; mv $LOG.latest $LOG.ok ; fi ; echo &quot;EC=$EC&quot; &gt;&gt; $LOG.ok ; break ;; \
+  esac ; \
+\
+done \
+&apos;
+
+if [ ! -s $LOG.ok ] ; then
+  exit 1
+fi
+
+eval `tail -n 1 $LOG.ok`
+cat $LOG.ok
+case $EC in
+  0) echo &quot;TRUE&quot; ;;
+  10) parse_result ;;
+  *) echo &quot;UNKNOWN&quot; ;;
+esac
+exit $EC
+EOF
+
+chmod a+x bin/inc.sh</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+#if [ $set != &quot;BitVectorsReach&quot; ] ; then
+#  exit 0
+#fi
+
+export PATH=$PWD/bin:$PATH
+export TMPDIR=$PWD
+ulimit -S -v 24000000
+
+category=$set
+case $set in
+  ArraysMemSafety) category=&quot;Arrays&quot; ;;
+  ArraysReach) category=&quot;Arrays&quot; ;;
+  BitVectorsOverflows) category=&quot;BitVectors&quot; ;;
+  BitVectorsReach) category=&quot;BitVectors&quot; ;;
+  BusyBox) category=&quot;SoftwareSystems&quot; ;;
+  ControlFlow) category=&quot;ControlFlowInteger&quot; ;;
+  DeviceDriversLinux64) category=&quot;SoftwareSystems&quot; ;;
+  ECA) category=&quot;ControlFlowInteger&quot; ;;
+  HeapMemSafety) category=&quot;HeapManipulation&quot; ;;
+  HeapReach) category=&quot;HeapManipulation&quot; ;;
+  Loops) category=&quot;ControlFlowInteger&quot; ;;
+  ProductLines) category=&quot;ControlFlowInteger&quot; ;;
+  Recursive) category=&quot;ControlFlowInteger&quot; ;;
+  Sequentialized) category=&quot;ControlFlowInteger&quot; ;;
+  Simple) category=&quot;ControlFlowInteger&quot; ;;
+esac
+
+echo &quot;Category: $category&quot;
+cd c/cprover-regr/$category
+
+for d in * ; do
+  echo &quot;Subset: $d&quot;
+  cd $d
+  echo &quot;CBMC trunk&quot;
+  #echo &quot;CBMC trunk, SV-COMP configuration w/ slice&quot;
+  #for b in * ; do
+  #  if [ -s /import/debian-mole/slice-profiling/sv-comp/*/$category/$d/$b/main-s.gb ] ; then
+  #    cp /import/debian-mole/slice-profiling/sv-comp/*/$category/$d/$b/main-s.gb $b/
+  #    sed -i &apos;2s/main.[ci]/main-s.gb/&apos; $b/test.desc
+  #  else
+  #    sed -i &apos;1s/CORE/KNOWNBUG/&apos; $b/test.desc
+  #  fi
+  #done
+  test.pl -j 8 -c &quot;timeout 900 inc.sh&quot;
+
+  #cd ..
+  #continue
+  cp -a /import/debian-mole/tools-from-svns/cpachecker/CPAchecker.svn/config/ .
+  for x in * ; do
+    if [ -s $x/main.cex ] ; then
+      sed -i &quot;s/main.c/$x\/main.c/&quot; $x/main.cex
+      if \
+      /import/debian-mole/tools-from-svns/cpachecker/CPAchecker.svn/scripts/cpa.sh -witness-validation \
+        -timelimit 90 \
+        -spec $x/main.cex \
+        -spec ../../../$d/ALL.prp \
+        $x/main.[ci] | \
+      grep &quot;^Verification result: FALSE&quot; ; then
+        echo &quot;$x: Witness confirmed by CPAchecker&quot;
+      else
+        echo &quot;$x: Witness NOT confirmed by CPAchecker&quot;
+      fi
+      continue
+
+      ec=0
+      if grep -q -- --32 $x/test.desc ; then
+        timeout -k15 90 cbmc --32 --verify-cex $x/main.cex $x/main.[ci] &gt; $x/verify.log || \
+          ec=$?
+      else
+        timeout -k15 90 cbmc --verify-cex $x/main.cex $x/main.[ci] &gt; $x/verify.log || \
+          ec=$?
+      fi
+      if [ $ec -eq 10 ] ; then
+        echo &quot;$x: Witness confirmed by CBMC&quot;
+      else
+        echo &quot;$x: Witness NOT confirmed by CBMC&quot;
+      fi
+    fi
+  done
+ 
+  cd ..
+  continue
+
+  rm -f tests.log 
+  echo &quot;Experimental configurations&quot;
+
+  for d in * ; do
+    sed -i &apos;3s/^/--graphml-cex main.cex /&apos; $d/test.desc
+  done
+
+  echo &quot;CBMC with GraphML counter examples&quot;
+  mv ../../../bin/cbmc ../../../bin/cbmc-trunk
+  mv ../../../bin/cbmc-graphml-cex ../../../bin/cbmc
+  test.pl -j 4 -c &quot;timeout 900 inc.sh&quot;
+  mv ../../../bin/cbmc ../../../bin/cbmc-graphml-cex
+  mv ../../../bin/cbmc-trunk ../../../bin/cbmc
+ 
+  rm -f tests.log 
+
+  for d in * ; do
+    sed -i &apos;3s/^--graphml-cex main.cex //&apos; $d/test.desc
+  done
+ 
+  echo &quot;Building goto binaries&quot; 
+  for d in * ; do
+    if grep -q -- --32 $d/test.desc ; then
+      goto-cc -m32 $d/main.[ci] -o $d/main.gb
+    else
+      goto-cc $d/main.[ci] -o $d/main.gb
+    fi
+  done
+
+  for d in * ; do
+    ec=0
+    /usr/bin/time -v timeout -k15 900 goto-instrument-slicing --add-library --full-slice $d/main.gb $d/main.slice.gb || ec=$?
+    if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+      rm -f $d/main.slice.gb
+      echo &quot;TIMEOUT&quot;
+    elif [ $ec -eq 11 ] ; then
+      # Out of memory
+      rm -f $d/main.slice.gb
+    elif [ $ec -ne 0 ] ; then
+      exit 1
+    fi
+    if [ -f $d/main.slice.gb ] ; then
+      goto-instrument-slicing --count-eloc $d/main.gb
+      goto-instrument-slicing --count-eloc $d/main.slice.gb
+    fi
+
+    ec=0
+    ##/usr/bin/time -v timeout -k15 900 goto-instrument --accelerate --z3 $d/main.gb $d/main.accel.gb || ec=$?
+    if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+      rm -f $d/main.accel.gb
+      echo &quot;TIMEOUT&quot;
+    elif [ $ec -eq 11 ] ; then
+      # Out of memory
+      rm -f $d/main.accel.gb
+    elif [ $ec -ne 0 ] ; then
+      exit 1
+    fi
+  done
+
+  for d in * ; do
+    if [ -f $d/main.slice.gb ] ; then
+      sed -i &apos;2s/main.[ci]/main.slice.gb/&apos; $d/test.desc
+    else
+      sed -i &apos;1s/CORE/KNOWNBUG/&apos; $d/test.desc
+    fi
+  done
+
+  test.pl -j 4 -c &quot;timeout 900 inc.sh&quot;
+
+  cd ..
+done
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.4">
+      <includes>JOB-prepare-binaries-master/workspace/trunk-cbmc,JOB-prepare-binaries-master/workspace/extended-propagation-cbmc</includes>
+      <excludes></excludes>
+      <flatten>false</flatten>
+      <includeAntExcludes>false</includeAntExcludes>
+      <hudsonHomeRelative>false</hudsonHomeRelative>
+      <relativeTo>somewhereElse</relativeTo>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

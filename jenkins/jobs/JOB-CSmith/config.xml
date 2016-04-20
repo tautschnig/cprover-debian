@@ -1,0 +1,170 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <logRotator class="hudson.tasks.LogRotator">
+    <daysToKeep>-1</daysToKeep>
+    <numToKeep>5</numToKeep>
+    <artifactDaysToKeep>-1</artifactDaysToKeep>
+    <artifactNumToKeep>-1</artifactNumToKeep>
+  </logRotator>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.1">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.0">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/csmith-project/csmith.git</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir>csmith.git</relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+    </extensions>
+  </scm>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+if [ ! -e csmith.git/Makefile ] ; then
+  cd csmith.git
+  ./configure
+  cd ..
+fi
+
+cd csmith.git
+make
+</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+CS_HOME=$PWD/csmith.git
+
+csmith_test() {
+  local conf=$1
+  local f=$2
+  local r=$(&lt;JOB-prepare-binaries-master/workspace/SVN_REV)
+  local bn=`basename $f`
+  bn=`basename $bn .c`
+
+  echo &quot;Trying $f with build $r+$conf&quot;
+  conf=&quot;JOB-prepare-binaries-master/workspace/$conf&quot;
+
+  gcc -I$CS_HOME/runtime -w $f -o $bn
+  check=&quot;`timeout 30 ./$bn | sed &apos;s/checksum = /0x/&apos;`&quot;
+  if [ -z &quot;$check&quot; ] ; then
+    echo &quot;TIMEOUT while executing CSmith test&quot;
+    return 0
+  fi
+
+  gcc -E -I$CS_HOME/runtime -D__FRAMAC \
+    -D&apos;Frama_C_dump_assert_each()&apos;=&quot;assert($check==(crc))&quot; $f -o $bn.i
+  ec=0
+  /usr/bin/time -v timeout -k15 90 $conf-cbmc --unwind 257 --no-unwinding-assertions $bn.i --verbosity 6 || ec=$?
+  if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+    echo &quot;TIMEOUT in CBMC&quot;
+  elif [ $ec -ne 0 ] ; then
+    return 1
+  fi
+
+  # debugging:
+  ##    --no-unary-plus-operator --no-post-decr-operator --no-post-incr-operator \
+  ##    --no-pre-decr-operator --no-pre-incr-operator --no-embedded-assigns \
+  ##    --no-inline-function --no-jumps \
+  ##    --no-compound-assignment --no-comma-operators \
+  ##    --no-arrays \
+  ##    --no-uint8 --no-int8 \
+  ###    --no-const-pointers --no-volatile-pointers --no-volatiles \
+  ###    --no-muls --no-divs \
+  ####    --no-pointers --no-math64 \
+  #####    --no-unions \
+  #####    --no-structs \
+  ######    --no-consts \
+
+  $conf-goto-cc -I $CS_HOME/runtime $f -o $bn
+  $conf-goto-instrument --dump-c $bn ${bn}_dumped.c
+  gcc ${bn}_dumped.c -w -o $bn
+  check_d=&quot;`timeout 30 ./$bn | sed &apos;s/checksum = /0x/&apos;`&quot;
+  if [ -z &quot;$check_d&quot; ] ; then
+    echo &quot;TIMEOUT while executing dumped CSmith test&quot;
+    return 0
+  fi
+  if [ &quot;$check&quot; != &quot;$check_d&quot; ] ; then
+    echo &quot;Checksum mismatch: GCC: $check dump-c: $check_d&quot;
+    return 1
+  fi
+
+  echo &quot;OK: $f&quot;
+  echo
+}
+
+CONFIGS=&quot;`ls JOB-prepare-binaries-master/workspace/*-cbmc | xargs -n1 basename | sed &apos;s/-cbmc$//&apos;`&quot;
+
+csmith_fixed_test() {
+  for f in /import/debian-mole/csmith-tests/* ; do
+    for c in $CONFIGS ; do
+      csmith_test $c $f
+    done
+  done
+}
+
+csmith_random_test() {
+  for i in `seq 1 20`; do
+    $CS_HOME/src/csmith &gt; t_$i.c
+     for c in $CONFIGS ; do
+      csmith_test $c t_$i.c
+    done
+  done
+}
+
+csmith_fixed_test
+csmith_random_test
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.5">
+      <before>true</before>
+      <behind>false</behind>
+    </de.jamba.hudson.plugin.wsclean.PrePostClean>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.4">
+      <includes>JOB-prepare-binaries-master/workspace/SVN_REV,JOB-prepare-binaries-master/workspace/*-cbmc,JOB-prepare-binaries-master/workspace/*-goto-cc,JOB-prepare-binaries-master/workspace/*-goto-instrument</includes>
+      <excludes>JOB-prepare-binaries-master/workspace/profiling-*</excludes>
+      <flatten>false</flatten>
+      <includeAntExcludes>false</includeAntExcludes>
+      <hudsonHomeRelative>false</hudsonHomeRelative>
+      <relativeTo>somewhereElse</relativeTo>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+  </buildWrappers>
+</project>

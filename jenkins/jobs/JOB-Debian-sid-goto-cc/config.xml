@@ -1,0 +1,81 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.1">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs>sid-goto-cc-.*</blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.15">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.39">
+      <scriptText>def disabled_map = [:]
+def r = new File(&quot;/srv/mt/jenkins/jobs/JOB-Debian-sid/workspace/from_udd&quot;)
+r.eachLine { l -&gt;
+  def m = l =~ /^([^;]+);(.*)$/
+  disabled_map.put(m[0][1], m[0][2])
+}
+
+def f = new File(&quot;/srv/mt/jenkins/jobs/JOB-Debian-sid/workspace/list.sid.amd64&quot;)
+
+f.eachLine() {
+  def pkgName = it
+  def d_desc = disabled_map[&quot;${pkgName}&quot;]
+  def is_disabled = d_desc!=null &amp;&amp; !(d_desc =~ /, proposed patch$/)
+  d_desc = d_desc==null ? &quot;&quot; : d_desc
+
+  job(&quot;sid-goto-cc-${pkgName}&quot;) {
+    using &quot;JOB-Debian-sid-goto-cc-TMPL&quot;
+    description(d_desc)
+    disabled(is_disabled)
+
+    wrappers {
+      environmentVariables {
+        env(&quot;PKG&quot;, &quot;${pkgName}&quot;)
+      }
+    }
+    publishers {
+      if(!is_disabled) allowBrokenBuildClaiming()
+      downstream(&quot;sid-analysis-${pkgName}&quot;)
+    }
+  }
+}</scriptText>
+      <usingScriptText>true</usingScriptText>
+      <ignoreExisting>false</ignoreExisting>
+      <removedJobAction>DISABLE</removedJobAction>
+      <removedViewAction>IGNORE</removedViewAction>
+      <lookupStrategy>JENKINS_ROOT</lookupStrategy>
+      <additionalClasspath></additionalClasspath>
+    </javaposse.jobdsl.plugin.ExecuteDslScripts>
+  </builders>
+  <publishers>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>JOB-Debian-sid-analysis</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<scriptApproval plugin="script-security@1.18">
+  <approvedScriptHashes>
+    <string>221b908c968f4836495960de265aa36bd784bf75</string>
+    <string>64ee5f006042ca5dacc2181c39f2e77a2a528fc3</string>
+    <string>88625ddb85c68800fac91924d308da1ad86d2d34</string>
+    <string>8942f1f290b5cce716fddd62757b42ee407e473c</string>
+    <string>8e4cf8855d212ba940ddd8530fc9804e1e8b570f</string>
+    <string>9125c7dd07def695e40270a5b04d6cc02935b0a7</string>
+    <string>bad3d55c897bd42826724545205079b0378a1d24</string>
+    <string>d4a8310d722aa9103b5adcec65f206387c619b3f</string>
+    <string>d548b032e02a436a0a1418ec6f68f4c82c416a78</string>
+    <string>e52c0bc7d6b5d9ea72a28b06cebe459703fbd025</string>
+    <string>e5a8e7e1490975419859cc19da5b8fa53a3d0e53</string>
+  </approvedScriptHashes>
+  <approvedSignatures>
+    <string>method org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder$BadgeManager getHudson</string>
+  </approvedSignatures>
+  <aclApprovedSignatures/>
+  <approvedClasspathEntries/>
+  <pendingScripts/>
+  <pendingSignatures/>
+  <pendingClasspathEntries/>
+</scriptApproval>

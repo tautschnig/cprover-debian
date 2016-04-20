@@ -1,0 +1,208 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>3</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.3">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.16.1">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+# copied/modified from /usr/share/doc/pbuilder/examples/rebuild/buildall
+
+DIST=sid
+MIRROR=ftp://ftp.uk.debian.org
+
+BUILDDIR=$WORKSPACE
+BASEPATH=&quot;/srv/sid-base.cow&quot;
+Sources=/srv/jenkins-slave/workspace/JOB-prepare-binaries-chroots/label/$NODE_NAME/JOB-Debian-sid/workspace/Sources
+
+function print_bugreport_template {
+  local pkg=&quot;$1&quot;
+  local ver=&quot;$2&quot;
+
+cat &lt;&lt;EOF
+To: submit@bugs.debian.org
+Subject: $pkg: 
+
+Package: $pkg
+Version: $ver
+Usertags: goto-cc
+
+During a rebuild of all Debian packages in a clean sid chroot (using cowbuilder
+and pbuilder) the build failed with the following error. Please note that we
+use our research compiler tool-chain (using tools from the cbmc package), which
+permits extended reporting on type inconsistencies at link time.
+
+http://sources.debian.net/src/$pkg/$ver/
+http://packages.qa.debian.org/$pkg
+EOF
+
+}
+
+function build {
+    PACKAGE=$1
+
+    rm -rf $BUILDDIR/* $BUILDDIR/.[a-zA-Z]*
+
+    G=$(grep-dctrl -S -n -s Directory,Version -r ^$PACKAGE$ $Sources | tail -n 3)
+    set -- $G
+    DIR=$1
+    export FULLVER=$2
+    VER=`echo $FULLVER | sed s/^.*://`
+    umask 0022; export DEB_VENDOR=Debian; dget -u -x ${MIRROR}/debian/${DIR}/${PACKAGE}_${VER}.dsc
+    cd $(find . -type d ! -name .)
+    retval=0
+    if [ -d /import/debian-mole/debian-builds/patch-candidates/$PACKAGE ] ; then
+      for p in /import/debian-mole/debian-builds/patch-candidates/$PACKAGE/* ; do
+        if patch -p1 --dry-run &lt; $p ; then
+          patch -p1 &lt; $p
+        else
+          retval=1
+          break
+        fi
+      done
+    fi
+    if [ $retval -eq 0 ] ; then
+      mkdir -p $BUILDDIR/result
+      export DEB_BUILD_OPTIONS=&quot;nostrip noopt&quot;
+      export -n DISPLAY PKG HUDSON_URL
+      pdebuild --pbuilder cowbuilder --use-pdebuild-internal --buildresult $BUILDDIR/result/ -- --basepath $BASEPATH
+      retval=$?
+    fi
+
+    #sloccount --duplicates --wide --details . &gt; $BUILDDIR/../JOB-Debian-sloccount/$PACKAGE-sloccount.sc
+
+    if [ $retval -eq 0 ] ; then
+      cp debian/copyright $BUILDDIR/goto-binaries/
+      cd $BUILDDIR
+      echo &quot;Package: $PACKAGE&quot; &gt; goto-binaries/control
+      echo &quot;Version: $FULLVER&quot; &gt;&gt; goto-binaries/control
+      echo &quot;Goto-CC-Date: `date -r $BASEPATH/usr/bin/goto-cc`&quot; &gt;&gt; goto-binaries/control
+      echo &quot;Goto-CC-MD5Sum: `md5sum $BASEPATH/usr/bin/goto-cc | awk &apos;{ print $1 }&apos;`&quot; &gt;&gt; goto-binaries/control
+      rm -rf $PACKAGE-* *.deb
+      if [ -d goto-binaries ] ; then tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; fi
+    else
+      print_bugreport_template &quot;$PACKAGE&quot; &quot;$FULLVER&quot;
+    fi
+
+    return $retval
+}
+
+build $PKG</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier plugin="copy-to-slave@1.4.4">
+      <includes>goto-binaries.tar.bz2,result/*.deb</includes>
+      <excludes></excludes>
+      <overrideDestinationFolder>false</overrideDestinationFolder>
+      <destinationFolder></destinationFolder>
+      <runAfterResultFinalised>false</runAfterResultFinalised>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier>
+    <hudson.plugins.warnings.WarningsPublisher plugin="warnings@4.51">
+      <healthy></healthy>
+      <unHealthy></unHealthy>
+      <thresholdLimit>low</thresholdLimit>
+      <pluginName>[WARNINGS] </pluginName>
+      <defaultEncoding></defaultEncoding>
+      <canRunOnFailed>true</canRunOnFailed>
+      <usePreviousBuildAsReference>false</usePreviousBuildAsReference>
+      <useStableBuildAsReference>false</useStableBuildAsReference>
+      <useDeltaValues>false</useDeltaValues>
+      <thresholds plugin="analysis-core@1.75">
+        <unstableTotalAll></unstableTotalAll>
+        <unstableTotalHigh></unstableTotalHigh>
+        <unstableTotalNormal></unstableTotalNormal>
+        <unstableTotalLow></unstableTotalLow>
+        <unstableNewAll></unstableNewAll>
+        <unstableNewHigh></unstableNewHigh>
+        <unstableNewNormal></unstableNewNormal>
+        <unstableNewLow></unstableNewLow>
+        <failedTotalAll></failedTotalAll>
+        <failedTotalHigh></failedTotalHigh>
+        <failedTotalNormal></failedTotalNormal>
+        <failedTotalLow></failedTotalLow>
+        <failedNewAll></failedNewAll>
+        <failedNewHigh></failedNewHigh>
+        <failedNewNormal></failedNewNormal>
+        <failedNewLow></failedNewLow>
+      </thresholds>
+      <shouldDetectModules>false</shouldDetectModules>
+      <dontComputeNew>true</dontComputeNew>
+      <doNotResolveRelativePaths>true</doNotResolveRelativePaths>
+      <includePattern></includePattern>
+      <excludePattern></excludePattern>
+      <messagesPattern></messagesPattern>
+      <parserConfigurations/>
+      <consoleParsers>
+        <hudson.plugins.warnings.ConsoleParser>
+          <parserName>GNU C Compiler 4 (gcc)</parserName>
+        </hudson.plugins.warnings.ConsoleParser>
+      </consoleParsers>
+    </hudson.plugins.warnings.WarningsPublisher>
+    <com.chikli.hudson.plugin.naginator.NaginatorPublisher plugin="naginator@1.16.1">
+      <regexpForRerun>(.*at hudson\.model\.FreeStyleBuild\.run.*)|(.*curl: \(28\) Timeout was reached)</regexpForRerun>
+      <rerunIfUnstable>false</rerunIfUnstable>
+      <rerunMatrixPart>false</rerunMatrixPart>
+      <checkRegexp>true</checkRegexp>
+      <regexpForMatrixParent>false</regexpForMatrixParent>
+      <delay class="com.chikli.hudson.plugin.naginator.ProgressiveDelay">
+        <increment>300</increment>
+        <max>10800</max>
+      </delay>
+      <maxSchedule>2</maxSchedule>
+    </com.chikli.hudson.plugin.naginator.NaginatorPublisher>
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.28">
+      <deleteDirs>false</deleteDirs>
+      <skipWhenFailed>false</skipWhenFailed>
+      <cleanWhenSuccess>true</cleanWhenSuccess>
+      <cleanWhenUnstable>true</cleanWhenUnstable>
+      <cleanWhenFailure>true</cleanWhenFailure>
+      <cleanWhenNotBuilt>true</cleanWhenNotBuilt>
+      <cleanWhenAborted>true</cleanWhenAborted>
+      <notFailBuild>false</notFailBuild>
+      <cleanupMatrixParent>false</cleanupMatrixParent>
+      <externalDelete></externalDelete>
+    </hudson.plugins.ws__cleanup.WsCleanup>
+  </publishers>
+  <buildWrappers>
+    <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.5">
+      <before>true</before>
+      <behind>false</behind>
+    </de.jamba.hudson.plugin.wsclean.PrePostClean>
+    <EnvInjectBuildWrapper plugin="envinject@1.92.1">
+      <info>
+        <loadFilesFromMaster>false</loadFilesFromMaster>
+      </info>
+    </EnvInjectBuildWrapper>
+  </buildWrappers>
+</project>

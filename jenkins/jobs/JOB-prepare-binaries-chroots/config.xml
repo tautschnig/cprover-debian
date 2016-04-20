@@ -1,0 +1,119 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<matrix-project plugin="matrix-project@1.6">
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>true</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs>sid-goto-cc-.*</blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.14.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.17">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <canRoam>true</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <axes>
+    <hudson.matrix.LabelAxis>
+      <name>label</name>
+      <values>
+        <string>mt-farm01</string>
+        <string>mt-farm02</string>
+        <string>mt-farm03</string>
+        <string>mt-farm04</string>
+        <string>mt-farm05</string>
+      </values>
+    </hudson.matrix.LabelAxis>
+  </axes>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+cow_base=/srv/sid-base.cow
+
+real_gcc=`readlink -f $cow_base/usr/bin/gcc`
+if [ ! -f &quot;$real_gcc&quot; ] ; then
+  echo &quot;GCC not found&quot;
+  exit 1
+elif ! file $real_gcc | grep -q &quot;Bourne-Again shell script&quot; ; then
+  echo &quot;gcc is not a script&quot;
+  exit 1
+fi
+
+real_ld=`readlink -f $cow_base/usr/bin/ld`
+if [ ! -f &quot;$real_ld&quot; ] ; then
+  echo &quot;ld not found&quot;
+  exit 1
+elif ! file $real_ld | grep -q &quot;Bourne-Again shell script&quot; ; then
+  echo &quot;ld is not a script&quot;
+  exit 1
+fi
+
+real_gcc_chroot=&quot;`echo $real_gcc | sed &quot;s#^$cow_base##&quot;`&quot;
+real_ld_chroot=&quot;`echo $real_ld | sed &quot;s#^$cow_base##&quot;`&quot;
+
+export BUILDPLACE=/srv/jenkins-slave/cow
+
+echo &quot; \
+mv $real_gcc_chroot $real_gcc_chroot.goto-cc ; \
+mv $real_gcc_chroot.orig $real_gcc_chroot ; \
+mv $real_ld_chroot $real_ld_chroot.goto-cc ; \
+mv $real_ld_chroot.orig $real_ld_chroot ; \
+exit&quot; | \
+  sudo cowbuilder --login --save-after-login \
+    --aptcache /srv/jenkins-slave/aptcache --basepath $cow_base
+
+sudo cowbuilder --update \
+  --aptcache /srv/jenkins-slave/aptcache --basepath $cow_base
+
+echo &quot; \
+mv $real_gcc_chroot $real_gcc_chroot.orig ; \
+mv $real_gcc_chroot.goto-cc $real_gcc_chroot ; \
+mv $real_ld_chroot $real_ld_chroot.orig ; \
+mv $real_ld_chroot.goto-cc $real_ld_chroot ; \
+exit&quot; | \
+  sudo cowbuilder --login --save-after-login \
+    --aptcache /srv/jenkins-slave/aptcache \
+    --basepath $cow_base
+
+if ! file `readlink -f /srv/sid-base.cow/usr/bin/gcc` | grep -q &quot;Bourne-Again shell script&quot; ; then
+  echo &quot;gcc is not a script, update may have replaced gcc&quot;
+  exit 1
+fi
+
+if ! file `readlink -f /srv/sid-base.cow/usr/bin/ld` | grep -q &quot;Bourne-Again shell script&quot; ; then
+  echo &quot;ld is not a script, update may have replaced ld&quot;
+  exit 1
+fi
+
+cp JOB-prepare-binaries-master/workspace/debian-builds-goto-cc /srv/sid-base.cow/usr/bin/goto-cc</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers/>
+  <buildWrappers>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper plugin="copy-to-slave@1.4.4">
+      <includes>JOB-Debian-sid/workspace/Sources,JOB-prepare-binaries-master/workspace/debian-builds-goto-cc</includes>
+      <excludes></excludes>
+      <flatten>false</flatten>
+      <includeAntExcludes>false</includeAntExcludes>
+      <hudsonHomeRelative>false</hudsonHomeRelative>
+      <relativeTo>somewhereElse</relativeTo>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToSlaveBuildWrapper>
+  </buildWrappers>
+  <executionStrategy class="hudson.matrix.DefaultMatrixExecutionStrategyImpl">
+    <runSequentially>false</runSequentially>
+  </executionStrategy>
+</matrix-project>

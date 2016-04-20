@@ -1,0 +1,219 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.14.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.17">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/sh
+
+set -e
+
+DIST=sid
+
+BUILD_ARCH=amd64
+MIRROR=ftp://ftp.uk.debian.org
+
+if [ -z $DIST ]; then
+  echo &quot;No distribution given.&quot;
+  exit 1
+fi
+
+wget -q ${MIRROR}/debian/dists/$DIST/main/source/Sources.gz -O Sources.main.gz
+wget -q ${MIRROR}/debian/dists/$DIST/contrib/source/Sources.gz -O Sources.contrib.gz
+zcat Sources.main.gz Sources.contrib.gz &gt; Sources
+
+grep -E &quot;^Package|^Architecture|^$&quot; Sources | paste -s -d &quot;=&quot; | sed &quot;s/==/\n/g&quot; | sed &quot;s/=/ /g&quot; | cut -d &quot; &quot; -f 2,4- &gt; list.$DIST
+grep -E &quot; all| linux-any| any| $BUILD_ARCH&quot; list.$DIST | cut -d &quot; &quot; -f 1 &gt; list.$DIST.$BUILD_ARCH
+
+rm -f Sources.main.gz Sources.contrib.gz
+
+#cp /usr/share/doc/pbuilder/examples/rebuild/getlist .
+#sed -i &apos;s#any#linux-any| any#&apos; getlist
+#sed -i &apos;s#^MIRROR=.*$#MIRROR=ftp://ftp.uk.debian.org#&apos; getlist
+#./getlist wheezy
+
+#cp list.$DIST.amd64 list.$DIST.amd64-short
+#sed -i &apos;/^[a-z]/d&apos; list.$DIST.amd64-short
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@2.3.1">
+      <script plugin="script-security@1.18">
+        <script>manager.hudson.class.classLoader.addURL(new URL(&quot;file:///usr/share/java/postgresql-jdbc4.jar&quot;))
+
+import groovy.sql.Sql;
+
+def sql = Sql.newInstance(&quot;jdbc:postgresql://public-udd-mirror.xvm.mit.edu:5432/udd&quot;, &quot;public-udd-mirror&quot;, &quot;public-udd-mirror&quot;, &quot;org.postgresql.Driver&quot;)
+
+def check_res = \
+sql.firstRow(&quot;SELECT count(*) \
+                   FROM bugs INNER JOIN bugs_usertags USING (id) \
+                   WHERE bugs_usertags.email = &apos;mt@debian.org&apos; AND bugs_usertags.tag = &apos;goto-cc&apos;&quot;)
+assert check_res.count != null &amp;&amp; check_res.count &gt; 0, &apos;Could not select any bug reports&apos;
+
+def rc_buggy = [:]
+sql.eachRow(&quot;SELECT id, bugs.source AS source FROM bugs, popcon_src \
+                    WHERE bugs.source = popcon_src.source AND severity &gt;= &apos;serious&apos; AND done = &apos;&apos; \
+                    ORDER BY source&quot;) {
+  row -&gt; rc_buggy.put(row.source, &quot;Known RC bug #${row.id}&quot;)
+}
+
+def reported = [:]
+sql.eachRow(&quot;SELECT id, bugs.source AS source \
+                     FROM bugs INNER JOIN bugs_usertags USING (id) WHERE \
+                     bugs_usertags.email = &apos;mt@debian.org&apos; AND bugs_usertags.tag = &apos;goto-cc&apos; AND bugs.done = &apos;&apos; \
+                     ORDER BY source&quot;) {
+  row -&gt; reported.put(row.source, &quot;Reported #${row.id}&quot;)
+}
+
+def disabled_map = [ 
+  &apos;cmucl&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;cross-gcc-4.9-mips&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;cross-gcc-4.9-mipsel&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;cross-gcc-4.9-powerpc&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;fuse4bsd&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;google-android-build-tools-installer&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;gnumach&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;hurd&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;kfreebsd-defaults&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;mig&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;mit-scheme&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;mozart&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;mozart-stdlib&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;nyquist&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;oaklisp&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;openbios-ppc&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;openbios-sparc&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;openhackware&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;pixbros&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;pixfrogger&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;proll&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;scsh-0.6&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;scsh-install-lib&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;slof&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;wine-gecko-1.4&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;wine-gecko-2.21&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;wine-gecko-2.24&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;wireless-regdb&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;xserver-xorg-video-geode&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;zsnes&apos;:&apos;not-for-us [amd64]&apos;,
+  &apos;aqualung&apos;:&apos;Nested functions&apos;,
+  &apos;asterisk&apos;:&apos;Nested functions&apos;,
+  &apos;auto-multiple-choice&apos;:&apos;Nested functions&apos;,
+  &apos;bogl&apos;:&apos;Nested functions&apos;,
+  &apos;cadabra&apos;:&apos;Nested functions&apos;,
+  &apos;calcurse&apos;:&apos;Nested functions&apos;,
+  &apos;clutter-gesture&apos;:&apos;Nested functions&apos;,
+  &apos;elfutils&apos;:&apos;Nested functions&apos;,
+  &apos;ffindex&apos;:&apos;Nested functions&apos;,
+  &apos;filters&apos;:&apos;Nested functions&apos;,
+  &apos;freedroidrpg&apos;:&apos;Nested functions&apos;,
+  &apos;gambas3&apos;:&apos;Nested functions&apos;,
+  &apos;gerris&apos;:&apos;Nested functions&apos;,
+  &apos;gimp-plugin-registry&apos;:&apos;Nested functions&apos;,
+  &apos;gmysqlcc&apos;:&apos;Nested functions&apos;,
+  &apos;gpe-calendar&apos;:&apos;Nested functions&apos;,
+  &apos;gpm&apos;:&apos;Nested functions&apos;,
+  &apos;gpsdrive&apos;:&apos;Nested functions&apos;,
+  &apos;grub&apos;:&apos;Nested functions&apos;,
+  &apos;gsequencer&apos;:&apos;Nested functions&apos;,
+  &apos;gst-plugins-espea&apos;:&apos;Nested functions&apos;,
+  &apos;gwc&apos;:&apos;Nested functions&apos;,
+  &apos;i3blocks&apos;:&apos;Nested functions&apos;,
+  &apos;idjc&apos;:&apos;Nested functions&apos;,
+  &apos;kraptor&apos;:&apos;Nested functions&apos;,
+  &apos;lasso&apos;:&apos;Nested functions&apos;,
+  &apos;libeventdb&apos;:&apos;Nested functions&apos;,
+  &apos;libgpevtype&apos;:&apos;Nested functions&apos;,
+  &apos;libhandoff&apos;:&apos;Nested functions&apos;,
+  &apos;libhdate&apos;:&apos;Nested functions&apos;,
+  &apos;libsx&apos;:&apos;Nested functions&apos;,
+  &apos;lintian&apos;:&apos;Nested functions&apos;,
+  &apos;litl&apos;:&apos;Nested functions&apos;,
+  &apos;luvcview&apos;:&apos;Nested functions&apos;,
+  &apos;lxc&apos;:&apos;Nested functions&apos;,
+  &apos;mandos&apos;:&apos;Nested functions&apos;,
+  &apos;matchbox-panel&apos;:&apos;Nested functions&apos;,
+  &apos;mcdp&apos;:&apos;Nested functions&apos;,
+  &apos;med-fichier&apos;:&apos;Nested functions&apos;,
+  &apos;ncpfs&apos;:&apos;Nested functions&apos;,
+  &apos;netplug&apos;:&apos;Nested functions&apos;,
+  &apos;openrc&apos;:&apos;Nested functions&apos;,
+  &apos;p3scan&apos;:&apos;Nested functions&apos;,
+  &apos;partconf&apos;:&apos;Nested functions&apos;,
+  &apos;paxtest&apos;:&apos;Nested functions&apos;,
+  &apos;pdp&apos;:&apos;Nested functions&apos;,
+  &apos;proot&apos;:&apos;Nested functions&apos;,
+  &apos;qxw&apos;:&apos;Nested functions&apos;,
+  &apos;rainbow&apos;:&apos;Nested functions&apos;,
+  &apos;ratpoints&apos;:&apos;Nested functions&apos;,
+  &apos;rawstudio&apos;:&apos;Nested functions&apos;,
+  &apos;reprepro&apos;:&apos;Nested functions&apos;,
+  &apos;rsh-redone&apos;:&apos;Nested functions&apos;,
+  &apos;slurm-llnl&apos;:&apos;Nested functions&apos;,
+  &apos;smbc&apos;:&apos;Nested functions&apos;,
+  &apos;spl&apos;:&apos;Nested functions&apos;,
+  &apos;systemtap&apos;:&apos;Nested functions&apos;,
+  &apos;upstart&apos;:&apos;Nested functions&apos;,
+  &apos;w-scan&apos;:&apos;Nested functions&apos;,
+  &apos;win32-loader&apos;:&apos;Nested functions&apos;,
+  &apos;wmaker&apos;:&apos;Nested functions&apos;,
+  &apos;xneur&apos;:&apos;Nested functions&apos;,
+  &apos;zvbi&apos;:&apos;Nested functions&apos;
+]
+
+disabled_map &lt;&lt; rc_buggy &lt;&lt; reported
+
+new File(&quot;/import/debian-mole/debian-builds/patch-candidates&quot;).eachFile() { file-&gt;
+  str = disabled_map.getAt(file.getName())
+  if(str==null) str=&quot;see claim&quot;
+  disabled_map[file.getName()]=str+&quot;, proposed patch&quot;
+}
+
+def f = new File(manager.build.workspace.getRemote() + &quot;/from_udd&quot;)
+f.withWriter{ out -&gt;
+  disabled_map.each {k, v -&gt; out.println &quot;${k};${v}&quot;}
+}
+
+  </script>
+        <sandbox>false</sandbox>
+      </script>
+      <behavior>2</behavior>
+      <runForMatrixParent>false</runForMatrixParent>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>JOB-Debian-sid-goto-cc, JOB-Debian-sid-needs-build, JOB-prepare-binaries-master</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers/>
+</project>

@@ -1,0 +1,184 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.3">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <jenkins.model.BuildDiscarderProperty>
+      <strategy class="hudson.tasks.LogRotator">
+        <daysToKeep>-1</daysToKeep>
+        <numToKeep>5</numToKeep>
+        <artifactDaysToKeep>-1</artifactDaysToKeep>
+        <artifactNumToKeep>-1</artifactNumToKeep>
+      </strategy>
+    </jenkins.model.BuildDiscarderProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.14.0">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.17">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.plugins.git.GitSCM" plugin="git@2.4.4">
+    <configVersion>2</configVersion>
+    <userRemoteConfigs>
+      <hudson.plugins.git.UserRemoteConfig>
+        <url>https://github.com/diffblue/cbmc</url>
+      </hudson.plugins.git.UserRemoteConfig>
+    </userRemoteConfigs>
+    <branches>
+      <hudson.plugins.git.BranchSpec>
+        <name>*/master</name>
+      </hudson.plugins.git.BranchSpec>
+    </branches>
+    <doGenerateSubmoduleConfigurations>false</doGenerateSubmoduleConfigurations>
+    <submoduleCfg class="list"/>
+    <extensions>
+      <hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+        <relativeTargetDir>cbmc-trunk</relativeTargetDir>
+      </hudson.plugins.git.extensions.impl.RelativeTargetDirectory>
+      <hudson.plugins.git.extensions.impl.CleanBeforeCheckout/>
+    </extensions>
+  </scm>
+  <assignedNode>SID_CHROOT</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>true</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+if [ ! -d cbmc-trunk/minisat-2.2.1 ] ; then
+  cd cbmc-trunk/src
+  make minisat2-download
+  make -C solvers ../../minisat-2.2.1/minisat/simp/SimpSolver.o ../../minisat-2.2.1/minisat/core/Solver.o
+  cd ../../
+fi
+
+if [ ! -d cbmc-trunk/glucose-syrup ] ; then
+  cd cbmc-trunk/src
+  make glucose-download
+  make -C solvers MINISAT2=&quot;&quot; GLUCOSE=../../glucose-syrup ../../glucose-syrup/simp/SimpSolver.o ../../glucose-syrup/core/Solver.o
+  cd ../../
+fi</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+for b in cbmc goto-instrument goto-cc ; do
+  rm -f *-$b
+done
+
+svn info cbmc-trunk | grep &apos;^Revision:&apos; | awk &apos;{ print $2 }&apos; &gt; SVN_REV</command>
+    </hudson.tasks.Shell>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+apply_patches()
+{
+  local src=$1
+
+  # will fail if permissions are wrong
+  ls $src/patches/
+  for p in `ls $src/patches/` ; do
+    if patch -p1 --dry-run &lt; $src/patches/$p ; then
+      patch -p1 &lt; $src/patches/$p
+    else
+      echo &quot;Failed to apply $p&quot;
+      return 1
+    fi
+  done
+
+  return 0
+}
+
+unapply_patches()
+{
+  local src=$1
+
+  for p in `ls -r $src/patches/` ; do
+    if patch -p1 -R --dry-run &lt; $src/patches/$p ; then
+      patch -p1 -R &lt; $src/patches/$p
+    else
+      echo &quot;Failed to unapply $p&quot;
+      return 1
+    fi
+  done
+
+  return 0
+}
+
+cd cbmc-trunk
+
+for d in /import/debian-mole/cbmc-patch-sets/* ; do
+  bn=`basename $d`
+  echo &quot;Building $d&quot;
+  [ ! -d $d/patches ] || apply_patches $d
+  cd src
+  make clean
+  if [ -s $d/BUILD ] ; then
+    . $d/BUILD
+  else
+    make -j16
+  fi
+  cd ..
+  [ ! -d $d/patches ] || unapply_patches $d
+  for b in cbmc goto-instrument goto-cc ; do
+    if [ -e src/$b/$b ] ; then
+      cp src/$b/$b ../$bn-$b
+    fi
+  done
+done
+</command>
+    </hudson.tasks.Shell>
+  </builders>
+  <publishers>
+    <org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder plugin="groovy-postbuild@2.3.1">
+      <script plugin="script-security@1.18">
+        <script>new File(&quot;/srv/mt/jenkins/jobs/JOB-prepare-binaries-master/workspace&quot;).eachFile() {
+  f -&gt; f.delete()
+}</script>
+        <sandbox>false</sandbox>
+      </script>
+      <behavior>2</behavior>
+      <runForMatrixParent>false</runForMatrixParent>
+    </org.jvnet.hudson.plugins.groovypostbuild.GroovyPostbuildRecorder>
+    <com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier plugin="copy-to-slave@1.4.4">
+      <includes>SVN_REV, *-cbmc, *-goto-cc, *-goto-instrument</includes>
+      <excludes></excludes>
+      <overrideDestinationFolder>false</overrideDestinationFolder>
+      <destinationFolder></destinationFolder>
+      <runAfterResultFinalised>false</runAfterResultFinalised>
+    </com.michelin.cio.hudson.plugins.copytoslave.CopyToMasterNotifier>
+    <hudson.tasks.BuildTrigger>
+      <childProjects>JOB-prepare-binaries-slaves, JOB-CSmith, JOB-prepare-binaries-chroots</childProjects>
+      <threshold>
+        <name>SUCCESS</name>
+        <ordinal>0</ordinal>
+        <color>BLUE</color>
+        <completeBuild>true</completeBuild>
+      </threshold>
+    </hudson.tasks.BuildTrigger>
+  </publishers>
+  <buildWrappers>
+    <de.jamba.hudson.plugin.wsclean.PrePostClean plugin="hudson-wsclean-plugin@1.0.5">
+      <before>true</before>
+      <behind>false</behind>
+    </de.jamba.hudson.plugin.wsclean.PrePostClean>
+  </buildWrappers>
+</project>

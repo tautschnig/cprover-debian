@@ -1,0 +1,92 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<project>
+  <actions/>
+  <description></description>
+  <keepDependencies>false</keepDependencies>
+  <properties>
+    <hudson.plugins.buildblocker.BuildBlockerProperty plugin="build-blocker-plugin@1.7.1">
+      <useBuildBlocker>false</useBuildBlocker>
+      <blockLevel>UNDEFINED</blockLevel>
+      <scanQueueFor>DISABLED</scanQueueFor>
+      <blockingJobs></blockingJobs>
+    </hudson.plugins.buildblocker.BuildBlockerProperty>
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.1">
+      <doNotScan>false</doNotScan>
+    </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.15">
+      <optOut>false</optOut>
+    </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
+  </properties>
+  <scm class="hudson.scm.NullSCM"/>
+  <assignedNode>master</assignedNode>
+  <canRoam>false</canRoam>
+  <disabled>false</disabled>
+  <blockBuildWhenDownstreamBuilding>false</blockBuildWhenDownstreamBuilding>
+  <blockBuildWhenUpstreamBuilding>false</blockBuildWhenUpstreamBuilding>
+  <triggers/>
+  <concurrentBuild>false</concurrentBuild>
+  <builders>
+    <hudson.tasks.Shell>
+      <command>#!/bin/bash
+
+set -e
+
+rm -f versions.latest versions.built
+
+tbl-dctrl -c Package -c Version -d&apos;;&apos; -H ../../JOB-Debian-sid/workspace/Sources &gt; versions.latest
+
+while read pv ; do
+  p=&quot;`echo $pv | cut -f1 -d&apos;;&apos;`&quot;
+  [ -d ../../sid-goto-cc-$p/builds ] || continue
+  set +e
+  l=&quot;`ls -rt ../../sid-goto-cc-$p/builds/ | grep ^[0-9] | tail -n 1`&quot;
+  [ x$l != x ] || continue
+  v=&quot;`grep -a -m1 &quot;^dpkg-buildpackage: source version&quot; ../../sid-goto-cc-$p/builds/$l/log | cut -f4 -d&quot; &quot;`&quot;
+  set -e
+  [ -n &quot;$v&quot; ] || continue
+  echo &quot;$p;$v&quot; &gt;&gt; versions.built
+done &lt; versions.latest</command>
+    </hudson.tasks.Shell>
+    <javaposse.jobdsl.plugin.ExecuteDslScripts plugin="job-dsl@1.39">
+      <scriptText>def latest_map = [:]
+def r = new File(&quot;/srv/mt/jenkins/jobs/JOB-Debian-sid-needs-build/workspace/versions.latest&quot;)
+r.eachLine { l -&gt;
+  def m = l =~ /^([^;]+);(.*)$/
+  latest_map.put(m[0][1], m[0][2])
+}
+
+r = new File(&quot;/srv/mt/jenkins/jobs/JOB-Debian-sid-needs-build/workspace/versions.built&quot;)
+r.eachLine { l -&gt;
+  def m = l =~ /^([^;]+);(.*)$/
+  if(latest_map[m[0][1]]==m[0][2]) latest_map.remove(m[0][1])
+}
+
+listView(&apos;sid-needs-build&apos;) {
+  statusFilter(StatusFilter.ENABLED)
+
+  jobs {
+    latest_map.each() {
+      names(&quot;sid-goto-cc-${it.key}&quot;)
+    }
+  }
+  columns {
+    status()
+    name()
+    lastBuildConsole()
+    lastSuccess()
+    lastFailure()
+    lastDuration()
+    buildButton()
+  }
+}</scriptText>
+      <usingScriptText>true</usingScriptText>
+      <ignoreExisting>false</ignoreExisting>
+      <removedJobAction>IGNORE</removedJobAction>
+      <removedViewAction>IGNORE</removedViewAction>
+      <lookupStrategy>JENKINS_ROOT</lookupStrategy>
+      <additionalClasspath></additionalClasspath>
+    </javaposse.jobdsl.plugin.ExecuteDslScripts>
+  </builders>
+  <publishers/>
+  <buildWrappers/>
+</project>
