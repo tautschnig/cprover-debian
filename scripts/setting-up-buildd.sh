@@ -50,6 +50,8 @@ if [ `ls $BUILDPLACE/ | wc -l` -ne 0 ] ; then
   exit 1
 fi
 
+$SUDO apt-get install openjdk-8-jre cowbuilder
+
 cow_base=/srv/sid-base.cow
 if [ -d $cow_base ] ; then
   echo " \
