@@ -10,7 +10,7 @@ du -sk build/* | sort -n | while read size fname; do bn=`basename $fname` ; res=
 
 rebuild package
 DEB_VENDOR=Debian dpkg-source -x cairo*.dsc
-pdebuild --pbuilder cowbuilder --use-pdebuild-internal -- --basepath $HOME/wheezy-base.cow/ --hookdir $HOME/pbuilder-debug-hooks
+pdebuild --pbuilder cowbuilder --use-pdebuild-internal -- --basepath /srv/sid-base.cow/ --hookdir /srv/pbuilder-debug-hooks
 
 
 cleanup useless goto binaries:
