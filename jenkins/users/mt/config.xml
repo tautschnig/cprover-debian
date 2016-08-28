@@ -1,0 +1,46 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<user>
+  <fullName>Michael Tautschnig</fullName>
+  <properties>
+    <jenkins.security.ApiTokenProperty>
+      <apiToken>x</apiToken>
+    </jenkins.security.ApiTokenProperty>
+    <com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty plugin="credentials@2.1.4">
+      <domainCredentialsMap class="hudson.util.CopyOnWriteMap$Hash"/>
+    </com.cloudbees.plugins.credentials.UserCredentialsProvider_-UserCredentialsProperty>
+    <hudson.model.MyViewsProperty>
+      <views>
+        <hudson.model.AllView>
+          <owner class="hudson.model.MyViewsProperty" reference="../../.."/>
+          <name>All</name>
+          <filterExecutors>false</filterExecutors>
+          <filterQueue>false</filterQueue>
+          <properties class="hudson.model.View$PropertyList"/>
+        </hudson.model.AllView>
+      </views>
+    </hudson.model.MyViewsProperty>
+    <hudson.search.UserSearchProperty>
+      <insensitiveSearch>false</insensitiveSearch>
+    </hudson.search.UserSearchProperty>
+    <hudson.security.HudsonPrivateSecurityRealm_-Details>
+      <passwordHash>x</passwordHash>
+    </hudson.security.HudsonPrivateSecurityRealm_-Details>
+    <hudson.tasks.Mailer_-UserProperty plugin="mailer@1.17">
+      <emailAddress>mt@eecs.qmul.ac.uk</emailAddress>
+    </hudson.tasks.Mailer_-UserProperty>
+    <hudson.model.PaneStatusProperties>
+      <collapsed>
+        <string>buildQueue</string>
+      </collapsed>
+    </hudson.model.PaneStatusProperties>
+    <jenkins.security.LastGrantedAuthoritiesProperty>
+      <roles>
+        <string>authenticated</string>
+      </roles>
+      <timestamp>1407366708000</timestamp>
+    </jenkins.security.LastGrantedAuthoritiesProperty>
+    <org.jenkins.ci.plugins.keyboard__shortcuts.KeyboardShortcutsUserProperty plugin="keyboard-shortcuts-plugin@1.2">
+      <disabled>false</disabled>
+    </org.jenkins.ci.plugins.keyboard__shortcuts.KeyboardShortcutsUserProperty>
+  </properties>
+</user>
