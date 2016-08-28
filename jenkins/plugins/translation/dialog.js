@@ -89,7 +89,7 @@ translation.submit = function() {
             if (contributeToHudson) {
                 // loadScript("http://localhost:9050/l10n/submit?"+rsp.responseText);
                 // push them to two places,  just in case one is down
-                loadScript("http://l10n.jenkins-ci.org/submit?"+rsp.responseText);
+                loadScript("http://l10n.jenkins.io/submit?"+rsp.responseText);
             }
             dialog.hide();
         },

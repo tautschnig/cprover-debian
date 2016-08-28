@@ -1,18 +1,19 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
-Built-By: jglick
-Build-Jdk: 1.7.0_67
+Built-By: recena
+Build-Jdk: 1.8.0_40
 Extension-Name: translation
+Specification-Title: The Jenkins Plugins Parent POM Project
 Implementation-Title: translation
-Implementation-Version: 1.12
+Implementation-Version: 1.15
 Group-Id: org.jenkins-ci.plugins
 Short-Name: translation
 Long-Name: Jenkins Translation Assistance plugin
-Url: http://wiki.jenkins-ci.org/display/JENKINS/Translation+Assistance
- +Plugin
-Plugin-Version: 1.12
-Hudson-Version: 1.424
-Jenkins-Version: 1.424
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Translation+Assistanc
+ e+Plugin
+Plugin-Version: 1.15
+Hudson-Version: 1.580
+Jenkins-Version: 1.580
 Plugin-Developers: 
 

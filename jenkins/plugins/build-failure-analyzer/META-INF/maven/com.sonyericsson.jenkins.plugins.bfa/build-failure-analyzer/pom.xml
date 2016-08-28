@@ -2,7 +2,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.sonyericsson.jenkins.plugins.bfa</groupId>
     <artifactId>build-failure-analyzer</artifactId>
-    <version>1.14.0</version>
+    <version>1.16.0</version>
     <packaging>hpi</packaging>
     <name>Build Failure Analyzer</name>
     <description>Jenkins Build Failure Analyzer Plugin</description>
@@ -85,7 +85,7 @@
         <dependency>
             <groupId>com.sonyericsson.hudson.plugins.gerrit</groupId>
             <artifactId>gerrit-trigger</artifactId>
-            <version>2.7.0</version>
+            <version>2.15.0</version>
             <optional>true</optional>
             <exclusions>
                 <exclusion>
@@ -174,6 +174,12 @@
             <optional>true</optional>
         </dependency>
         <!-- Test dependencies -->
+        <dependency>
+            <groupId>org.jenkins-ci.plugins.workflow</groupId>
+            <artifactId>workflow-aggregator</artifactId>
+            <version>1.4</version>
+            <scope>test</scope>
+        </dependency>
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
@@ -309,7 +315,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/build-failure-analyzer-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/build-failure-analyzer-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/build-failure-analyzer-plugin</url>
-      <tag>build-failure-analyzer-1.14.0</tag>
+      <tag>build-failure-analyzer-1.16.0</tag>
   </scm>
     <reporting>
         <plugins>

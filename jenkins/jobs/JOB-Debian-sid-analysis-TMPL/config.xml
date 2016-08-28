@@ -18,10 +18,10 @@
         <artifactNumToKeep>1</artifactNumToKeep>
       </strategy>
     </jenkins.model.BuildDiscarderProperty>
-    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.13.3">
+    <com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty plugin="build-failure-analyzer@1.16.0">
       <doNotScan>false</doNotScan>
     </com.sonyericsson.jenkins.plugins.bfa.model.ScannerJobProperty>
-    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.16.1">
+    <com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty plugin="naginator@1.17.1">
       <optOut>false</optOut>
     </com.chikli.hudson.plugin.naginator.NaginatorOptOutProperty>
   </properties>
@@ -87,7 +87,7 @@ sed -i &apos;/^goto-binaries\/control/d&apos; goto-binaries.list
 sed -i &apos;/^goto-binaries\/copyright/d&apos; goto-binaries.list
 </command>
     </hudson.tasks.Shell>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -182,7 +182,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -229,7 +229,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -293,7 +293,78 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
+      <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
+        <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
+          <file>FAILED</file>
+          <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
+        </condition>
+      </condition>
+      <buildStep class="hudson.tasks.Shell">
+        <command>#!/bin/bash
+
+. PROLOGUE
+
+run_cpachecker() {
+  local arg=&quot;$1&quot;
+  local opts=&quot;$2&quot;
+
+  ff=&quot;`basename &quot;$arg&quot; | sed &apos;s/@/_/g&apos; | sed &apos;s/^-/_/&apos;`&quot;
+  if ! /usr/bin/time -f%Us $GOTO_INSTRUMENT --dump-c &quot;$arg&quot; &quot;$ff.c&quot; ; then
+    touch FAILED
+    return 1
+  fi
+
+  ec=0
+  /usr/bin/time -v timeout 930 \
+    /import/debian-mole/tools-from-svns/cpachecker/CPAchecker.svn/scripts/cpa.sh \
+      -timelimit 900 -heap 16000M \
+      $opts \
+      &quot;$ff.c&quot; 2&gt;&amp;1 | \
+    tee &quot;$arg.log&quot;
+  ec=${PIPESTATUS[0]}
+  if [ $ec -eq 124 ] || [ $ec -eq 137 ] ; then
+    echo &quot;TIMEOUT&quot;
+    ec=0
+  elif [ $ec -ne 0 ] ; then
+    mkdir -p failed-cpachecker
+    cp &quot;$arg&quot; &quot;$ff.c&quot; failed-cpachecker/
+    touch FAILED
+  else
+    if ! grep -q &quot;^Verification result: TRUE&quot; &quot;$arg.log&quot; ; then
+      touch FAILED
+    fi
+  fi
+
+  return $ec
+}
+
+ifs=&quot;$IFS&quot;
+IFS=&quot;
+&quot;
+
+while read f ; do
+  if ! $GOTO_INSTRUMENT --list-symbols &quot;$f&quot; | grep -q &apos;^_start void (void)$&apos; ; then
+    continue
+  fi
+
+  echo &quot;To verify: $f&quot;
+
+  if ! run_cpachecker &quot;$f&quot; &quot;-policy&quot; ; then
+    break
+  fi
+  
+  # overflow cpa breaks
+  #if ! run_cpachecker &quot;$f&quot; &quot;-predicateAnalysis&quot; ; then
+  #  break
+  #fi
+
+done &lt; goto-binaries.list
+IFS=&quot;$ifs&quot;</command>
+      </buildStep>
+      <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
+    </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -333,7 +404,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -395,7 +466,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -454,7 +525,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -518,7 +589,7 @@ rm -rf mole-pkg</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -581,7 +652,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.logic.Not" plugin="run-condition@1.0">
         <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition">
           <file>FAILED</file>
@@ -641,7 +712,7 @@ IFS=&quot;$ifs&quot;</command>
       </buildStep>
       <runner class="org.jenkins_ci.plugins.run_condition.BuildStepRunner$Fail" plugin="run-condition@1.0"/>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
-    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.3">
+    <org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder plugin="conditional-buildstep@1.3.5">
       <condition class="org.jenkins_ci.plugins.run_condition.core.FileExistsCondition" plugin="run-condition@1.0">
         <file>FAILED</file>
         <baseDir class="org.jenkins_ci.plugins.run_condition.common.BaseDirectory$Workspace"/>
@@ -679,19 +750,19 @@ exit 1</command>
     </org.jenkinsci.plugins.conditionalbuildstep.singlestep.SingleConditionalBuilder>
   </builders>
   <publishers>
-    <com.chikli.hudson.plugin.naginator.NaginatorPublisher plugin="naginator@1.16.1">
+    <com.chikli.hudson.plugin.naginator.NaginatorPublisher plugin="naginator@1.17.1">
       <regexpForRerun>.*at hudson\.model\.FreeStyleBuild\.run.*</regexpForRerun>
       <rerunIfUnstable>false</rerunIfUnstable>
       <rerunMatrixPart>false</rerunMatrixPart>
       <checkRegexp>true</checkRegexp>
-      <regexpForMatrixParent>false</regexpForMatrixParent>
+      <regexpForMatrixStrategy>TestParent</regexpForMatrixStrategy>
       <delay class="com.chikli.hudson.plugin.naginator.ProgressiveDelay">
         <increment>300</increment>
         <max>10800</max>
       </delay>
       <maxSchedule>2</maxSchedule>
     </com.chikli.hudson.plugin.naginator.NaginatorPublisher>
-    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.28">
+    <hudson.plugins.ws__cleanup.WsCleanup plugin="ws-cleanup@0.29">
       <deleteDirs>false</deleteDirs>
       <skipWhenFailed>false</skipWhenFailed>
       <cleanWhenSuccess>true</cleanWhenSuccess>
@@ -705,7 +776,7 @@ exit 1</command>
     </hudson.plugins.ws__cleanup.WsCleanup>
   </publishers>
   <buildWrappers>
-    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.28">
+    <hudson.plugins.ws__cleanup.PreBuildCleanup plugin="ws-cleanup@0.29">
       <deleteDirs>false</deleteDirs>
       <cleanupParameter></cleanupParameter>
       <externalDelete></externalDelete>

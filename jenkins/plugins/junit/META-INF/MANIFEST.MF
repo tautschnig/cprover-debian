@@ -1,17 +1,17 @@
 Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
-Built-By: ogondza
-Build-Jdk: 1.7.0_79
+Built-By: kohsuke
+Build-Jdk: 1.7.0_07
 Extension-Name: junit
 Specification-Title: Allows JUnit-format test results to be published.
 Implementation-Title: junit
-Implementation-Version: 1.11
+Implementation-Version: 1.15
 Group-Id: org.jenkins-ci.plugins
 Short-Name: junit
 Long-Name: JUnit Plugin
 Url: http://wiki.jenkins-ci.org/display/JENKINS/JUnit+Plugin
-Plugin-Version: 1.11
+Plugin-Version: 1.15
 Hudson-Version: 1.580.1
 Jenkins-Version: 1.580.1
 Plugin-Developers: 

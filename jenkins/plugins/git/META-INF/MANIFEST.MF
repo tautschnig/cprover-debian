@@ -6,18 +6,18 @@ Build-Jdk: 1.7.0_80
 Extension-Name: git
 Specification-Title: Integrates Jenkins with GIT SCM
 Implementation-Title: git
-Implementation-Version: 2.4.4
+Implementation-Version: 2.5.2
 Group-Id: org.jenkins-ci.plugins
 Short-Name: git
 Long-Name: Jenkins Git plugin
 Url: http://wiki.jenkins-ci.org/display/JENKINS/Git+Plugin
-Plugin-Version: 2.4.4
-Hudson-Version: 1.580
-Jenkins-Version: 1.580
-Plugin-Dependencies: credentials:1.25,mailer:1.16,scm-api:1.0,promoted
- -builds:2.25;resolution:=optional,token-macro:1.11;resolution:=option
- al,parameterized-trigger:2.4;resolution:=optional,git-client:1.19.6,m
- atrix-project:1.6,ssh-credentials:1.11
+Plugin-Version: 2.5.2
+Hudson-Version: 1.609.3
+Jenkins-Version: 1.609.3
+Plugin-Dependencies: matrix-project:1.6,ssh-credentials:1.11,promoted-
+ builds:2.25;resolution:=optional,scm-api:1.0,parameterized-trigger:2.
+ 4;resolution:=optional,workflow-scm-step:1.14.2,credentials:1.25,mail
+ er:1.16,git-client:1.19.6,token-macro:1.11;resolution:=optional
 Plugin-Developers: Kohsuke Kawaguchi:kohsuke:,Mark Waite:MarkEWaite:ma
  rk.earl.waite@gmail.com
 

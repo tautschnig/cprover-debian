@@ -3,11 +3,11 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.532.1</version>
+    <version>2.9</version>
   </parent>
 
   <artifactId>external-monitor-job</artifactId>
-  <version>1.4</version>
+  <version>1.5</version>
   <packaging>hpi</packaging>
   <name>External Monitor Job Type Plugin</name>
   <description>Adds the ability to monitor the result of externally executed jobs</description>
@@ -17,20 +17,25 @@
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-    <tag>external-monitor-job-1.4</tag>
+    <tag>external-monitor-job-1.5</tag>
   </scm>
+  
+  <properties>
+    <jenkins.version>1.609.3</jenkins.version>
+    <java.level>6</java.level>
+  </properties>
 
   <repositories>
     <repository>
       <id>repo.jenkins-ci.org</id>
-      <url>http://repo.jenkins-ci.org/public/</url>
+      <url>https://repo.jenkins-ci.org/public/</url>
     </repository>
   </repositories>
 
   <licenses>
     <license>
       <name>The MIT license</name>
-      <url>http://www.opensource.org/licenses/mit-license.php</url>
+      <url>https://www.opensource.org/licenses/mit-license.php</url>
       <distribution>repo</distribution>
     </license>
   </licenses>

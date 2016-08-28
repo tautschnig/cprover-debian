@@ -3,35 +3,40 @@
   <parent>
     <groupId>org.jenkins-ci.plugins</groupId>
     <artifactId>plugin</artifactId>
-    <version>1.424</version>
+    <version>2.7</version>
   </parent>
-  
+
   <artifactId>translation</artifactId>
-  <version>1.12</version>
+  <version>1.15</version>
   <packaging>hpi</packaging>
   <name>Jenkins Translation Assistance plugin</name>
-  <url>http://wiki.jenkins-ci.org/display/JENKINS/Translation+Assistance+Plugin</url>
+  <url>https://wiki.jenkins-ci.org/display/JENKINS/Translation+Assistance+Plugin</url>
 
   <scm>
     <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
     <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
-    <url>http://github.com/jenkinsci/${project.artifactId}-plugin</url>
-    <tag>translation-1.12</tag>
+    <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
+    <tag>translation-1.15</tag>
   </scm>
+  
+  <properties>
+     <jenkins.version>1.580</jenkins.version>
+     <java.level>6</java.level>
+   </properties>
 
-    <repositories>
-        <repository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </repository>
-    </repositories>
+  <repositories>
+    <repository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </repository>
+  </repositories>
 
-    <pluginRepositories>
-        <pluginRepository>
-            <id>repo.jenkins-ci.org</id>
-            <url>http://repo.jenkins-ci.org/public/</url>
-        </pluginRepository>
-    </pluginRepositories>
+  <pluginRepositories>
+    <pluginRepository>
+      <id>repo.jenkins-ci.org</id>
+      <url>https://repo.jenkins-ci.org/public/</url>
+    </pluginRepository>
+  </pluginRepositories>
 </project>  
   
 

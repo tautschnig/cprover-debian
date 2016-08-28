@@ -2,16 +2,17 @@ Manifest-Version: 1.0
 Archiver-Version: Plexus Archiver
 Created-By: Apache Maven
 Built-By: fr3d
-Build-Jdk: 1.6.0_45
+Build-Jdk: 1.7.0_80
 Extension-Name: extra-columns
 Implementation-Title: extra-columns
-Implementation-Version: 1.16
+Implementation-Version: 1.17
 Group-Id: org.jenkins-ci.plugins
 Short-Name: extra-columns
 Long-Name: Extra Columns Plugin
 Url: http://wiki.jenkins-ci.org/display/JENKINS/Extra+Columns+Plugin
-Plugin-Version: 1.16
+Plugin-Version: 1.17
 Hudson-Version: 1.475
 Jenkins-Version: 1.475
+Plugin-Dependencies: junit:1.11
 Plugin-Developers: Fred G.:fredg:
 

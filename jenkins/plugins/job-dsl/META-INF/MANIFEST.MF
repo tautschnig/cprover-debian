@@ -1,16 +1,17 @@
 Manifest-Version: 1.0
-Plugin-Dependencies: cloudbees-folder:4.4;resolution:=optional,vsphere
- -cloud:1.1.11;resolution:=optional,config-file-provider:2.8.1;resolut
- ion:=optional,managed-scripts:1.2.1;resolution:=optional
-Jenkins-Version: 1.609
+Plugin-Dependencies: structs:1.1,vsphere-cloud:1.1.11;resolution:=opti
+ onal,config-file-provider:2.8.1;resolution:=optional,managed-scripts:
+ 1.2.1;resolution:=optional
+Long-Name: Job DSL
 Group-Id: org.jenkins-ci.plugins
+Plugin-Version: 1.48
+Jenkins-Version: 1.625
+Url: https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
+Short-Name: job-dsl
+Compatible-Since-Version: 1.48
 Plugin-Developers: Justin Ryan:quidryan:jryan@netflix.com,Andrew Harme
  l-Law:andrewharmellaw:andrew@harmel-law.com,Daniel Spilker:daspilker:
  mail@daniel-spilker.com,Matt Sheehan:sheehan:mr.sheehan@gmail.com
-Short-Name: job-dsl
-Compatible-Since-Version: 1.45
-Plugin-Version: 1.45
-Long-Name: Job DSL
 Extension-Name: job-dsl
-Url: https://wiki.jenkins-ci.org/display/JENKINS/Job+DSL+Plugin
+Plugin-Class: javaposse.jobdsl.plugin.JobDslPlugin
 

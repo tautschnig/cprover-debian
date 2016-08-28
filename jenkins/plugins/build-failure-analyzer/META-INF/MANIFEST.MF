@@ -6,20 +6,20 @@ Build-Jdk: 1.7.0_79
 Extension-Name: build-failure-analyzer
 Specification-Title: Jenkins Build Failure Analyzer Plugin
 Implementation-Title: build-failure-analyzer
-Implementation-Version: 1.14.0
+Implementation-Version: 1.16.0
 Plugin-Class: com.sonyericsson.jenkins.plugins.bfa.PluginImpl
 Group-Id: com.sonyericsson.jenkins.plugins.bfa
 Short-Name: build-failure-analyzer
 Long-Name: Build Failure Analyzer
 Url: http://wiki.jenkins-ci.org/display/JENKINS/Build+Failure+Analyzer
-Plugin-Version: 1.14.0
+Plugin-Version: 1.16.0
 Hudson-Version: 1.580.1
 Jenkins-Version: 1.580.1
-Plugin-Dependencies: token-macro:1.10;resolution:=optional,cloudbees-f
- older:4.9;resolution:=optional,matrix-project:1.4,matrix-auth:1.2;res
- olution:=optional,build-flow-plugin:0.10;resolution:=optional,junit:1
- .6,gerrit-trigger:2.7.0;resolution:=optional,credentials:1.24;resolut
- ion:=optional
+Plugin-Dependencies: matrix-auth:1.2;resolution:=optional,matrix-proje
+ ct:1.4,cloudbees-folder:4.9;resolution:=optional,build-flow-plugin:0.
+ 10;resolution:=optional,token-macro:1.10;resolution:=optional,junit:1
+ .6,gerrit-trigger:2.15.0;resolution:=optional,credentials:1.24;resolu
+ tion:=optional
 Plugin-Developers: Robert Sandell:rsandell:robert.sandell@cloudbees.co
  m,Tomas Westling:t_westling:tomas.westling@sonymobile.com
 

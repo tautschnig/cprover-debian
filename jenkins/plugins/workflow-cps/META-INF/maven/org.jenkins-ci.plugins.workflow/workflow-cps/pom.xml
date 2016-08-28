@@ -33,7 +33,7 @@
     </parent>
     <groupId>org.jenkins-ci.plugins.workflow</groupId>
     <artifactId>workflow-cps</artifactId>
-    <version>2.1</version>
+    <version>2.9</version>
     <packaging>hpi</packaging>
     <name>Pipeline: Groovy</name>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Pipeline+Groovy+Plugin</url>
@@ -47,7 +47,7 @@
         <connection>scm:git:git://github.com/jenkinsci/${project.artifactId}-plugin.git</connection>
         <developerConnection>scm:git:git@github.com:jenkinsci/${project.artifactId}-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/${project.artifactId}-plugin</url>
-      <tag>workflow-cps-2.1</tag>
+      <tag>workflow-cps-2.9</tag>
   </scm>
     <repositories>
         <repository>
@@ -69,17 +69,17 @@
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>workflow-step-api</artifactId>
-            <version>1.15</version>
+            <version>2.2</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>workflow-api</artifactId>
-            <version>1.15</version>
+            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>workflow-support</artifactId>
-            <version>1.15</version>
+            <version>2.1</version>
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
@@ -97,6 +97,12 @@
             <version>1.1</version>
         </dependency>
         <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>support-core</artifactId>
+            <version>2.32</version>
+            <optional>true</optional>
+        </dependency>
+        <dependency>
             <groupId>${project.groupId}</groupId>
             <artifactId>workflow-support</artifactId>
             <version>1.15</version>
@@ -108,17 +114,41 @@
             <artifactId>workflow-basic-steps</artifactId>
             <version>1.15</version>
             <scope>test</scope>
+            <exclusions>
+                <exclusion>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>mailer</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-job</artifactId>
-            <version>1.15</version>
+            <version>2.3</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins.workflow</groupId>
             <artifactId>workflow-durable-task-step</artifactId>
-            <version>1.15</version>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-build-step</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-input-step</artifactId>
+            <version>2.0</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>pipeline-stage-step</artifactId>
+            <version>2.0</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -171,6 +201,12 @@
                     <artifactId>httpclient</artifactId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <dependency> <!-- optional dep of workflow-scm-step, have to override 1.54 version that gets pulled in somehow during tests -->
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>subversion</artifactId>
+            <version>2.5</version>
+            <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>

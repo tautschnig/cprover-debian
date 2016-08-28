@@ -6,14 +6,14 @@ Build-Jdk: 1.7.0_80
 Extension-Name: git-client
 Specification-Title: Utility plugin for Git support in Jenkins
 Implementation-Title: git-client
-Implementation-Version: 1.19.6
+Implementation-Version: 1.19.7
 Group-Id: org.jenkins-ci.plugins
 Short-Name: git-client
 Long-Name: Jenkins Git client plugin
 Url: http://wiki.jenkins-ci.org/display/JENKINS/Git+Client+Plugin
-Plugin-Version: 1.19.6
+Plugin-Version: 1.19.7
 Hudson-Version: 1.532.2
 Jenkins-Version: 1.532.2
-Plugin-Dependencies: ssh-credentials:1.11
+Plugin-Dependencies: ssh-credentials:1.12
 Plugin-Developers: Mark Waite:markewaite:mark.earl.waite@gmail.com
 
