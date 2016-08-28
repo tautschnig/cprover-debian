@@ -34,7 +34,7 @@ set -evx
 
 SUDO=""
 TARGET_USER="jenkins-slave"
-TARGET_DIR=`readlink -f ~$TARGET_USER`
+TARGET_DIR=`eval echo "~$TARGET_USER"`
 # requires proper sudoers setup:
 #Cmnd_Alias  COWBUILDER=/usr/sbin/cowbuilder
 #mictau  ALL=NOPASSWD:  COWBUILDER
