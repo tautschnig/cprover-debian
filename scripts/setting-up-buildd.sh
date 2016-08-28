@@ -33,14 +33,16 @@
 set -evx
 
 SUDO=""
+TARGET_USER="jenkins-slave"
+TARGET_DIR=`readlink -f ~$TARGET_USER`
 # requires proper sudoers setup:
 #Cmnd_Alias  COWBUILDER=/usr/sbin/cowbuilder
 #mictau  ALL=NOPASSWD:  COWBUILDER
 #Defaults!COWBUILDER  setenv
 
 #cow_base=/var/cache/pbuilder/sid-base-mt.cow
-export BUILDPLACE=/srv/jenkins-slave/cow
-export APTCACHE=/srv/jenkins-slave/aptcache
+export BUILDPLACE=$TARGET_DIR/cow
+export APTCACHE=$TARGET_DIR/aptcache
 mkdir -p $APTCACHE
 
 if [ `ls $BUILDPLACE/ | wc -l` -ne 0 ] ; then
@@ -59,7 +61,7 @@ exit" | $SUDO cowbuilder --login --save-after-login --basepath $cow_base
 fi
 rm -rf $cow_base
 
-cat > /srv/jenkins-slave/.pbuilderrc.tmp <<"EOF"
+cat > $TARGET_DIR/.pbuilderrc.tmp <<"EOF"
 EXTRAPACKAGES="eatmydata"
 
 use_eatmydata=1
@@ -111,8 +113,8 @@ for p in \
     BINDMOUNTS="$bindmounds_before"
   fi
 done
-BUILDPLACE=/srv/jenkins-slave/cow
-APTCACHE=/srv/jenkins-slave/aptcache
+BUILDPLACE=##TARGET_DIR##/cow
+APTCACHE=##TARGET_DIR##/aptcache
 # # concurrent build jobs replace crtend.o by goto-cc generated file
 # for p in \
 #   gcc-4.9 oce ptlib openblas ; do
@@ -125,12 +127,13 @@ export USER=pbuilder
 DEBBUILDOPTS="--source-option=--auto-commit"
 HOOKDIR="/var/cache/pbuilder/hooks/"
 EOF
-if [ -e /srv/jenkins-slave/.pbuilderrc ] ; then
+sed -i "s,##TARGET_DIR##,$TARGET_DIR," $TARGET_DIR/.pbuilderrc.tmp
+if [ -e $TARGET_DIR/.pbuilderrc ] ; then
   # abort if different file exists already
-  diff /srv/jenkins-slave/.pbuilderrc /srv/jenkins-slave/.pbuilderrc.tmp
+  diff $TARGET_DIR/.pbuilderrc $TARGET_DIR/.pbuilderrc.tmp
 fi
-mv /srv/jenkins-slave/.pbuilderrc.tmp /srv/jenkins-slave/.pbuilderrc
-chmod a+r /srv/jenkins-slave/.pbuilderrc
+mv $TARGET_DIR/.pbuilderrc.tmp $TARGET_DIR/.pbuilderrc
+chmod a+r $TARGET_DIR/.pbuilderrc
 
 # from http://www.hermann-uwe.de/blog/rebuilding-the-whole-debian-archive-using-the-open64-compiler
 # $SUDO apt-get install cowbuilder grep-dctrl wget devscripts gcc \
@@ -746,7 +749,7 @@ mv /tmp/pbuilder-deps-wrapper.sh /usr/bin ; \
 chmod a+rx /usr/bin/pbuilder-deps-wrapper.sh ; \
 cp /usr/bin/goto-cc /usr/bin/goto-ld ; \
 exit" | $SUDO cowbuilder --login --save-after-login --aptcache $APTCACHE --basepath $cow_base
-$SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
+$SUDO chown $TARGET_USER $cow_base/usr/bin/{goto-cc,goto-ld}
 
 #cp /usr/share/doc/pbuilder/examples/rebuild/{buildall,getlist} .
 #sed -i 's#any#linux-any| any#' getlist
@@ -758,8 +761,8 @@ $SUDO chown jenkins-slave $cow_base/usr/bin/{goto-cc,goto-ld}
 #sed -i 's#rm -rf \$PACKAGE#if [ ! -e $LOGDIR/failed-$PACKAGE ] ; then rm -rf $PACKAGE/$PACKAGE-* $PACKAGE/result $PACKAGE/*.deb ; if [ -d $PACKAGE/goto-binaries ] ; then cd $PACKAGE ; tar cjf goto-binaries.tar.bz2 goto-binaries ; rm -rf goto-binaries ; cd .. ; fi ; fi#' buildall
 #sed -i "s#^while read package.*#while read package; do if [ \$\(\(\`df /home | tail -1 | awk '{ print \$4 }'\`/1024\)\) -lt 2000 ] ; then break ; fi#" buildall
 
-mkdir -p /srv/jenkins-slave/.gnupg
-chown -R jenkins-slave /srv/jenkins-slave/.gnupg
+mkdir -p $TARGET_DIR/.gnupg
+chown -R $TARGET_USER $TARGET_DIR/.gnupg
 
 # Another hint by Gregor Herrmann, Stephen Kitt
 mkdir -p /var/cache/pbuilder/hooks/
