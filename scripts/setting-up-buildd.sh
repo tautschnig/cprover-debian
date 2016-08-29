@@ -52,7 +52,7 @@ fi
 
 $SUDO apt-get -y install cowbuilder
 
-cow_base=/srv/sid-base.cow
+cow_base=$TARGET_DIR/sid-base.cow
 if [ -d $cow_base ] ; then
   echo " \
 umount /dev/pts ; \
